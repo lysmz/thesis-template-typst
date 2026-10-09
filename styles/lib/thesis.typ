@@ -168,9 +168,9 @@
     },
     footer: context {
       if here().page-numbering() == none { return none }
-      if book == false { context align(center, counter(page).display()) }
-      else if book == "single" { context align(right, counter(page).display()) }
-      else if book == "double" { context align(if calc.odd(here().page()) { right } else { left }, counter(page).display()) }
+      if book == false { align(center, counter(page).display()) }
+      else if book == "single" { align(right, counter(page).display()) }
+      else if book == "double" { align(if calc.odd(here().page()) { right } else { left }, counter(page).display()) }
     }
   )
 

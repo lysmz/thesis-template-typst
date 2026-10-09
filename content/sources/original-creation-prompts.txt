@@ -1,0 +1,34 @@
+Hi! Ich möchte eine Web-App für mein Studium bauen, damit ich endlich mal mein ganzes Chaos im Griff habe. Ich habe mir das so vorgestellt:
+
+Am Anfang soll man auf ein Dashboard kommen. Das ist quasi die Startseite, wo ich sofort sehe, wie mein aktueller Notenschnitt (GPA) ist, wie viele ECTS-Punkte ich insgesamt schon gesammelt habe und welche Fristen als Nächstes ablaufen. Da sollen auch ein paar schnelle Buttons sein, womit ich sofort eine neue Note oder einen neuen Termin eintragen kann, ohne erst mühsam in die Untermenüs zu klicken. Und eine kleine Liste mit den letzten Aktivitäten und den nächsten Events wäre super.
+
+Damit ich meine Termine im Blick habe, brauche ich einen Kalender. Ganz klassisch als Monatsübersicht. Wenn ich auf einen Tag klickt, soll sich so ein kleines Infofenster (Popover) öffnen, das mir alle Termine für den Tag anzeigt. Und wenn ich einen Termin anklicke, will ich die Details sehen und ihn auch löschen können. Die Termine müssen farblich sortiert sein, damit man sofort sieht, was Sache ist: Prüfungen und Deadlines in Rot, Anmeldefristen in Gelb, normale Vorlesungen in Blau und alles andere in Grün. Ganz wichtig: Ich will meine Termine von der Uni als iCal- oder ICS-Datei hochladen können, damit ich nicht alles einzeln abtippen muss! Manchmal gehen Events auch über mehrere Tage, das muss der Kalender anzeigen können. Und eine normale Listenansicht, wo ich nach Wichtigkeit filtern kann, wäre auch cool.
+
+Dann brauche ich einen Bereich für meine Noten. Das soll eine schöne Tabelle sein, wo alle meine Kurse mit den Noten und ECTS-Punkten drinstehen, am besten nach Semestern sortiert. Ich will Noten hinzufügen, bearbeiten und löschen können. Weil es nervt, alles einzutippen, wäre eine Funktion genial, wo ich eine CSV-Datei mit meinen Noten hochlade und die App schlau genug ist, zu erkennen, was in welcher Spalte steht. Der Notenschnitt muss sich dann automatisch anhand der ECTS-Gewichtung ausrechnen. Und die App muss aufpassen, dass ich nur Noten für Kurse eintragen kann, die auch wirklich zu meinem Studiengang gehören.
+
+Für den Stundenplan stelle ich mir ein Raster vor: 5 Wochentage (Montag bis Freitag) und 6 feste Zeitblöcke am Tag. Die Zeiten an unserer Uni sind immer: 8:00-9:30, 9:45-11:15, 11:30-13:00, 14:00-15:30, 15:45-17:15 und 17:30-19:00. Man soll über ein Dropdown-Menü fertige Pläne von der Uni (die irgendwie aus den Daten der Uni-Website gezogen wurden) durchsuchen und auswählen können. Mit einem einfachen Plus- oder Minus-Button will ich dann Kurse zu meinem persönlichen Plan hinzufügen oder entfernen können. Man soll optisch sofort den Unterschied sehen zwischen den vorgeschlagenen Uni-Kursen und meinen selbst hinzugefügten. Und ein Button, um den ganzen Plan auf einmal zu löschen (nachdem man nochmal kurz gefragt wurde, ob man sich sicher ist), wäre top.
+
+Ach ja, das Ganze muss natürlich sicher sein! Man muss sich registrieren und einloggen können, damit jeder nur seine eigenen Noten und Termine sieht. Und einen Ausloggen-Button brauche ich natürlich auch.
+
+Ich habe leider überhaupt keine Ahnung von Programmieren oder wie man sowas baut, aber ich hoffe, du kannst mir daraus eine schicke, einfach zu bedienende App machen! Danke schonmal!
+
+[Prompt 2]Mir ist gerade noch etwas eingefallen: Ich würde die App gerne auch mit anderen aus meinem Semester benutzen können.
+
+Vielleicht könnte man sogenannte Studiengruppen anlegen. Zum Beispiel für ein bestimmtes Modul, eine Lerngruppe oder die Bachelorarbeit. Eine Gruppe sollte einen Namen bekommen und man sollte andere Leute über einen Einladungslink oder per E-Mail hinzufügen können.
+
+In einer Studiengruppe wäre es praktisch, wenn man gemeinsame Termine und Aufgaben verwalten könnte. Zum Beispiel:
+
+Prüfungstermine
+Abgabefristen
+Lerntreffen
+gemeinsame To-dos
+wichtige Links oder Notizen
+Bei Aufgaben sollte man ungefähr sehen können, worum es geht, wann sie fällig sind und wer sich darum kümmert. Man sollte Aufgaben auch als offen oder erledigt markieren können.
+
+Zu gemeinsamen Terminen und Aufgaben sollten die Mitglieder Kommentare schreiben können. Außerdem wäre es hilfreich, wenn man sehen kann, wer etwas erstellt oder zuletzt geändert hat.
+
+Die gemeinsamen Inhalte sollen nur für die Mitglieder der jeweiligen Gruppe sichtbar sein. Meine persönlichen Noten und privaten Termine sollen nicht automatisch mit anderen geteilt werden. Wenn ich etwas teilen möchte, sollte ich das selbst auswählen können.
+
+Wenn jemand aus der Gruppe einen Termin oder eine Aufgabe ändert, sollten die anderen Mitglieder die Änderung sehen, wenn sie die App öffnen. Ich möchte die App außerdem mit meinem Benutzerkonto auch an einem anderen Gerät verwenden können, ohne dass meine Gruppen und Einträge dort fehlen.
+
+Die Studiengruppen sollten sich möglichst einfach bedienen lassen und sich optisch gut in die bestehende Kalender- und Aufgabenansicht einfügen. Es wäre schön, wenn persönliche und gemeinsame Termine klar voneinander zu unterscheiden wären.

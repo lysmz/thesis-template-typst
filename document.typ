@@ -11,7 +11,7 @@
   title: [My very fancy thesis title],  // Tyou title
   author: "Georg Simon Ohm",            // Your name
   student-id: 1234567,                  // Your student id
-  lang: "en",                           // Language: en, de, de-gender (uses non-binary labels)
+  lang: "de",                           // Language: en, de, de-gender (uses non-binary labels)
   examiners: (                          // People grading your thesis
     [Prof. Dr. Max Mustermann],
     [Prof. Dr. Monika Musterfrau],
@@ -41,15 +41,17 @@
   glossary: yaml("glossary.yaml"),      // Glossary entries and acronyms (from external file)
   bibliography-file: "refs.bib",    // Bibliography file for referencing
   bibliography-style: "ieee",           // Citation style (see Typst docs), 'alphanumeric' supported
-  header: "full",
+  header: "chapter",
 )
 
-#include "content/01-intro.typ"         // Main content of this thesis. You can put your
-#include "content/02-data.typ"          // content into this file directly or split it
-#include "content/03-method.typ"        // over multiple files to keep it organized.
-#include "content/04-experiments.typ"   //
-#include "content/05-outlook.typ"       //
-#include "content/06-summary.typ"       //
+#include "content/01-intro.typ"
+#include "content/02-data.typ"
+#include "content/03-method.typ"
+#include "content/04-analysis.typ"
+#include "content/05-migration.typ"
+#include "content/04-experiments.typ"
+#include "content/05-outlook.typ"
+#include "content/06-summary.typ"
 
 #show: appendix                         // Switch from main content to appendix
 

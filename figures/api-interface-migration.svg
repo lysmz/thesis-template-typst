@@ -1,0 +1,108 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1320" height="1310" viewBox="0 0 1320 1310" role="img" aria-labelledby="title description">
+  <title id="title">Migration des vertragsbasierten API-Aufrufwegs von HTTP zu Electron-IPC</title>
+  <desc id="description">Ein gemeinsamer OpenAPI-Vertrag bildet die Ausgangsbasis. Im Web-Prototyp erzeugt Orval Client, React-Query-Hooks und Zod-Schemata. Im Electron-Projekt übernehmen eigene TypeScript-Skripte diese Generierung. Links erfolgt der Aufruf von React per HTTP an einen Express-Route-Handler und PostgreSQL. Rechts ruft der Renderer über eine begrenzte Preload-Bridge den IPC-Dispatcher im Main-Prozess auf. Dieser validiert Anfragen und Ergebnisse und leitet an Handler, Services und Repositories mit SQLite weiter. Gestrichelte Pfeile zeigen Generierung und Einbindung, durchgezogene Pfeile Laufzeitkommunikation. Spätere Online- und Synchronisierungspfade sind nicht dargestellt.</desc>
+  <defs>
+    <marker id="runtime-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#234d68"/></marker>
+    <marker id="build-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #17242c; font-size: 28px; text-anchor: middle; }
+      .heading { font-size: 31px; font-weight: 700; }
+      .note { font-size: 25px; fill: #475761; }
+      .code { font-family: Consolas, monospace; font-size: 26px; }
+      .box { fill: #fff; stroke: #6d7f8b; stroke-width: 2; }
+      .runtime { fill: #f3f7fa; stroke: #234d68; stroke-width: 2.5; }
+      .flow { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#runtime-arrow); }
+      .build { fill: none; stroke: #68737b; stroke-width: 2; stroke-dasharray: 8 6; marker-end: url(#build-arrow); }
+    </style>
+  </defs>
+
+  <text x="660" y="38" class="heading">API-Vertrag als gemeinsame Ausgangsbasis</text>
+  <rect class="box" x="360" y="58" width="600" height="82" rx="8"/>
+  <text x="660" y="92">OpenAPI 3.1</text>
+  <text x="660" y="122" class="note">Operationskennungen, Parameter und Datenschemata</text>
+
+  <rect x="30" y="164" width="600" height="216" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <rect x="690" y="164" width="600" height="216" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="330" y="196" class="heading">Web-Prototyp</text>
+  <text x="990" y="196" class="heading">Electron-Kernanwendung</text>
+  <rect class="box" x="155" y="210" width="350" height="54" rx="7"/>
+  <rect class="box" x="815" y="210" width="350" height="54" rx="7"/>
+  <text x="330" y="246">Orval</text>
+  <text x="990" y="246">TypeScript-Generatoren</text>
+  <path class="build" d="M460 140 V151 H330 V209"/>
+  <path class="build" d="M860 140 V151 H990 V209"/>
+
+  <rect class="box" x="52" y="298" width="270" height="64" rx="7"/>
+  <rect class="box" x="340" y="298" width="270" height="64" rx="7"/>
+  <rect class="box" x="712" y="298" width="270" height="64" rx="7"/>
+  <rect class="box" x="1000" y="298" width="270" height="64" rx="7"/>
+  <text x="187" y="325" class="note">Client und</text><text x="187" y="350" class="note">React-Query-Hooks</text>
+  <text x="475" y="325" class="note">Typen und</text><text x="475" y="350" class="note">Zod-Schemata</text>
+  <text x="847" y="325" class="note">Client und</text><text x="847" y="350" class="note">React-Query-Hooks</text>
+  <text x="1135" y="325" class="note">Gemeinsame Typen</text><text x="1135" y="350" class="note">und Zod-Verträge</text>
+  <path class="build" d="M250 264 V282 H187 V297"/>
+  <path class="build" d="M410 264 V282 H475 V297"/>
+  <path class="build" d="M910 264 V282 H847 V297"/>
+  <path class="build" d="M1070 264 V282 H1135 V297"/>
+  <path class="build" d="M187 362 V417"/>
+  <path class="build" d="M847 362 V417"/>
+  <path class="build" d="M475 362 H622 V806 H572"/>
+  <path class="build" d="M1135 362 H1282 V816 H1222"/>
+
+  <rect class="runtime" x="55" y="423" width="550" height="112" rx="10"/>
+  <text x="330" y="462" class="heading">Browser / React</text>
+  <text x="330" y="499" class="note">Generierter Client und React-Query-Hooks</text>
+  <rect class="runtime" x="715" y="423" width="550" height="112" rx="10"/>
+  <text x="990" y="462" class="heading">Renderer / React</text>
+  <text x="990" y="499" class="note">Generierter Client und React-Query-Hooks</text>
+
+  <path class="flow" d="M330 538 V723" marker-start="url(#runtime-arrow)"/>
+  <text x="487" y="603" class="note">HTTP(S)</text>
+  <text x="487" y="635" class="note">Methode + URL</text>
+  <text x="180" y="662" class="note">JSON-Antwort</text>
+  <path class="flow" d="M990 538 V580" marker-start="url(#runtime-arrow)"/>
+  <text x="1154" y="565" class="note">contextBridge</text>
+  <rect class="runtime" x="715" y="586" width="550" height="80" rx="10"/>
+  <text x="990" y="620" class="heading">Preload-Bridge</text>
+  <text x="990" y="649" class="code">window.apiTransport.invoke</text>
+  <path class="flow" d="M990 669 V723" marker-start="url(#runtime-arrow)"/>
+  <text x="808" y="700" class="code">api:invoke</text>
+  <text x="1139" y="700" class="note">IPC / Ergebnis</text>
+
+  <rect class="runtime" x="55" y="730" width="550" height="275" rx="10"/>
+  <text x="330" y="773" class="heading">Express-API-Server</text>
+  <rect class="box" x="90" y="790" width="480" height="171" rx="7"/>
+  <text x="330" y="827">Zod-Prüfung und Route-Handler</text>
+  <text x="330" y="869" class="note">HTTP-Verarbeitung</text>
+  <text x="330" y="905" class="note">Fachliche Logik und Datenzugriff</text>
+  <text x="330" y="941" class="note">im Route-Handler verbunden</text>
+
+  <rect class="runtime" x="715" y="730" width="550" height="350" rx="10"/>
+  <text x="990" y="770" class="heading">Main-Prozess</text>
+  <rect class="box" x="750" y="790" width="480" height="70" rx="7"/>
+  <text x="990" y="820">API-Dispatcher</text>
+  <text x="990" y="848" class="note">Absender-, Eingabe- und Ausgabeprüfung</text>
+  <path class="flow" d="M990 863 V886" marker-start="url(#runtime-arrow)"/>
+  <rect class="box" x="750" y="893" width="480" height="50" rx="7"/>
+  <text x="990" y="927">Handler / Controller</text>
+  <path class="flow" d="M990 946 V968" marker-start="url(#runtime-arrow)"/>
+  <rect class="box" x="750" y="976" width="480" height="80" rx="7"/>
+  <text x="990" y="1008">Services und Repositories</text>
+  <text x="990" y="1040" class="note">Fachlogik und Drizzle-Datenzugriff</text>
+
+  <path class="flow" d="M330 1008 V1141" marker-start="url(#runtime-arrow)"/>
+  <text x="486" y="1082" class="note">Drizzle / pg</text>
+  <path class="flow" d="M990 1083 V1141" marker-start="url(#runtime-arrow)"/>
+  <text x="1140" y="1120" class="note">Drizzle / libSQL</text>
+  <path d="M145 1165 C145 1138 515 1138 515 1165 V1211 C515 1239 145 1239 145 1211 Z" fill="#fff" stroke="#234d68" stroke-width="2.5"/>
+  <ellipse cx="330" cy="1165" rx="185" ry="20" fill="#edf3f7" stroke="#234d68" stroke-width="2.5"/>
+  <text x="330" y="1210" class="heading">PostgreSQL</text>
+  <path d="M805 1165 C805 1138 1175 1138 1175 1165 V1211 C1175 1239 805 1239 805 1211 Z" fill="#fff" stroke="#234d68" stroke-width="2.5"/>
+  <ellipse cx="990" cy="1165" rx="185" ry="20" fill="#edf3f7" stroke="#234d68" stroke-width="2.5"/>
+  <text x="990" y="1210" class="heading">Lokale SQLite-Datei</text>
+
+  <path class="flow" d="M120 1272 H205"/>
+  <text x="397" y="1280" class="note">Laufzeitkommunikation</text>
+  <path class="build" d="M680 1272 H765"/>
+  <text x="1015" y="1280" class="note">Codegenerierung / Einbindung</text>
+</svg>

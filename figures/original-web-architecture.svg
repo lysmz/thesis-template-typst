@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="890" viewBox="0 0 1100 890" role="img" aria-labelledby="title description">
+  <title id="title">Ursprüngliche Architektur des Studienplaner-Webprototyps</title>
+  <desc id="description">OpenAPI und Orval erzeugen den React-Query-Client und die Zod-Schemata. Zur Laufzeit kommuniziert die React-Oberfläche per HTTP mit dem Express-API-Server. Dessen Route-Handler verbinden HTTP-Verarbeitung, fachliche Logik und Drizzle-Abfragen auf PostgreSQL. Gestrichelte Pfeile zeigen Codegenerierung und Einbindung; durchgezogene Pfeile zeigen Laufzeitkommunikation.</desc>
+  <defs>
+    <marker id="runtime-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#234d68"/></marker>
+    <marker id="build-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #17242c; font-size: 22px; text-anchor: middle; }
+      .heading { font-size: 23px; font-weight: 700; }
+      .code { font-family: Consolas, monospace; font-size: 20px; }
+      .note { font-size: 19px; fill: #475761; }
+      .box { fill: #ffffff; stroke: #6d7f8b; stroke-width: 2; rx: 8; }
+      .runtime { fill: #f3f7fa; stroke: #234d68; stroke-width: 2.5; rx: 12; }
+      .build { fill: none; stroke: #68737b; stroke-width: 2; stroke-dasharray: 8 6; marker-end: url(#build-arrow); }
+      .flow { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#runtime-arrow); }
+    </style>
+  </defs>
+
+  <rect x="35" y="15" width="1030" height="305" rx="12" fill="#fafafa" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="550" y="47" class="heading">API-Vertrag und Codegenerierung · Entwicklungszeit</text>
+  <rect class="box" x="365" y="65" width="370" height="65"/>
+  <text x="550" y="92">OpenAPI-Vertrag</text>
+  <text x="550" y="117" class="code">lib/api-spec/openapi.yaml</text>
+  <path class="build" d="M550 130 V148"/>
+  <rect class="box" x="470" y="150" width="160" height="45"/>
+  <text x="550" y="180">Orval</text>
+  <path class="build" d="M470 174 H250 V226"/>
+  <path class="build" d="M630 174 H840 V226"/>
+  <text x="343" y="166" class="note">erzeugt</text>
+  <text x="748" y="166" class="note">erzeugt</text>
+  <rect class="box" x="70" y="229" width="360" height="68"/>
+  <text x="250" y="256">React-Query-Client und Typen</text>
+  <text x="250" y="282" class="code">lib/api-client-react</text>
+  <rect class="box" x="650" y="229" width="380" height="68"/>
+  <text x="840" y="256">Zod-Validierungsschemata</text>
+  <text x="840" y="282" class="code">lib/api-zod</text>
+  <path class="build" d="M250 297 V365"/>
+  <path class="build" d="M840 297 V365"/>
+  <text x="335" y="347" class="note">Einbindung</text>
+  <text x="934" y="347" class="note">Einbindung</text>
+
+  <rect class="runtime" x="60" y="370" width="380" height="280"/>
+  <text x="250" y="408" class="heading">Browser · Frontend</text>
+  <text x="250" y="438" class="code">artifacts/studienplaner</text>
+  <rect class="box" x="88" y="463" width="324" height="156"/>
+  <text x="250" y="496">React-Oberfläche</text>
+  <text x="250" y="524" class="note">Vite-Build · Tailwind · shadcn/ui</text>
+  <text x="250" y="562">React-Query-Aufrufhilfen</text>
+  <text x="250" y="591" class="note">HTTP-Fetch · Session-Cookie</text>
+
+  <rect class="runtime" x="630" y="370" width="420" height="325"/>
+  <text x="840" y="408" class="heading">Node.js · Express-API-Server</text>
+  <text x="840" y="438" class="code">artifacts/api-server</text>
+  <text x="840" y="477" class="note">Authentifizierung · Session · Zod</text>
+  <rect class="box" x="658" y="500" width="364" height="163"/>
+  <text x="840" y="531" class="heading">Route-Handler</text>
+  <text x="840" y="565">HTTP-Anfrage und Antwort</text>
+  <text x="840" y="593">Fachliche Verarbeitung</text>
+  <text x="840" y="621">Direkte Drizzle-Abfragen</text>
+  <text x="840" y="648" class="note">Schema und DB-Client: lib/db</text>
+
+  <text x="535" y="493" class="note">HTTP(S) · /api</text>
+  <path class="flow" d="M440 514 H627"/>
+  <path class="flow" d="M630 558 H443"/>
+  <text x="535" y="587" class="note">JSON-Antwort</text>
+
+  <path class="flow" d="M840 695 V746" marker-start="url(#runtime-arrow)"/>
+  <text x="726" y="730" class="note">SQL · pg</text>
+  <path d="M680 770 C680 741 1000 741 1000 770 L1000 842 C1000 872 680 872 680 842 Z" fill="#ffffff" stroke="#234d68" stroke-width="2.5"/>
+  <ellipse cx="840" cy="770" rx="160" ry="21" fill="#edf3f7" stroke="#234d68" stroke-width="2.5"/>
+  <text x="840" y="813" class="heading">PostgreSQL</text>
+  <text x="840" y="841" class="note">Persistente Anwendungsdaten</text>
+
+  <path class="flow" d="M65 761 H126"/>
+  <text x="271" y="768" class="note">Laufzeitkommunikation</text>
+  <path class="build" d="M65 802 H126"/>
+  <text x="299" y="809" class="note">Codegenerierung / Einbindung</text>
+</svg>
