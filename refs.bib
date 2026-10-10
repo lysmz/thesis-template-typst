@@ -80,10 +80,10 @@
 }
 
 @misc{StudyPlanCatalog2026,
-  title = {Public sample study catalog},
+  title = {Online-Abruf und lokale Übernahme des Studienkatalogs},
   year = {2026},
-  howpublished = {Unveröffentlichte technische Projektdokumentation},
-  note = {studyplan/docs/study-catalog.md; eingesehen am 7. Oktober 2026}
+  howpublished = {Unveröffentlichter Projektquellcode und technische Dokumentation},
+  note = {studyplan, Git-Commit 9320911beb401517d1499e93af6c165412a22284: docs/study-catalog.md, api/openapi.yaml, src/main/services/study-programs.service.ts, src/main/repositories/study-programs.repository.ts, src/renderer/src/pages/studie.tsx und supabase/functions/study-catalog; eingesehen am 10. Oktober 2026}
 }
 
 @misc{StudyPlanSecurity2026,
@@ -308,4 +308,162 @@
   year = {2026},
   howpublished = {Unveröffentlichtes Projektartefakt, lokales Repository studyplan},
   note = {Git-Stand ae4ca65; Handler-Registrierung in src/main/index.ts, lokale Datenbankinitialisierung und Datenmigrationen 0001_seed-study-programs.sql und 0002_seed-timetable-presets.sql; geprüft am 10. Oktober 2026}
+}
+
+@misc{PowerSyncDrizzleDriver2026,
+  author = {{PowerSync}},
+  title = {PowerSync Drizzle Driver},
+  url = {https://www.npmjs.com/package/@powersync/drizzle-driver},
+  urldate = {2026-10-10},
+  note = {Paketdokumentation aus node_modules/@powersync/drizzle-driver/README.md im Projekt studyplan; Schema Conversion und wrapPowerSyncWithDrizzle, eingesehen am 10. Oktober 2026}
+}
+
+@misc{DrizzleTurso2026,
+  author = {{Drizzle Team}},
+  title = {Turso Cloud},
+  url = {https://orm.drizzle.team/docs/sqlite/connect-turso},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zur libSQL-Anbindung, Zugriff am 10. Oktober 2026}
+}
+
+@misc{PowerSyncNode2026,
+  author = {{PowerSync}},
+  title = {Node.js Client SDK},
+  url = {https://docs.powersync.com/client-sdks/reference/node},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation, Zugriff am 10. Oktober 2026}
+}
+
+@misc{TursoEmbeddedReplicas2026,
+  author = {{Turso}},
+  title = {Embedded Replicas},
+  url = {https://docs.turso.tech/features/embedded-replicas/introduction},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zum libSQL-Replikationsansatz, Zugriff am 10. Oktober 2026}
+}
+
+@misc{PowerSyncSupabase2026,
+  author = {{PowerSync}},
+  title = {Supabase + PowerSync},
+  url = {https://docs.powersync.com/integrations/supabase/guide},
+  urldate = {2026-10-10},
+  note = {Offizielle Integrationsdokumentation, Zugriff am 10. Oktober 2026}
+}
+
+@misc{SupabaseDatabase2026,
+  author = {{Supabase}},
+  title = {Database},
+  url = {https://supabase.com/docs/guides/database/overview},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation, Zugriff am 10. Oktober 2026}
+}
+
+@misc{SupabaseAuth2026,
+  author = {{Supabase}},
+  title = {Auth},
+  url = {https://supabase.com/docs/guides/auth},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation, Zugriff am 10. Oktober 2026}
+}
+
+@misc{TursoSync2026,
+  author = {{Turso}},
+  title = {Turso Sync: Usage},
+  url = {https://docs.turso.tech/sync/usage},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation, Zugriff am 10. Oktober 2026}
+}
+
+@misc{StudyPlanSyncSpikes2026,
+  title = {StudyPlan: Vorprüfung von PowerSync und der Drizzle-Anbindung},
+  year = {2026},
+  howpublished = {Unveröffentlichte technische Projektartefakte},
+  note = {Git-Beleg 7886f2b; docs/spikes/powersync/ und docs/spikes/powersync-drizzle/ mit Prüfplänen, Protokollen, Ergebnissen und Entscheidungen; src/main/spikes/powersync-drizzle/schema.ts und database.ts; eingesehen am 10. Oktober 2026}
+}
+
+@misc{StudyPlanSyncArchitecture2026,
+  title = {StudyPlan: Architektur und Umsetzung des synchronisierten Gruppenbereichs},
+  year = {2026},
+  howpublished = {Unveröffentlichte technische Projektartefakte},
+  note = {Git-Stand e5d54e0; docs/spikes/powersync-groups/implementation.md; src/main/collaboration/ mit runtime.ts, database.ts, connector.ts, repositories.ts, ipc.ts und online-gateway.ts; src/renderer/src/pages/gruppen-sync.tsx; spike/powersync-groups/sync-streams-v4.yaml und Supabase-Migration 0004; eingesehen am 10. Oktober 2026}
+}
+
+@misc{PowerSyncLocalOnly2026,
+  author = {{PowerSync}},
+  title = {Local-Only Usage},
+  url = {https://docs.powersync.com/client-sdks/advanced/local-only-usage},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zu lokalen Tabellen und Upload-Warteschlange, Zugriff am 10. Oktober 2026}
+}
+
+@misc{PowerSyncWritingChanges2026,
+  author = {{PowerSync}},
+  title = {Writing Client Changes},
+  url = {https://docs.powersync.com/handling-writes/writing-client-changes},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zum serverautoritativen Schreibmodell, Zugriff am 10. Oktober 2026}
+}
+
+@misc{FowlerStranglerFig2024,
+  author = {Martin Fowler},
+  title = {Strangler Fig},
+  year = {2024},
+  url = {https://martinfowler.com/bliki/StranglerFigApplication.html},
+  urldate = {2026-10-10},
+  note = {Veröffentlicht am 22. August 2024, Zugriff am 10. Oktober 2026}
+}
+
+@misc{SupabaseUserManagement2026,
+  author = {{Supabase}},
+  title = {User Management},
+  url = {https://supabase.com/docs/guides/auth/managing-user-data},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zur Trennung von Auth-Daten und Anwendungsprofilen, Zugriff am 10. Oktober 2026}
+}
+
+@misc{SupabasePasswordSignIn2026,
+  author = {{Supabase}},
+  title = {JavaScript: signInWithPassword},
+  url = {https://supabase.com/docs/reference/javascript/auth-signinwithpassword},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zur Anmeldung bestehender Benutzerkonten, Zugriff am 10. Oktober 2026}
+}
+
+@misc{StudyPlanSyncIntegration2026,
+  title = {StudyPlan: Technische Integration von PowerSync und Supabase},
+  year = {2026},
+  howpublished = {Unveröffentlichte technische Projektartefakte},
+  note = {Git-Stand e5d54e0; package.json, electron-builder.yml, src/main/index.ts, src/preload/, src/shared/collaboration/ipc.ts, src/main/collaboration/, src/main/spikes/powersync/database.ts und powersync.worker.ts; Supabase-Migrationen 0004 bis 0006 und sync-streams-v4.yaml; eingesehen am 10. Oktober 2026}
+}
+
+@misc{ElectronAsar2026,
+  author = {{Electron}},
+  title = {ASAR Archives},
+  url = {https://www.electronjs.org/docs/latest/tutorial/asar-archives},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zu nativen Modulen und entpackten Dateien, Zugriff am 10. Oktober 2026}
+}
+
+@misc{SupabaseSchemaMigrations2026,
+  author = {{Supabase}},
+  title = {Database Migrations},
+  url = {https://supabase.com/docs/guides/deployment/database-migrations},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zur versionierten Verwaltung des PostgreSQL-Schemas, Zugriff am 10. Oktober 2026}
+}
+
+@misc{PowerSyncSchemaChanges2026,
+  author = {{PowerSync}},
+  title = {Implementing Schema Changes},
+  url = {https://docs.powersync.com/maintenance-ops/implementing-schema-changes},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zu Client-Schema, SQLite-Views und Kompatibilität verschiedener Client-Versionen, Zugriff am 10. Oktober 2026}
+}
+
+@misc{PowerSyncSchemaDeployment2026,
+  author = {{PowerSync}},
+  title = {Deploying Schema Changes},
+  url = {https://docs.powersync.com/maintenance-ops/deploying-schema-changes},
+  urldate = {2026-10-10},
+  note = {Offizielle Dokumentation zur Bereitstellungsreihenfolge additiver Schemaänderungen und zu Übergängen bei Umbenennungen und Typänderungen, Zugriff am 10. Oktober 2026}
 }

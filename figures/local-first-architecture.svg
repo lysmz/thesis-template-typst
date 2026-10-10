@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1320" viewBox="0 0 1200 1320" role="img" aria-labelledby="title description">
+  <title id="title">Local-First-Architektur mit PowerSync und Supabase</title>
+  <desc id="description">Die React-Oberfläche ruft über Preload und IPC den Main-Prozess auf. Dort bestehen getrennte Zugriffe auf die persönliche SQLite-Datenbank, auf unmittelbare Supabase-Online-Operationen und auf die lokale PowerSync-Datenbank. Aufgabenänderungen werden aus einer Warteschlange über den Upload-Connector an Supabase gesendet. Der PowerSync-Dienst empfängt Änderungen aus PostgreSQL und lädt anhand der Sync Streams ausgewählte Daten zum SDK herunter. Persönliche Daten und ursprüngliche lokale Gruppen sind im gezeigten Stand nicht synchronisiert.</desc>
+  <defs>
+    <marker id="local-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#234d68"/></marker>
+    <marker id="remote-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68507e"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #17242c; font-size: 25px; text-anchor: middle; }
+      .heading { font-size: 29px; font-weight: 700; }
+      .note { font-size: 23px; fill: #475761; }
+      .box { fill: #fff; stroke: #6d7f8b; stroke-width: 2; }
+      .local-box { fill: #f3f7fa; stroke: #234d68; stroke-width: 2.5; }
+      .remote-box { fill: #f7f3fa; stroke: #68507e; stroke-width: 2.5; }
+      .local { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#local-arrow); }
+      .both { marker-start: url(#local-arrow); }
+      .remote { fill: none; stroke: #68507e; stroke-width: 3; marker-end: url(#remote-arrow); }
+    </style>
+  </defs>
+
+  <rect class="local-box" x="220" y="25" width="760" height="100" rx="8"/>
+  <text x="600" y="65" class="heading">Renderer</text>
+  <text x="600" y="101">React-Oberfläche und generierte Hooks</text>
+  <path class="local" d="M 600 125 V 170"/>
+  <rect class="box" x="340" y="170" width="520" height="66" rx="8"/>
+  <text x="600" y="211">Begrenzte Preload-/IPC-Schnittstelle</text>
+
+  <rect x="40" y="275" width="1120" height="670" rx="12" fill="#fafcfd" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="150" y="311" class="heading">Main-Prozess</text>
+  <path class="local" d="M 600 236 V 340"/>
+  <rect class="local-box" x="200" y="340" width="800" height="92" rx="8"/>
+  <text x="600" y="377">IPC-Dispatcher / Handler</text>
+  <text x="600" y="411" class="note">Services bzw. Kollaborationslaufzeit</text>
+
+  <path class="local" d="M 600 432 V 465 H 230 V 505"/>
+  <path class="local" d="M 600 432 V 505"/>
+  <path class="local" d="M 600 465 H 970 V 505"/>
+  <rect class="box" x="70" y="505" width="320" height="85" rx="8"/>
+  <text x="230" y="541">Persönliche Repositories</text>
+  <text x="230" y="572" class="note">Drizzle / libSQL</text>
+  <rect class="box" x="440" y="505" width="320" height="85" rx="8"/>
+  <text x="600" y="541">Direkte Online-Aufrufe</text>
+  <text x="600" y="572" class="note">Supabase-Client</text>
+  <rect class="box" x="810" y="505" width="320" height="85" rx="8"/>
+  <text x="970" y="541">Gruppen-Repositories</text>
+  <text x="970" y="572" class="note">Drizzle / PowerSync</text>
+
+  <path class="local both" d="M 230 590 V 650"/>
+  <path class="local both" d="M 970 590 V 650"/>
+  <rect class="local-box" x="70" y="650" width="320" height="125" rx="8"/>
+  <text x="230" y="686" class="heading">SQLite aus Phase 1</text>
+  <text x="230" y="722">Persönliche Daten und</text>
+  <text x="230" y="754">bestehende lokale Gruppen</text>
+  <rect class="local-box" x="810" y="650" width="320" height="115" rx="8"/>
+  <text x="970" y="686" class="heading">PowerSync / SQLite</text>
+  <text x="970" y="722">Lokaler Gruppenbestand</text>
+  <text x="970" y="754" class="note">Datei je entfernter Identität</text>
+
+  <text x="230" y="831" class="note">Drizzle-Kit-Migrationen</text>
+  <text x="230" y="864" class="note">verwaltet durch die Anwendung</text>
+  <path class="local both" d="M 970 765 V 825"/>
+  <rect class="local-box" x="810" y="825" width="320" height="100" rx="8"/>
+  <text x="970" y="858">PowerSync SDK</text>
+  <text x="970" y="889">und Upload-Connector</text>
+  <text x="970" y="916" class="note">mit Upload-Warteschlange</text>
+
+  <path class="remote" d="M 600 590 V 1100"/>
+  <text x="490" y="1005" class="note">Online-RPCs</text>
+  <text x="490" y="1037" class="note">und Anmeldung</text>
+  <path class="remote" d="M 890 925 V 974 H 670 V 1100"/>
+  <text x="737" y="1050" class="note">Upload</text>
+  <path class="remote" d="M 1040 1100 V 925"/>
+  <text x="1103" y="1022" class="note">Download</text>
+
+  <text x="215" y="1071" class="heading">Entfernte Dienste</text>
+  <rect class="remote-box" x="70" y="1100" width="610" height="142" rx="8"/>
+  <text x="375" y="1136" class="heading">Supabase</text>
+  <text x="375" y="1170">Auth und Anwendungs-API</text>
+  <text x="375" y="1204">PostgreSQL: gemeinsamer Backend-Bestand</text>
+  <rect class="remote-box" x="820" y="1100" width="310" height="142" rx="8"/>
+  <text x="975" y="1136" class="heading">PowerSync-Dienst</text>
+  <text x="975" y="1170">Datenverteilung anhand</text>
+  <text x="975" y="1204">der Sync Streams</text>
+  <path class="remote" d="M 680 1190 H 820"/>
+  <text x="750" y="1163" class="note">Änderungen</text>
+  <text x="600" y="1291" class="note">Gezeigter Stand: persönliche Daten lokal; Gruppenaufgaben synchronisiert.</text>
+</svg>

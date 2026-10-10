@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1510" viewBox="0 0 1400 1510" role="img" aria-labelledby="title description">
+  <title id="title">Modulaufteilung der PowerSync- und Supabase-Integration</title>
+  <desc id="description">Zwei fachliche IPC-Pfade führen aus dem Renderer durch begrenzte Preload-Funktionen in den Main-Prozess. Die lokale Kernanwendung nutzt API-Dispatcher, Handler, Services und Repositories mit libSQL. Der Kollaborationspfad nutzt einen eigenen IPC-Handler und CollaborationRuntime. Repositories greifen über database.ts und einen Drizzle-Wrapper auf die PowerSync-Datenbank mit better-sqlite3 zu. schema.ts liefert das Client-Schema. Ein Online-Gateway ruft Supabase-RPCs auf; der Connector liefert JWT-Anmeldetoken und lädt Aufgabenänderungen hoch. PowerSync verteilt Backend-Änderungen anhand der Sync Streams. Die Paketierung bindet einen eigenen Worker ein und entpackt native Pakete aus ASAR.</desc>
+  <defs>
+    <marker id="local-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#234d68"/></marker>
+    <marker id="remote-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68507e"/></marker>
+    <marker id="schema-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; fill: #17242c; font-size: 28px; text-anchor: middle; }
+      .heading { font-size: 30px; font-weight: 700; }
+      .note { font-size: 25px; fill: #475761; }
+      .code { font-family: Consolas, monospace; font-size: 27px; }
+      .box { fill: #fff; stroke: #6d7f8b; stroke-width: 2; }
+      .local-box { fill: #f3f7fa; stroke: #234d68; stroke-width: 2.5; }
+      .remote-box { fill: #f7f3fa; stroke: #68507e; stroke-width: 2.5; }
+      .local { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#local-arrow); }
+      .both { marker-start: url(#local-arrow); }
+      .remote { fill: none; stroke: #68507e; stroke-width: 3; marker-end: url(#remote-arrow); }
+      .schema { fill: none; stroke: #68737b; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#schema-arrow); }
+    </style>
+  </defs>
+
+  <rect class="local-box" x="60" y="20" width="1280" height="80" rx="8"/>
+  <text x="700" y="70" class="heading">Renderer: vorhandene Seiten und synchronisierte Gruppenansicht</text>
+  <rect x="30" y="145" width="1320" height="155" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="125" y="181" class="heading">Preload</text>
+  <path class="local" d="M 700 100 V 123 H 240 V 200"/>
+  <path class="local" d="M 700 123 H 880 V 200"/>
+  <rect class="box" x="70" y="200" width="340" height="80" rx="8"/>
+  <text x="240" y="233" class="code">apiTransport.invoke</text>
+  <text x="240" y="267" class="note">Kanal: api:invoke</text>
+  <rect class="box" x="480" y="200" width="800" height="80" rx="8"/>
+  <text x="880" y="233" class="code">collaborationTransport.invoke</text>
+  <text x="880" y="267" class="note">Kanal: collaboration:invoke</text>
+
+  <rect x="30" y="350" width="1320" height="850" rx="12" fill="#fafcfd" stroke="#9ba5ac" stroke-width="2" stroke-dasharray="8 6"/>
+  <text x="700" y="390" class="heading">Main-Prozess</text>
+  <path class="local" d="M 240 280 V 420"/>
+  <path class="local" d="M 880 280 V 420"/>
+  <rect class="local-box" x="70" y="420" width="340" height="90" rx="8"/>
+  <text x="240" y="455" class="code">api-dispatcher.ts</text>
+  <text x="240" y="490" class="note">Generierter API-Vertrag</text>
+  <path class="local" d="M 240 510 V 600"/>
+  <rect class="box" x="70" y="600" width="340" height="95" rx="8"/>
+  <text x="240" y="639">Handler und Services</text>
+  <text x="240" y="674" class="note">Lokale Kernfunktionen</text>
+  <path class="local" d="M 240 695 V 775"/>
+  <rect class="box" x="70" y="775" width="340" height="85" rx="8"/>
+  <text x="240" y="811">Repositories / Drizzle</text>
+  <text x="240" y="844" class="note">Datenzugriff aus Phase 1</text>
+  <path class="local both" d="M 240 860 V 940"/>
+  <rect class="local-box" x="70" y="940" width="340" height="105" rx="8"/>
+  <text x="240" y="981" class="heading">Persönliches SQLite</text>
+  <text x="240" y="1018" class="code">@libsql/client</text>
+  <text x="240" y="1142" class="note">Drizzle-Kit-Migrationen</text>
+
+  <rect class="local-box" x="500" y="420" width="760" height="90" rx="8"/>
+  <text x="880" y="455" class="code">collaboration/ipc.ts</text>
+  <text x="880" y="490" class="note">Eigener Modulvertrag, Zod-Prüfung und lokale Sitzung</text>
+  <path class="local" d="M 880 510 V 560"/>
+  <rect class="local-box" x="500" y="560" width="760" height="95" rx="8"/>
+  <text x="880" y="599" class="code">CollaborationRuntime</text>
+  <text x="880" y="635" class="note">Sitzung, Lebenszyklus und Fachlogik</text>
+  <path class="local" d="M 880 655 V 695 H 675 V 735"/>
+  <path class="local" d="M 880 695 H 1095 V 735"/>
+  <rect class="box" x="500" y="735" width="350" height="85" rx="8"/>
+  <text x="675" y="771" class="code">repositories.ts</text>
+  <text x="675" y="805" class="note">Lokale Datenzugriffe</text>
+  <rect class="box" x="930" y="735" width="330" height="85" rx="8"/>
+  <text x="1095" y="771" class="code">online-gateway.ts</text>
+  <text x="1095" y="805" class="note">Direkte Supabase-RPCs</text>
+
+  <path class="local both" d="M 675 820 V 890"/>
+  <rect class="local-box" x="500" y="890" width="350" height="155" rx="8"/>
+  <text x="675" y="927" class="code">database.ts</text>
+  <text x="675" y="963">Drizzle-Wrapper</text>
+  <text x="675" y="997">PowerSync / SQLite</text>
+  <text x="675" y="1030" class="note">better-sqlite3 + Worker</text>
+  <rect class="box" x="930" y="890" width="330" height="155" rx="8"/>
+  <text x="1095" y="927" class="code">connector.ts</text>
+  <text x="1095" y="963" class="note">JWT / Aufgaben-Upload</text>
+  <text x="1095" y="999" class="code">fetchCredentials</text>
+  <text x="1095" y="1031" class="code">uploadData</text>
+  <path class="local" d="M 850 990 H 930"/>
+  <text x="890" y="970" class="note">Queue</text>
+
+  <rect class="box" x="500" y="1105" width="350" height="75" rx="8"/>
+  <text x="675" y="1137" class="code">schema.ts</text>
+  <text x="675" y="1170" class="code">DrizzleAppSchema</text>
+  <path class="schema" d="M 755 1105 V 1045"/>
+
+  <path class="remote" d="M 1260 777 H 1310 V 1365 H 1260"/>
+  <path class="remote" d="M 1095 1045 V 1315"/>
+  <text x="1170" y="1268" class="note">Upload</text>
+  <path class="remote" d="M 570 1315 V 1260 H 450 V 965 H 500"/>
+  <text x="680" y="1272" class="note">Download</text>
+  <rect class="remote-box" x="500" y="1315" width="350" height="125" rx="8"/>
+  <text x="675" y="1360" class="heading">PowerSync-Dienst</text>
+  <text x="675" y="1401">Sync Streams</text>
+  <rect class="remote-box" x="930" y="1315" width="330" height="125" rx="8"/>
+  <text x="1095" y="1360" class="heading">Supabase</text>
+  <text x="1095" y="1401" class="note">Auth / API / PostgreSQL</text>
+  <path class="remote" d="M 930 1395 H 850"/>
+  <text x="890" y="1375" class="note">WAL</text>
+  <text x="700" y="1487" class="note">Build: eigene Worker-Einbindung und ASAR-Entpackung der nativen Pakete.</text>
+</svg>
