@@ -1,0 +1,70 @@
+{
+  "date": "2026-10-10",
+  "gitHead": "17434b2c81b0dc4300f5e71651484a7f1ad86222",
+  "startedUtc": "2026-10-10 19:28:08 UTC",
+  "finishedUtc": "2026-10-10 19:28:53 UTC",
+  "environment": {
+    "node": "v24.18.1",
+    "platform": "win32",
+    "arch": "x64",
+    "runtime": "Node.js CLI; not Electron"
+  },
+  "scope": "Existing service tests for authentication, dashboard, personal events with ICS, grades with CSV, and timetable. In-memory SQLite created by test DDL; stub file pickers and direct dispatcher calls. No GUI, native IPC, application user-data, remote service or packaged application test.",
+  "totals": {
+    "tests": 35,
+    "passed": 35,
+    "failed": 0
+  },
+  "suites": [
+    {
+      "suite": "auth",
+      "command": "npm.cmd run auth:test",
+      "exitCode": 0,
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "output": "\n> studyplan@2.0.0 auth:test\n> tsx --test scripts/auth/auth.test.ts\n\n✔ registration hashes the password, authenticates, and never exposes the hash (864.4383ms)\n✔ duplicate usernames, including a registration race, produce CONFLICT (544.184ms)\n✔ wrong passwords and unknown usernames share the same authentication failure (528.1868ms)\n✔ logout clears the session and a new session starts logged out (274.4873ms)\n✔ getMe clears a session whose user no longer exists (255.5098ms)\n✔ protected handlers trust the session user and reject renderer-supplied identities (1.3709ms)\n✔ the renderer transport reconstructs UNAUTHENTICATED as ApiClientError (1.7818ms)\n✔ the authenticated wrapper throws a structured handler error without a session (0.1768ms)\nℹ tests 8\nℹ suites 0\nℹ pass 8\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 12518.255\n"
+    },
+    {
+      "suite": "dashboard",
+      "command": "npm.cmd run dashboard:test",
+      "exitCode": 0,
+      "tests": 4,
+      "passed": 4,
+      "failed": 0,
+      "skipped": 0,
+      "output": "\n> studyplan@2.0.0 dashboard:test\n> tsx --test scripts/dashboard/dashboard.test.ts\n\n✔ protects every dashboard operation with the current session (7.7668ms)\n✔ returns valid empty dashboard data for a user without records (10.8745ms)\n✔ calculates personal statistics and counts only upcoming deadline event types (8.0717ms)\n✔ returns only the current user ten newest activity records (5.37ms)\nℹ tests 4\nℹ suites 0\nℹ pass 4\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 8141.3947\n"
+    },
+    {
+      "suite": "events",
+      "command": "npm.cmd run events:test",
+      "exitCode": 0,
+      "tests": 9,
+      "passed": 9,
+      "failed": 0,
+      "skipped": 0,
+      "output": "\n> studyplan@2.0.0 events:test\n> tsx --test scripts/events/events.test.ts\n\n✔ protects every personal event operation with the current session (53.0972ms)\n✔ parses importable VEVENT fields and applies legacy defaults and inference (5.197ms)\n✔ rejects content that is not an iCalendar document (0.8231ms)\n✔ imports a native-selected ICS for the current user and records one activity (32.3728ms)\n✔ treats native picker cancellation as a successful no-op (2.7721ms)\n✔ maps invalid selected ICS content to the declared validation error (5.5421ms)\n✔ lists only the current user events in start order and applies event filters (29.8133ms)\n✔ creates, reads, updates, and deletes a personal event with activity records (33.1383ms)\n✔ treats foreign and missing events as declared not-found errors (16.2766ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 9322.7874\n"
+    },
+    {
+      "suite": "grades",
+      "command": "npm.cmd run grades:test",
+      "exitCode": 0,
+      "tests": 8,
+      "passed": 8,
+      "failed": 0,
+      "skipped": 0,
+      "output": "\n> studyplan@2.0.0 grades:test\n> tsx --test scripts/grades/grades.test.ts\n\n✔ protects every grade operation with the current session (53.0176ms)\n✔ parses semicolon-delimited German CSV values, quotes, decimal commas and BOM (1.1857ms)\n✔ imports a native-selected CSV for the current user and records one activity (12.0244ms)\n✔ treats native picker cancellation as a successful no-op (1.8889ms)\n✔ lists only the current user grades in newest-first order and filters semesters (4.7542ms)\n✔ creates and updates numeric grade values and records activity (7.8016ms)\n✔ calculates overall and per-semester grade statistics (3.6504ms)\n✔ enforces ownership for updates and deletes with declared not-found errors (42.4624ms)\nℹ tests 8\nℹ suites 0\nℹ pass 8\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 8265.4698\n"
+    },
+    {
+      "suite": "timetable",
+      "command": "npm.cmd run timetable:test",
+      "exitCode": 0,
+      "tests": 6,
+      "passed": 6,
+      "failed": 0,
+      "skipped": 0,
+      "output": "\n> studyplan@2.0.0 timetable:test\n> tsx --test scripts/timetable/timetable.test.ts\n\n✔ protects every timetable operation with the current session (23.4536ms)\n✔ lists and creates entries only for the authenticated user (12.9479ms)\n✔ enforces ownership when removing entries and returns the declared not-found error (12.0306ms)\n✔ clears only the authenticated user timetable and remains idempotent (5.1711ms)\n✔ lists presets and filters their entries while preserving empty-result behavior (5.3466ms)\n✔ rejects invalid timetable values and ignores renderer-supplied identities (12.7717ms)\nℹ tests 6\nℹ suites 0\nℹ pass 6\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 8041.0439\n"
+    }
+  ]
+}

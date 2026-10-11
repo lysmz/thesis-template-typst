@@ -23,7 +23,7 @@ Die Phasen unterscheiden Zielzustände der Entwicklung. Sie behaupten weder eine
   caption: [Phasen und Kontrollpunkte des fallbezogenen Migrationsleitfadens.],
 ) <tab:migration-phases>
 
-== Phase 1: Von der Webanwendung zur Offline-Kernanwendung
+== Phase 1: Von der Webanwendung zur Offline-Kernanwendung <sec:offline-core-migration>
 
 Die erste Phase überführt die persönlichen Kernfunktionen in eine lokale Desktop-Anwendung. Datenhaltung, Identitätsverwaltung, CRUD-Operationen und Dateiimporte werden innerhalb der Electron-Laufzeit ausgeführt. Synchronisierung und externe Katalogaktualisierung folgen in Phase 2. Für katalogabhängige Funktionen wird zunächst ein lokal bereitgestellter Datenbestand verwendet.
 
@@ -524,7 +524,7 @@ Die Untersuchung umfasst die lokale Verarbeitung gemeinsamer Aufgaben und deren 
 
 Der Web-Prototyp verarbeitete Änderungen unmittelbar über sein autoritatives Backend. Eine fachliche Zusammenführung konkurrierender Offline-Änderungen war dort nicht implementiert. @StudienplanerSource2026 Local-First ergänzt diese Entwurfsfrage: Regeln für konkurrierende Bearbeitungen, Löschkonflikte oder manuelle Konfliktentscheidungen müssen aus den Anforderungen der jeweiligen Anwendung abgeleitet werden. Ihre umfassende Entwicklung würde neue Fachfunktionalität schaffen und geht über die hier demonstrierte Migration hinaus.
 
-Auch der Demonstrator besitzt deshalb keine eigens entwickelte Konfliktzusammenführung. Sein Connector übermittelt Aufgabenänderungen mit `upsert`, `update` und `delete` an Supabase, ohne eine eigene Versionsprüfung. @StudyPlanSyncArchitecture2026 Eine als Last Write Wins bezeichnete Regel müsste ausdrücklich festlegen, welche Reihenfolge maßgeblich ist; ihre fachliche Eignung ist hier nicht evaluiert. Die Begrenzung betrifft erweiterte Konfliktstrategien. Warteschlange, Wiederholungen und der Umgang mit abgelehnten Änderungen bleiben für die Migration relevant. PowerSync verwendet ein serverautoritatives Modell; aus einem lokalen Schreibabschluss folgt noch keine Bestätigung durch das Backend. @PowerSyncWritingChanges2026
+Auch der Demonstrator besitzt deshalb keine eigens entwickelte Konfliktzusammenführung. Der Connector des ursprünglichen Integrationsstands übermittelte Aufgabenänderungen mit `upsert`, `update` und `delete` an Supabase, ohne eine eigene Versionsprüfung. @StudyPlanSyncArchitecture2026 Die spätere Upload-Nachbesserung ergänzt eine Backend-Operation mit Wiederholungsschutz und ein lokales Ablehnungsjournal; ihre Ergebnisse werden in @sec:collaboration-evaluation bewertet. @StudyPlanUploadChecks2026 Eine als Last Write Wins bezeichnete Regel müsste ausdrücklich festlegen, welche Reihenfolge maßgeblich ist; ihre fachliche Eignung ist hier nicht evaluiert. Die Begrenzung betrifft erweiterte Konfliktstrategien. Warteschlange, Wiederholungen und der Umgang mit abgelehnten Änderungen bleiben für die Migration relevant. PowerSync verwendet ein serverautoritatives Modell; aus einem lokalen Schreibabschluss folgt noch keine Bestätigung durch das Backend. @PowerSyncWritingChanges2026
 
 === Online-Abruf des Studienkatalogs <sec:study-catalog-download>
 
@@ -615,14 +615,84 @@ Dateihashes binden die finalen Paket- und Laufzeitprotokolle an dieselbe EXE und
 
 Die wesentliche verbleibende Transportgrenze betrifft die SDK-interne Redirectbehandlung von PowerSync. Dort wurde die HTTPS-Startkonfiguration geprüft, aber kein praktischer Redirect- oder Downgradeversuch am Sync-Stream durchgeführt. Aus der begrenzten Bewertung der Matrix folgt daher kein umfassender Transportnachweis. Ebenso verbleiben die in Kapitel 4 ausgeschlossene Härtung entfernter Dienste und der Schutz der lokalen Datenbank gegenüber anderen Betriebssystemprozessen außerhalb der Untersuchung. Die Bewertungen und ihre Bedeutung für A7 werden in @ch:experiments ausgewiesen; dieses Kapitel dokumentiert die Maßnahmen und den Weg zu den Belegen. @StudyPlanSecurity2026
 
-== Ausarbeitung der einzelnen Migrationsschritte
+== Handlungsempfehlungen des Migrationsleitfadens <sec:migration-recommendations>
 
-Aus dem dokumentierten Migrationsverlauf werden die Handlungsempfehlungen des Leitfadens abgeleitet. Jede Empfehlung verbindet einen konkreten Ausgangszustand mit der erforderlichen Transformation, den betroffenen Verantwortlichkeiten und einem Kontrollpunkt. Die Zuordnung zu A1–A9 macht nachvollziehbar, welches Ziel der jeweilige Schritt unterstützt.
+Aus dem dokumentierten Prozess werden acht Handlungsempfehlungen M1–M8 abgeleitet. Sie beschreiben die erforderlichen Veränderungen zwischen Ausgangsartefakt und Zielarchitektur sowie Kontrollpunkte für deren Umsetzung. Die Reihenfolge folgt den technischen Abhängigkeiten: Lokale Datenhaltung und begrenzte Schnittstellen bilden die Grundlage vollständiger Offline-Abläufe; darauf bauen externe Datenübernahme und Synchronisierung auf. Die Sicherheitsanforderungen begleiten alle Schritte und werden am Ende zusammenhängend geprüft.
 
-// Arbeitsstand: Phase 1 ist mit Datenhaltung, API-Schnittstelle, Renderer,
-// Authentifizierung sowie exemplarischen CRUD- und Importpfaden ausgearbeitet.
-// Phase 2 enthält Toolauswahl, Integrationsvorprüfung, Architektur, technische Integration,
-// Einladungsablauf, Schema- und Updateverantwortung, Umfang und Katalogabruf; der konkrete Aufgabenablauf
-// ist noch auszuarbeiten.
-// Phase 3 enthält Prüfrahmen, Zuordnung, Nachbesserungen und Nachweisverfahren.
-// Noch ergänzen: die weiteren Prozessberichte und abgeleiteten Empfehlungen.
+Die Empfehlungen beziehen sich auf Verantwortlichkeiten und Interaktionsformen. React, Vite, Drizzle, PowerSync und Supabase sind die konkreten Ausprägungen der Fallstudie. Ihre Auswahl ist bei einer anderen Anwendung anhand der vorhandenen Komponenten zu prüfen. Framework-agnostisch bedeutet hier, dass die Transformation über fachliche Operationen, Datenhaltung und Vertrauensgrenzen beschrieben wird und kein bestimmtes Web-Framework voraussetzt. Die beschriebenen Prozessgrenzen und Härtungsmaßnahmen beziehen sich auf die gewählte Electron-Zielumgebung.
+
+=== Voraussetzungen und Herstellung der lokalen Datenhaltung
+
+*M1: Ausgangsartefakt und Zielumgebung abgleichen.* Vor der Übernahme sind Oberfläche, Schnittstellen, Fachlogik, Datenhaltung und externe Abhängigkeiten zu erfassen. Für jede Kernfunktion ist festzulegen, ob sie vollständig lokal ausgeführt werden kann, externe Daten herunterlädt oder gemeinsame Änderungen synchronisiert. Vorhandener Code dokumentiert dabei zunächst eine Implementierung; seine tatsächliche Nutzbarkeit muss anhand eines vollständigen Ablaufs geprüft werden. Der Untersuchungsumfang sollte mindestens je ein Beispiel der benötigten Interaktionsformen enthalten. So entsteht eine begründete Auswahl, ohne jede CRUD-Variante separat migrieren zu müssen.
+
+Auf dieser Grundlage ist eine kompatible Desktop-Laufzeit einzurichten. Vorhandene Sprachen, Bibliotheken und Buildverfahren sollen weiterverwendet werden, soweit sie mit der Zielarchitektur vereinbar sind. Die Wahl von Electron und electron-vite in @sec:offline-core-migration veranschaulicht dieses Vorgehen, belegt jedoch keinen allgemein geringsten Aufwand. Ein kleiner lauffähiger Paketstand sollte früh prüfen, ob die vorgesehenen Datenbanktreiber und nativen Abhängigkeiten auch außerhalb des Entwicklungsmodus funktionieren. Die Verantwortung für Dateisystem, Datenbank und Dienstzugriffe ist dem Main-Prozess zuzuordnen; der Renderer erhält dafür begrenzte fachliche Schnittstellen.
+
+*M2: Lokale Datenhaltung und Identitätszuordnung herstellen.* Ein entferntes Datenbankschema ist anhand seiner Bedeutung zu überführen. Datentypen, Schlüssel, Beziehungen, Standardwerte und Prüfbedingungen müssen einzeln abgeglichen werden. Die SQLite-Übertragung in Phase 1 zeigt, dass eine erhaltene TypeScript-Typisierung keine entfallene Datenbankprüfung ersetzt. Erforderliche Regeln sind deshalb im Zielsystem ausdrücklich abzubilden und an den Eingangsstellen zu validieren. @StudyPlanDatabase2026
+
+Programmdateien und veränderliche Benutzerdaten sind getrennt zu verwalten. Die Anwendung soll ihre Datenbank an einem geeigneten Benutzerdatenpfad öffnen und das Schema vor der Nutzung vorbereiten. Schemaänderungen sind versioniert auszuliefern, soweit die Anwendung das Schema selbst verwaltet. Erforderliche Referenzdaten müssen auch beim ersten Offline-Start verfügbar sein. Die lokale Identität ist gesondert festzulegen: Anmeldung, Sitzungsdauer und Zuordnung persönlicher Datensätze müssen zusammenpassen. Eine frühere HTTP-Sitzung lässt sich nicht unverändert als lokale Sitzung behandeln. Im Demonstrator übernehmen hierfür die Datenbankinitialisierung und die getrennte lokale Sitzungsverwaltung die Verantwortung. @StudyPlanDatabase2026 @StudyPlanLocalAuth2026
+
+=== Schnittstellen und Offline-Kernfunktionen überführen
+
+*M3: Fachlichen Vertrag und Transport trennen.* Ausgangspunkt sollen die benötigten Operationen mit Eingaben, Ergebnissen und Fehlerfällen sein. Ein vorhandener API-Vertrag kann hierfür weiterverwendet werden, sofern seine Bedeutungen erhalten bleiben. HTTP-Pfade und Serverobjekte sind dagegen durch einen begrenzten lokalen Transport zu ersetzen. Der Renderer soll fachliche Operationen aufrufen und keine frei wählbaren IPC-Kanäle oder privilegierten Rohschnittstellen erhalten.
+
+Die Vertragsdefinitionen sollen gemeinsam gepflegt werden. Wo bereits generierte Clients und Laufzeitschemata vorliegen, ist ihre Ableitung an den neuen Transport anzupassen. @sec:api-generator-concept zeigt hierfür den projektspezifischen OpenAPI-IPC-Generator. Änderungen am Vertrag müssen in den erzeugten Modulen nachvollziehbar ankommen; Darstellung und Fachlogik sind nur bei tatsächlich veränderter Semantik anzupassen. Statische Typen und Laufzeitvalidierung bleiben unterschiedliche Aufgaben. Bei mehreren Modulverträgen gelten dieselben Regeln für jeden Eingang; die Zahl der Datenbanken bestimmt nicht die Zahl der IPC-Schnittstellen. @StudyPlanApiMigration2026 @StudyPlanSyncIntegration2026
+
+*M4: Einen vollständigen Kernablauf herstellen und dessen Muster fortführen.* Nach der Einrichtung von Datenhaltung und Transport ist zunächst ein zusammenhängender Verarbeitungspfad zu integrieren. Dabei sind Oberflächenkomponenten und ihre Abhängigkeiten mit den Build-, Import- und Routingbedingungen der Desktop-Umgebung abzugleichen. Der erfolgreiche Build allein zeigt noch nicht, dass eine Seite ihre fachlichen Operationen ausführen kann. Im Demonstrator erschließt die lokale Authentifizierung den ersten vollständigen Ablauf; die Notenverwaltung konkretisiert anschließend das CRUD-Muster aus @sec:crud-migration. @StudyPlanFrontendMigration2026 @StudyPlanLocalAuth2026
+
+Gemischte Webrouten sind nach Verantwortlichkeiten aufzuteilen: Handler übernehmen Operationszuordnung und Fehlerübersetzung, Services die fachlichen Regeln und Repositories den Datenzugriff. Der Dispatcher prüft Absender und Eingaben vor dem Handler. Persönliche Datenzuordnung und Berechtigungen bleiben Teil des Ablaufs und dürfen beim Entfernen des HTTP-Transports nicht entfallen. Für weitere Funktionen ist dieses Muster mit den jeweils passenden Vertragsdefinitionen und fachlichen Regeln fortzuführen. Datenzugriffe und externe Dienste sollen in Servicetests durch Testimplementierungen ersetzbar sein. Lokaler Schreibabschluss, erneutes Lesen und Fehlerbehandlung bilden den Kontrollpunkt eines übernommenen Kernablaufs. @StudyPlanGradesMigration2026
+
+*M5: Dateiimporte als begrenzte native Operationen gestalten.* Ein Webupload ist in Dateiauswahl, Lesen, Parsen, Validieren und Übernehmen aufzuteilen. Die Oberfläche soll den Import auslösen; der Main-Prozess übernimmt die native Auswahl und den Zugriff auf die ausgewählte Datei. Eine frei verwendbare Schnittstelle zum Lesen beliebiger Renderer-Pfade ist dafür nicht erforderlich. Dateityp und Größe sind zu begrenzen, der Abbruch ist als eigener Zustand zu behandeln und Parserergebnisse sind vor der fachlichen Speicherung zu prüfen.
+
+Das Ergebnis muss angeben, welche Daten übernommen, übersprungen oder abgewiesen wurden. Die Oberfläche aktualisiert danach die betroffenen Abfragen. Die Beispiele iCal und CSV in @sec:file-import-migration zeigen, dass dieses Verantwortungsmuster unabhängig von der eingesetzten Parserbibliothek ist. Ein zusätzlicher Dateityp benötigt einen geeigneten Parser und fachliche Prüfungen; die grundlegende Trennung von Oberfläche, Dateizugriff und Verarbeitung bleibt erhalten. @StudyPlanIcalMigration2026 @StudyPlanCsvMigration2026
+
+=== Externe Daten und Kollaboration schrittweise ergänzen
+
+*M6: Downloads mit dauerhafter lokaler Übernahme verbinden.* Für externe Referenzdaten ist zunächst zu klären, ob eine Aktualisierung in einer Richtung ausreicht. Der Abruf soll hinter einer im Main-Prozess verwalteten Dienstanbindung liegen. Empfangene Daten sind vor der Speicherung zu validieren und zusammengehörige Änderungen konsistent zu übernehmen. Stabile Kennungen und ein festgelegtes Aktualisierungsverhalten müssen verhindern, dass wiederholte Abrufe unkontrolliert Duplikate oder Datenverluste erzeugen.
+
+Die Oberfläche soll den vorhandenen lokalen Bestand weiterhin lesen können, auch wenn die zusätzliche Aktualisierung scheitert. Erst ein erfolgreich übernommener Bestand steht für spätere Offline-Aufrufe zur Verfügung; ein leerer lokaler Datenbestand lässt sich durch Fehlerbehandlung allein nicht ersetzen. Der Katalogabruf aus @sec:study-catalog-download veranschaulicht dieses Muster mit Schemaprüfung, Transaktion und erneutem Ladeversuch. Eine solche Datenübernahme ist von der Synchronisierung lokaler Änderungen zu unterscheiden. @StudyPlanCatalog2026
+
+*M7: Synchronisierung an einem ausgewählten Funktionsbereich integrieren.* Vor der breiten Überführung ist die vorgesehene Kombination aus lokaler Datenbank, Synchronisierung und entferntem Backend in einem begrenzten Ablauf zu prüfen. Die Vorprüfung soll Schemaabbildung, Identitäten, lokale Persistenz, ausstehende Änderungen und Paketbetrieb umfassen. Eine vorhandene ORM-Anbindung unterstützt Wiederverwendung, ersetzt jedoch nicht die Prüfung von Datentypen und dem Verhalten des neuen Datenzugriffs. Die Integrationsprototypen des Demonstrators bilden hierfür die Grundlage. @StudyPlanSyncSpikes2026
+
+Anschließend sind die Verantwortung für lokale Änderungen, Upload und Download sowie unmittelbar netzwerkabhängige Operationen festzulegen. Clientseitig erzeugbare Kennungen und eine nachvollziehbare Zuordnung lokaler und entfernter Identitäten müssen Datensätze und Beziehungen konsistent halten. Der lokale Schreibabschluss ist von der Annahme durch das Backend zu unterscheiden; ausstehende, fehlgeschlagene und abgewiesene Änderungen benötigen ein festgelegtes Verhalten. Im betrachteten Gruppenfeature bleiben Aufgabenänderungen lokal ausführbar, während Gruppenerstellung und Einladungen unmittelbare Online-Operationen sind. Vorausgesetzte entfernte Konten und Änderungen des ursprünglichen Einladungsablaufs sind als Voraussetzungen beziehungsweise fachliche Anpassungen auszuweisen. @StudyPlanSyncIntegration2026 @StudyPlanSyncArchitecture2026
+
+Eine zeitweise parallele Datenhaltung kann die Überführung nach Funktionsbereichen begrenzen. Für jeden Bereich ist eindeutig festzulegen, welcher lokale Bestand und welche Repository-Implementierung verwendet werden. Die Übernahme bestehender Daten einschließlich ihrer Referenzen ist eine zusätzliche Aufgabe; das Einrichten einer neuen synchronisierten Tabelle führt sie nicht automatisch aus. Auch Downloadfilter ersetzen keine Schreibberechtigungen oder die ausdrückliche Festlegung rein lokaler Tabellen. @sec:sync-architecture erläutert diese Trennung im Demonstrator.
+
+Mit der Synchronisierung ist außerdem die Verantwortung für Schemaänderungen neu zu ordnen. Entferntes Schema, Datenverteilung und Client-Schema müssen kompatibel bereitgestellt werden. Welche Änderungen weiterhin lokale SQL-Migrationen benötigen und welche das SDK verwaltet, hängt vom gewählten Datenhaltungsmodell ab. @sec:sync-schema-updates beschreibt den daraus abgeleiteten Bereitstellungsablauf. Dieser ist bei einer Erweiterung mit bestehenden Clients und noch ausstehenden Änderungen abzugleichen; er wurde in der Fallstudie nicht als vollständiger Versionsrollout erprobt.
+
+=== Kontrollpunkte, Härtung und Fortführung des Leitfadens
+
+*M8: Härtung konsolidieren und den Paketstand prüfen.* Abschließend sind die tatsächlich entstandenen Fenster, Preload-Bridges, IPC-Eingänge, Ressourcen- und Netzwerkpfade gemeinsam zu prüfen. Jede Electron-Empfehlung erhält eine begründete Anwendbarkeitsentscheidung, Umsetzung und Beleg. Fehlende Mechanismen, fehlende Implementierungen und fehlende Prüfungen sind getrennt zu bewerten. Die Sicherheitsmatrix aus @sec:app-hardening zeigt das dazu verwendete Dokumentationsmuster. @StudyPlanSecurity2026
+
+Das Prüfverfahren ist an den Gegenstand anzupassen: Codeinspektion belegt die vorhandene Konfiguration, Unit-Tests prüfen ausgewählte Entscheidungen, und Laufzeitfälle beobachten die Wirkung konkreter Kontrollen. Buildabhängige Aussagen wie Fuse-Werte, ASAR-Integrität und native Modulkompatibilität sind am erzeugten Paket zu prüfen. Nach Änderungen an Version, Treibern, Protokoll oder Paketkonfiguration sind die betroffenen Nachweise zu erneuern und an den geprüften Stand zu binden. Die Nachbesserungen in Phase 3 begründen diese Empfehlung; insbesondere dürfen Ergebnisse einer früheren Binary nicht einem veränderten Paket zugeschrieben werden. @StudyPlanSecurityRemediation2026
+
+@tab:migration-recommendation-checkpoints fasst die zu prüfenden Zustände zusammen. Ihre Zuordnung zu A1–A8 macht den Zweck der einzelnen Schritte sichtbar; die dokumentierte Verbindung von Voraussetzung, Transformation und Kontrollpunkt konkretisiert A9. Die Tabelle formuliert Prüfaufgaben für die Anwendung des Leitfadens. Welche Ergebnisse der Demonstrator hierfür tatsächlich liefert, wird in @ch:experiments bewertet.
+
+#block[
+  #show figure.where(kind: table): set block(breakable: false)
+  #figure(
+    {
+      set par(justify: false)
+      set text(size: 9pt)
+      table(
+        columns: (0.8fr, 1.8fr, 2.6fr),
+        inset: 5pt,
+        align: left,
+        table.header([*Schritt / Bezug*], [*Ergebnis des Schritts*], [*Kontrollpunkt*]),
+        [M1; A1, A3, A8], [Erfasster Kernumfang und begründete, kompatible Zielumgebung.], [Interaktionsformen und externe Abhängigkeiten benennen; kleinen Desktop-Paketstand einschließlich vorgesehener nativer Module starten.],
+        [M2; A5], [Lokal verwalteter Datenbestand mit Schema, Referenzdaten und Identitätszuordnung.], [Lokale Initialisierung und Zuordnung prüfen; Daten ohne Netzwerk schreiben und nach Neustart lesen. Erforderliche Änderungen an bestehenden Daten gesondert prüfen.],
+        [M3; A4, A7], [Fachlicher Vertrag mit begrenztem Preload-/IPC-Transport.], [Vertrag und erzeugte Module abgleichen; unbekannte Operationen und ungültige Eingaben abweisen. Prüfen, dass lokale Aufrufe keinen HTTP-Server benötigen.],
+        [M4; A2, A5, A8], [Vollständiger Kernablauf mit getrennten Verantwortlichkeiten.], [Aufruf von Oberfläche bis Repository nachvollziehen; persönliche Datenzuordnung, CRUD-Verhalten und Fehler prüfen. Fachliche Tests von nativer IPC- und Oberflächenprüfung unterscheiden.],
+        [M5; A7, A8], [Native Dateiauswahl mit begrenztem Zugriff und validierter Verarbeitung.], [Abbruch, ungeeignete Eingaben und gültigen Import prüfen; fachliches Ergebnis und Aktualisierung der Oberfläche nachvollziehen.],
+        [M6; A5, A8], [Validierte Aktualisierung mit dauerhaft lokalem Bestand.], [Wiederholten Abruf und fehlerhafte Übernahme prüfen; verfügbaren Bestand bei Netzausfall und nach Neustart weiterverwenden.],
+        [M7; A6, A8], [Abgegrenzter synchronisierter Bereich mit geregelter Identität und Dienstanbindung.], [Lokalen Schreibabschluss, Persistenz ausstehender Änderungen und Übermittlung getrennt prüfen; Online-Voraussetzungen und Verhalten bei Fehlern ausweisen.],
+        [M8; A1, A7], [Konsolidierte Sicherheitsmatrix mit versionsbezogenen Belegen.], [Alle Electron-Empfehlungen zuordnen; ausgewählte Eingabe- und Fremdinhaltfälle prüfen; Paketwerte und Funktion belegen. Verbleibende Nachweisgrenzen dokumentieren.],
+      )
+    },
+    caption: [Handlungsempfehlungen und Kontrollpunkte, abgeleitet aus dem dokumentierten Migrationsprozess; die Zuordnung konkretisiert A9.],
+  ) <tab:migration-recommendation-checkpoints>
+]
+
+Für eine weitere Funktion ist zunächst ihre Interaktionsform zu bestimmen. Ein zusätzlicher CRUD-Bereich kann das Vertrags-, Handler-, Service- und Repository-Muster fortführen; ein weiterer Import ergänzt Dateiformat und fachliche Validierung; eine weitere Online-Anbindung benötigt einen geregelten Datenübernahme- oder Synchronisierungsablauf. Neue privilegierte Fähigkeiten, Identitätswechsel oder Datenflüsse erfordern einen erneuten Architektur- und Sicherheitsabgleich. Der Leitfaden bietet damit ein begründetes Vorgehensmodell für die untersuchten Aufgaben. Seine Übertragung auf andere Ausgangsartefakte bleibt anhand dieser Voraussetzungen zu prüfen; eine unabhängige Anwendung auf weitere Projekte wurde nicht durchgeführt.
+
+// Arbeitsstand: Prozessberichte in 5.2–5.4 und abgeleitete Empfehlungen in 5.5.
+// Ergebnisse und Nachweisgrenzen der Kontrollpunkte werden in Kapitel 6 bewertet.

@@ -14,7 +14,7 @@ Für die Migration ergibt sich daraus eine unterschiedliche Ausgangslage. Liegt 
 
 Die Entwicklung und Prüfung eines allgemeinen Leitfadens für beide Fälle würde den Umfang dieser Arbeit überschreiten. Die praktische Untersuchung wird daher auf den Replit-Prototyp Studienplaner begrenzt. Lovable dient zur dokumentationsgestützten Begründung dieser Eingrenzung; eine Lovable-Anwendung wird nicht migriert. Der resultierende Leitfaden kann potenziell übertragbare Prinzipien aufzeigen, wird jedoch nicht als validierte Lösung für beliebige Frameworks oder Plattformen ausgegeben.
 
-== Funktionen und Architektur des Ausgangsartefakts
+== Funktionen und Architektur des Ausgangsartefakts <sec:starting-artifact>
 
 === Funktionaler Untersuchungsumfang <sec:functional-scope>
 
@@ -94,7 +94,9 @@ Diese Auswahl deckt zwei für den Leitfaden relevante Integrationsmuster ab: ext
 
 Ziel der Migration ist eine architektonisch nachvollziehbare Desktop-Anwendung, deren Struktur zugleich die Grundlage des Migrationsleitfadens bildet. Architektonische Qualität wird dabei durch klar zugeordnete Verantwortlichkeiten, definierte Schnittstellen und kontrollierte Abhängigkeiten konkretisiert. Wiederkehrende Aufgaben sollen nach einheitlichen Mustern umgesetzt werden. Dadurch können die Transformationsschritte verständlich beschrieben und auf weitere Funktionen mit vergleichbaren Anforderungen bezogen werden.
 
-Die Zielarchitektur soll Darstellung, Geschäftslogik und Datenzugriff trennen. Die Verarbeitung fachlicher Aufrufe soll in Controller, Services und Repositories gegliedert werden. Der Renderer soll die Oberfläche bereitstellen; privilegierte Operationen sollen über begrenzte Preload-Schnittstellen an den Main-Prozess vermittelt werden. Die Kommunikation soll über Interprozesskommunikation erfolgen, ohne hierfür einen lokalen HTTP-Server zu betreiben. Die Prozessaufteilung und die fachliche Schichtentrennung ergänzen sich, sind jedoch nicht gleichzusetzen.
+Zur Umsetzung dieser Ziele wird eine Dreischichtenarchitektur gewählt, die Darstellung, Geschäftslogik und Datenzugriff trennt. Die Verarbeitung fachlicher Aufrufe soll entsprechend in Controller, Services und Repositories gegliedert werden. Diese Trennung soll insbesondere die Änderungen vom HTTP-Transport zu IPC und von der entfernten zur lokalen Datenhaltung nachvollziehbar machen sowie die unabhängige Prüfung fachlicher Services ermöglichen. Einheitliche Verantwortlichkeiten bilden damit eine Grundlage für wiederholbare Migrationsschritte und die Erweiterung des Demonstrators.
+
+Der Renderer soll die Oberfläche bereitstellen; privilegierte Operationen sollen über begrenzte Preload-Schnittstellen an den Main-Prozess vermittelt werden. Die Kommunikation soll über Interprozesskommunikation erfolgen, ohne hierfür einen lokalen HTTP-Server zu betreiben. Die Prozessaufteilung und die fachliche Schichtentrennung ergänzen sich, sind jedoch nicht gleichzusetzen.
 
 Funktional soll ein zusammenhängender, sinnvoll nutzbarer Kernumfang der ursprünglichen Anwendung erhalten bleiben. Entscheidend ist die Abdeckung der unterschiedlichen Interaktionsformen: Oberflächeninteraktionen mit lokaler Datenverarbeitung, das Einlesen und Validieren von Dateien sowie Netzwerkanfragen und die Synchronisierung gemeinsamer Aufgaben. Dashboard, Kalender, Noten und Studiengruppen bilden den fachlichen Kontext dieser allgemeineren Anwendungsaufgaben. Die vollständige Übernahme jeder CRUD-Variante ist demgegenüber kein eigenständiges Ziel. Der Kernumfang muss für die betrachteten Interaktionsformen vollständige Verarbeitungspfade einschließlich Datenzuordnung, Validierung und Fehlerbehandlung bereitstellen.
 
@@ -108,41 +110,59 @@ Unter einer sicheren beziehungsweise gehärteten Electron-Anwendung versteht die
 
 == Anforderungskatalog <sec:requirements>
 
-Die Anforderungen verbinden die Fallauswahl, das Architekturziel und den festgelegten funktionalen sowie sicherheitsbezogenen Umfang. Die Kennungen A1–A9 werden für die Zuordnung der Migrationsschritte und die spätere Evaluation verwendet. Die nachfolgend genannten Bewertungsansätze legen fest, worauf ein Nachweis Bezug nehmen muss; konkrete Szenarien und Ergebnisse werden in @ch:experiments dokumentiert.
+Die Anforderungen werden aus der Zielsetzung in @ch:intro, der Analyse des Ausgangsartefakts in @sec:starting-artifact und der Zielarchitektur in @sec:target-architecture abgeleitet. Sie umfassen sowohl die angestrebten Eigenschaften der Anwendung als auch die für diesen Demonstrator gewählten Entwurfsentscheidungen. Zu jeder Anforderung werden Ausgangspunkt und Zweck, Sollzustand und Bewertungsansatz angegeben. Die Kennungen A1–A9 werden für die Zuordnung der Migrationsschritte und die spätere Evaluation verwendet. Die Bewertungsansätze legen fest, worauf ein Nachweis Bezug nehmen muss; konkrete Szenarien und Ergebnisse werden in @ch:experiments dokumentiert.
 
 === A1: Lauffähige Desktop-Anwendung
+
+Die in @ch:intro angestrebte Überführung in eine Desktop-Laufzeit soll am ausführbaren Demonstrator nachvollziehbar sein. Der Start eines gebauten Pakets ist erforderlich, um auch die Bereitstellung der Anwendung und ihrer Laufzeitabhängigkeiten in die Bewertung einzubeziehen.
 
 Das Replit-Artefakt muss in eine lauffähige Electron-Anwendung überführt werden. Bewertet werden der Start einer gebauten Anwendung und die Ausführbarkeit der eingeschlossenen Kernfunktionen. Die untersuchte Version und die Laufzeitumgebung sind im Nachweis festzuhalten.
 
 === A2: Dreischichtenarchitektur
 
+Das Beispiel aus @lst:dashboard-upcoming zeigt die Verbindung von HTTP-Verarbeitung, Fachlogik und Datenzugriff innerhalb eines Route-Handlers. Die Trennung dieser Verantwortlichkeiten konkretisiert deshalb das Ziel aus @sec:target-architecture, Änderungen an Transport und Persistenz nachvollziehbar zuzuordnen und die Fachlogik unabhängig davon prüfen zu können.
+
 Darstellung, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe sind entsprechend in Controller, Services und Repositories zu gliedern. Abhängigkeiten sind so zu gestalten, dass die Geschäftslogik unabhängig von Oberfläche und Transport mit austauschbaren Datenzugriffen geprüft werden kann. Der Nachweis erfolgt durch den Abgleich des Architekturmodells mit den tatsächlichen Modulen und einem beispielhaften fachlichen Ablauf. Die Electron-Prozesse sind dabei nicht mit den fachlichen Schichten gleichzusetzen; Geschäftslogik und Datenzugriff können beide im Main-Prozess liegen.
 
 === A3: Begrenzung des Refactoring-Aufwands
+
+Gegenstand der Arbeit ist die Transformation des in @sec:starting-artifact analysierten Prototyps. Die Wiederverwendung soll dessen vorhandene Oberfläche und fachliche Regeln als Grundlage erhalten und die Eingriffe auf Änderungen konzentrieren, die sich aus Zielumgebung und Anforderungen ergeben. Architektonische und sicherheitsbezogene Anforderungen haben dabei Vorrang. Dies begründet die Begrenzung des Änderungsumfangs als Entwurfsziel; eine tatsächlich erzielte Zeitersparnis wird daraus nicht abgeleitet.
 
 Bestandteile des Ausgangsartefakts sollen soweit möglich weiterverwendet werden. Notwendige Anpassungen und Ersetzungen sind nach Komponenten beziehungsweise Schichten zu dokumentieren und zu begründen. Diese Anforderung verlangt nachvollziehbare Eingriffe, jedoch keinen Nachweis eines global minimalen Entwicklungsaufwands.
 
 === A4: Lokale Kommunikation ohne HTTP-Wrapper
 
+Diese Anforderung konkretisiert die in @sec:target-architecture gewählte Kommunikation über Preload und IPC. Die bisherigen Serveroperationen sollen über eine begrenzte Preload-Schnittstelle unmittelbar im zuständigen Main-Prozess aufgerufen werden. Damit wird der lokale Aufrufweg innerhalb der gewählten Electron-Prozessstruktur organisiert, ohne das HTTP-Routing des Web-Backends als zusätzliche Vermittlungsschicht weiterzuführen. Dies ist eine Entwurfsentscheidung des untersuchten Migrationspfads. Die Absicherung der entstehenden Schnittstellen wird unter A7 gesondert bewertet.
+
 Die lokale Anwendungslogik darf nicht lediglich durch den Weiterbetrieb des ursprünglichen HTTP-Backends eingebettet werden. Der Nachweis beschreibt den tatsächlichen Aufrufweg über Preload und IPC und zeigt, dass für lokale fachliche Operationen kein HTTP-Server erforderlich ist. Externe HTTPS-Anbindungen bleiben davon unberührt.
 
 === A5: Lokale Datenhaltung und Offline-Kernfunktionen
+
+Die in @ch:intro angestrebte, vom Netzwerk entkoppelte Nutzung erfordert einen dauerhaft verfügbaren lokalen Datenbestand. Für die in @sec:functional-scope ausgewählten persönlichen Funktionen muss deshalb sowohl die Verarbeitung ohne Verbindung als auch der Erhalt der Änderungen nach dem Beenden und erneuten Starten der Anwendung betrachtet werden.
 
 Die für den Kernumfang ausgewählten lokalen Funktionen aus @sec:functional-scope und die lokale Identitätsverwaltung müssen ohne Netzwerkverbindung nutzbar sein. Änderungen müssen lokal gespeichert werden und einen Neustart der Anwendung überdauern. Für Funktionen mit Katalogdaten wird dabei ein bereits lokal verfügbarer Datenbestand vorausgesetzt. Der Nachweis muss zwischen diesen Funktionen und ausdrücklich netzwerkabhängigen Operationen unterscheiden.
 
 === A6: Local-First-Kollaboration am Gruppenfeature „Aufgaben“
 
+Die ursprünglichen Erstellungs-Prompts enthalten Zusammenarbeit in Studiengruppen; @sec:functional-scope wählt daraus Gruppen, Einladungen und Aufgaben aus. Dieser Bereich verbindet den Erhalt einer Ausgangsfunktion mit dem in @ch:intro gesetzten Schwerpunkt auf Synchronisierung. Die getrennte Betrachtung lokaler Verarbeitung und späterer Übermittlung soll zeigen, wie Kollaboration die Offline-Kernanwendung ergänzt.
+
 Aufgabenänderungen müssen im festgelegten Kollaborationsumfang lokal verarbeitet und bei verfügbarer Verbindung übermittelt werden können. Der Nachweis beschreibt lokale Speicherung und anschließende Synchronisierung als getrennte Vorgänge. Gruppenerstellung und Einladungsfunktionen gehören zum Untersuchungsumfang; ihre unmittelbar netzwerkabhängigen Operationen sind gesondert auszuweisen. Kommentare sind ausgeschlossen. Eine Mehrgeräte-Synchronisierung oder gemeinsame Echtzeitbearbeitung von Dokumenten wird nicht verlangt.
 
 === A7: Härtung gemäß Electron Security Guidelines
+
+Der in @ch:intro beschriebene Wechsel zur lokalen Laufzeit erweitert die Zugriffsmöglichkeiten der Anwendung auf Dateien und Systemressourcen. Die Härtung wird deshalb als eigener Zielzustand verlangt. Die Electron Security Guidelines bilden den in @sec:target-architecture gewählten Prüfrahmen, um dieses Sicherheitsziel in konkrete Maßnahmen und nachvollziehbare Belege zu überführen. @ElectronSecurity2026
 
 Die offizielle Sicherheitscheckliste muss vollständig auf Anwendbarkeit geprüft werden. Für anwendbare Empfehlungen sind Umsetzung, Beleg und Nachweisebene zu dokumentieren. Eingabevalidierung und Maßnahmen gegen fremden Code werden durch geeignete vorhandene Tests und ausgewählte negative Laufzeitfälle ergänzt. Eine fehlende Prüfung darf nicht als Erfüllung gewertet werden; begrenzt belegte Aussagen müssen ihre Nachweisgrenze nennen.
 
 === A8: Repräsentativer Kernfunktionsumfang und Erweiterbarkeit
 
+Der in @sec:target-architecture beschriebene Leitfaden soll Muster für unterschiedliche Interaktionsformen liefern. Dafür werden aus den Funktionen des Ausgangsartefakts vollständige Verarbeitungspfade ausgewählt, an denen sich diese Muster einschließlich Validierung und Fehlerbehandlung nachvollziehen lassen. A8 konkretisiert damit die funktionale Auswahl und ihre Eignung als Erweiterungsgrundlage; A1 bewertet die Ausführbarkeit und A5 die dauerhafte Offline-Nutzbarkeit der ausgewählten lokalen Funktionen.
+
 Der Demonstrator muss einen zusammenhängenden Kernfunktionsumfang mit repräsentativen Abläufen für Oberflächeninteraktionen, lokale Persistenz, Dateiimporte und Netzwerkanbindungen bereitstellen. Gruppenerstellung, Einladungen und synchronisierte Aufgaben bleiben Bestandteil dieses Umfangs. Die vollständige Übernahme jeder CRUD-Variante wird nicht verlangt. Der Nachweis benennt die tatsächlich übernommenen Funktionen, vergleicht deren Verhalten mit dem Ausgangsartefakt und ordnet ihnen die verwendeten Architektur- und Sicherheitsmuster zu. Er muss nachvollziehbar machen, wie weitere Funktionen mit vergleichbaren Anforderungen auf diesen Mustern aufbauen können. Änderungen der Identitäts- und Sitzungsverwaltung sind zu begründen. Vorhandene Service-Unit-Tests ergänzen den Nachweis für die tatsächlich geprüfte Logik.
 
 === A9: Nachvollziehbarer Migrationsleitfaden
+
+Der Migrationsleitfaden ist gemäß @ch:method ein zentrales Ergebnis der Arbeit. Die technische Umsetzung muss deshalb in beschriebene Schritte, begründete Entscheidungen und Kontrollpunkte überführt werden. Deren Zuordnung zum Demonstrator soll die Herleitung des Vorgehens und die Grenzen seiner Anwendung nachvollziehbar machen.
 
 Der Leitfaden muss Voraussetzungen, Reihenfolge, Änderungen, Entscheidungen und Kontrollpunkte der durchgeführten Migration beschreiben. Seine Schritte müssen dem Demonstrator zugeordnet werden können. Projektspezifische Anpassungen und mögliche übertragbare Prinzipien sind kenntlich zu machen. Ein zusätzlicher unabhängiger Reproduktionsdurchlauf ist kein Bestandteil dieser Anforderung.
 
