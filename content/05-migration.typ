@@ -6,7 +6,7 @@ Dieses Kapitel dokumentiert den durchgeführten Migrationsprozess und die dabei 
 
 == Struktur des Migrationsleitfadens
 
-Der Leitfaden ordnet die Migration in drei Phasen: die Überführung in eine lokal nutzbare Offline-Anwendung, die Ergänzung um Synchronisierung und weitere Online-Anbindungen sowie die konsolidierte Härtung. Vorausgesetzt wird die Analyse des Ausgangsartefakts aus @ch:analysis. Das dort erstellte Komponentenbild und der Anforderungskatalog legen fest, welche Funktionen übernommen und welche Verantwortlichkeiten verändert werden müssen.
+Der Leitfaden ordnet die Migration in drei Phasen: die Überführung in eine lokal nutzbare Offline-Anwendung, die Ergänzung um Synchronisierung und weitere Online-Anbindungen sowie die konsolidierte Härtung. Innerhalb dieser Phasen werden zusammengehörige Änderungen nach ihrer Aufgabe erläutert, etwa Datenhaltung, Schnittstellen, CRUD-Oberflächeninteraktionen, Dateiimporte und Netzwerkanbindungen. Die Darstellung bündelt die tatsächlich vorgenommenen Anpassungen und erklärt exemplarisch ihre Entscheidungen und Prinzipien. Sie beschreibt daher nicht jede migrierte Funktion einzeln. Die Analyse aus @ch:analysis liefert den architektonischen Ausgangspunkt und die Kriterien zur Bewertung des erreichten Zustands.
 
 Die Phasen unterscheiden Zielzustände der Entwicklung. Sie behaupten weder eine von Beginn an vollständig festgelegte Projektplanung noch eine vollständige Trennung aller Arbeitsschritte. Insbesondere beeinflussen die Sicherheitsanforderungen bereits den ersten Architekturentwurf. Jede Phase beschreibt deshalb neben ihrem funktionalen Ziel auch die relevanten Schnittstellen und einen Kontrollpunkt für den erreichten Stand.
 
@@ -25,7 +25,7 @@ Die Phasen unterscheiden Zielzustände der Entwicklung. Sie behaupten weder eine
 
 == Phase 1: Von der Webanwendung zur Offline-Kernanwendung <sec:offline-core-migration>
 
-Die erste Phase überführt die persönlichen Kernfunktionen in eine lokale Desktop-Anwendung. Datenhaltung, Identitätsverwaltung, CRUD-Operationen und Dateiimporte werden innerhalb der Electron-Laufzeit ausgeführt. Synchronisierung und externe Katalogaktualisierung folgen in Phase 2. Für katalogabhängige Funktionen wird zunächst ein lokal bereitgestellter Datenbestand verwendet.
+Die Umsetzung beginnt mit der lokalen Datenbank und der Schnittstelle, auf die anschließend die vorhandene Oberfläche und die fachlichen Verarbeitungspfade aufbauen. Katalogabhängige Funktionen verwenden in dieser Phase einen lokal bereitgestellten Datenbestand.
 
 === Initialisierung des Electron-Projekts und Übernahme der Datenbankmodule
 
@@ -43,31 +43,27 @@ Mit dem Umgebungswechsel übernahm die Desktop-Anwendung im Main-Prozess das Anl
 
 Die Übernahme der Dateien genügte noch nicht, da die bestehenden Definitionen PostgreSQL-spezifische Datentypen und Tabellenkonstruktoren verwendeten. Diese wurden durch die entsprechenden SQLite-Konstrukte ersetzt. Die fachlichen Tabellen- und Spaltennamen sowie die vorhandenen Pflichtfelder und Standardwerte wurden dabei möglichst beibehalten. Dieser Ansatz begrenzte die Änderungen am Datenmodell und entsprach dem in @ch:analysis festgelegten Ziel, vorhandene Komponenten mit möglichst geringem Refactoring-Aufwand weiterzuverwenden.
 
-Die Anpassung lässt sich am Stundenplanschema nachvollziehen. @lst:timetable-postgresql zeigt die ursprüngliche Definition der Tabelle `timetable_entries`; @lst:timetable-sqlite zeigt ihre Überführung in das SQLite-Schema des Demonstrators. Beide Ausschnitte lassen die übrigen Tabellen und die abgeleiteten Validierungsschemata weg; die Zeilenumbrüche wurden für die Darstellung angepasst. @StudienplanerSource2026 @StudyPlanDatabase2026
+@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen. Das Stundenplanschema liefert Beispiele für Kennungen, boolesche Werte und Enums; das Terminschema ergänzt die Datumsabbildung. @StudienplanerSource2026 @StudyPlanDatabase2026
 
 #figure(
-  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
-    set text(size: 8.5pt)
-    raw(read("../code/timetable-postgresql.ts"), lang: "typescript", block: true)
-  }),
-  kind: raw,
-  supplement: [Quellcode],
-  caption: [Stundenplaneinträge im PostgreSQL-Schema des Ausgangsartefakts (Ausschnitt).],
-) <lst:timetable-postgresql>
+  {
+    set par(justify: false)
+    table(
+      columns: (1fr, 1.2fr, 1.5fr),
+      inset: 6pt,
+      align: left,
+      table.header([*PostgreSQL / Drizzle*], [*SQLite / Drizzle*], [*Bedeutung der Anpassung*]),
+      [`pgTable`], [`sqliteTable`], [Tabellenkonstruktor für den neuen Dialekt.],
+      [`serial` als Primärschlüssel], [`integer` mit `autoIncrement`], [Numerische, automatisch erzeugte Kennung bleibt erhalten.],
+      [`boolean`], [`integer` im Modus `boolean`], [Integer-Speicherung mit booleschen TypeScript-Werten.],
+      [`pgEnum`], [`text` mit `enum`-Werteliste], [Typableitung bleibt erhalten; keine gleichwertige Datenbankprüfung.],
+      [`timestamp` mit Zeitzone], [`integer` im Modus `timestamp`], [Zeitpunkt wird als Unix-Zeit gespeichert und im Code als `Date` verwendet.],
+    )
+  },
+  caption: [Ausgewählte Abbildungen der PostgreSQL-Schemadefinitionen auf SQLite im Demonstrator.],
+) <tab:postgresql-sqlite-mapping>
 
-#figure(
-  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
-    set text(size: 8.5pt)
-    raw(read("../code/timetable-sqlite.ts"), lang: "typescript", block: true)
-  }),
-  kind: raw,
-  supplement: [Quellcode],
-  caption: [Stundenplaneinträge im SQLite-Schema des Demonstrators (Ausschnitt).],
-) <lst:timetable-sqlite>
-
-An die Stelle von `pgTable` trat `sqliteTable`. Der automatisch erzeugte Primärschlüssel wurde von `serial` auf einen Integer-Primärschlüssel mit `autoIncrement` umgestellt. Das boolesche Feld `isCustom` wird in SQLite als Integer gespeichert; Drizzles Modus `boolean` erhält dabei die Verwendung boolescher Werte im TypeScript-Code. @DrizzleSQLiteTypes2026
-
-Die PostgreSQL-Enums für Wochentage und Zeitblöcke wurden durch konstante Wertelisten und daraus abgeleitete TypeScript-Union-Typen ersetzt. Die Spalten verwenden diese Listen über die `enum`-Option des Text-Konstruktors. Diese Option unterstützt die Typableitung, erzwingt jedoch zur Laufzeit keinen zulässigen Wertebereich in der Datenbank. @DrizzleSQLiteTypes2026 Die erhaltene Typisierung ist daher nicht mit der bisherigen Datenbankprüfung gleichzusetzen; eine Prüfung eingehender Werte bleibt erforderlich. Die aus den Tabellen abgeleiteten Insert- und Select-Typen sowie die Erzeugung der Zod-Schemata konnten weiterhin nach dem vorhandenen Muster verwendet werden.
+Die PostgreSQL-Enums für Wochentage und Zeitblöcke wurden durch konstante Wertelisten und daraus abgeleitete TypeScript-Union-Typen ersetzt. Die `enum`-Option des Text-Konstruktors unterstützt diese Typableitung, erzwingt jedoch zur Laufzeit keinen zulässigen Wertebereich in der Datenbank. @DrizzleSQLiteTypes2026 Eingehende Werte müssen deshalb weiterhin geprüft werden. Auch die Datumsabbildung verlangt einen konsistenten Umgang mit Zeiteinheit und Zeitzonen; im gewählten Modus wird der Zeitpunkt in Sekunden gespeichert. Die aus den Tabellen abgeleiteten Insert- und Select-Typen sowie die Erzeugung der Zod-Schemata konnten weiterhin nach dem vorhandenen Muster verwendet werden. @StudyPlanDatabase2026
 
 Für die benötigten Pakete wurde zunächst die Abhängigkeitskonfiguration des Ausgangsartefakts herangezogen. Die angegebenen Versionsbereiche für `drizzle-orm` (`^0.45.2`), `drizzle-kit` (`^0.31.10`) und `drizzle-zod` (`^0.8.3`) wurden übernommen. Der PostgreSQL-Treiber `pg` wurde für die lokale Datenhaltung durch `@libsql/client` ersetzt; im Demonstrator ist hierfür der Versionsbereich `^0.18.0` angegeben. @StudienplanerSource2026 @StudyPlanDatabase2026 Damit blieb Drizzle als Abstraktion für Schema und Datenzugriff erhalten, während der verwendete Treiber wechselte.
 
@@ -276,7 +272,7 @@ Die React-Oberfläche aus `artifacts/studienplaner/` wurde im Commit `f4ea658` n
 
 `App.tsx` und `main.tsx` behielten die Einbindung von React Query über `QueryClientProvider` sowie die Anbieter für Tooltips und Benachrichtigungen bei. Die Darstellungsstruktur konnte weitgehend weiterverwendet werden; anzupassen waren insbesondere Modulauflösung, Datenzugriffe und Navigation. @StudienplanerSource2026 @StudyPlanFrontendMigration2026
 
-Die übernommene `index.css` enthält Theme-Variablen und die Einbindung von Tailwind CSS, `tw-animate-css` und dem Typografie-Plugin. Die Vorlagendateien `assets/main.css` und `assets/base.css` wurden samt Beispielkomponenten und Grafiken entfernt. Der zunächst ebenfalls kopierte Google-Fonts-Import wurde im Commit `36ff5f9` entfernt; die vorhandenen Schriftstapel enthalten lokale Systemschrift-Fallbacks. Damit wird für die Darstellung kein externer Schriftabruf vorausgesetzt. @StudyPlanFrontendMigration2026
+Die übernommene `index.css` enthält Theme-Variablen und die Einbindung von Tailwind CSS, `tw-animate-css` und dem Typografie-Plugin. Die Vorlagendateien `assets/main.css` und `assets/base.css` wurden samt Beispielkomponenten und Grafiken entfernt. Der zunächst ebenfalls kopierte Google-Fonts-Import wurde im Commit `36ff5f9` entfernt. Die Schriftstapel nennen weiterhin „Plus Jakarta Sans“ und „Fraunces“ und enthalten System- beziehungsweise generische Fallbacks. @StudyPlanFrontendMigration2026 Damit entfällt der externe Schriftabruf; die Verfügbarkeit der ursprünglich vorgesehenen Schriftarten ist dadurch jedoch nicht nachgewiesen. Eine Prüfung ihrer lokalen Installation ist für den damaligen Stand nicht dokumentiert. Für eine verlässlich gleiche Offline-Darstellung hätten die benötigten Schriftdateien mitgeliefert werden können, beispielsweise über Fontsource-Pakete, deren CSS-Imports Vite als lokale Build-Ressourcen verarbeitet. @FontsourceVite2026 Diese Alternative wurde im Demonstrator nicht umgesetzt.
 
 Mitkopierte Paket- und Konfigurationsdateien wurden nach dem Abgleich mit der Electron-Struktur im Commit `8b9bd66` entfernt: `package.json`, `vite.config.ts`, `tsconfig.json`, `components.json` und die zusätzliche `index.html`. Der Renderer verwendet `src/renderer/index.html` und die Paket- und Build-Konfiguration des Zielprojekts. @StudyPlanFrontendMigration2026
 
@@ -298,11 +294,11 @@ Ungenutzte Imports, Variablen und Zustandseinträge wurden ebenfalls entfernt. D
 
 Die direkten HTTP-Dateiimporte der kopierten Kalender- und Notenseiten wurden im nachfolgend beschriebenen Importschritt durch lokale Operationen ersetzt. @StudienplanerSource2026 @StudyPlanFrontendMigration2026
 
-Für die Navigation wurde das bereits verwendete Paket `wouter` beibehalten. Im Web-Prototyp erhielt dessen Router den aus `import.meta.env.BASE_URL` abgeleiteten Basispfad. Im Authentifizierungscommit `1c1988d` wurde stattdessen `useHashLocation` aus `wouter/use-hash-location` eingebunden und mit `<WouterRouter hook={useHashLocation}>` aktiviert. @StudyPlanFrontendMigration2026 Der Hook verwendet den Teil der Adresse hinter `#` als Anwendungsroute. @WouterHashRouting2026 Eine Seite wie `/kalender` kann dadurch innerhalb der geladenen Renderer-Ressource als `#/kalender` adressiert werden. Der Pfad der lokalen HTML-Datei bleibt bestehen, während Wouter die Seitenauswahl übernimmt. Die vorhandenen React-Routen und Navigationskomponenten konnten auf dieser Grundlage weiterverwendet werden. @StudyPlanFrontendMigration2026
+Für die Navigation wurde das bereits verwendete Paket `wouter` beibehalten. Im Web-Prototyp erhielt dessen Router den aus `import.meta.env.BASE_URL` abgeleiteten Basispfad. Im Authentifizierungscommit `1c1988d` wurde stattdessen `useHashLocation` aus `wouter/use-hash-location` eingebunden und mit `<WouterRouter hook={useHashLocation}>` aktiviert. @StudyPlanFrontendMigration2026 Die in @sec:hash-routing erläuterte Navigation über das Adressfragment ermöglicht etwa `#/kalender`, ohne den Pfad der geladenen Renderer-Ressource zu ändern. Die vorhandenen React-Routen und Navigationskomponenten konnten auf dieser Grundlage weiterverwendet werden.
 
 === Lokale Authentifizierung als erster vollständiger Verarbeitungspfad
 
-Nach der Übernahme der Oberfläche begrenzte der vorhandene Anmeldeablauf zunächst den Zugang zu den fachlichen Seiten. Das Layout ruft `useGetMe` auf und setzt einen zugeordneten Benutzer voraus. Für die weitere Entwicklung wurde die Anmeldung deshalb beibehalten und als erste Handlergruppe implementiert. Damit konnte der bereits vorbereitete Aufrufweg zwischen Oberfläche, Preload, Dispatcher und lokaler Datenhaltung an einem zusammenhängenden Ablauf genutzt werden. Dieser Schritt ist im Commit `1c1988d` dokumentiert. @StudyPlanLocalAuth2026
+Nach der Übernahme der Oberfläche begrenzte der vorhandene Anmeldeablauf zunächst den Zugang zu den fachlichen Seiten. Das Layout ruft `useGetMe` auf und setzt einen zugeordneten Benutzer voraus. Erwogen wurden das Entfernen der Anmeldung oder eine automatische Zuordnung zu einem Standardbenutzer im Hintergrund. Diese Varianten hätten Änderungen an der bestehenden Benutzerführung und Kontozuordnung erfordert. Die Anmeldung wurde beibehalten, weil sie zum ursprünglichen Funktionsumfang gehörte und ihre Entfernung für die lokale Ausführung technisch nicht erforderlich war. Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufweg zwischen Oberfläche, Preload, Dispatcher und lokaler Datenhaltung an einem zusammenhängenden Ablauf genutzt werden konnte. Dieser Schritt ist im Commit `1c1988d` dokumentiert. @StudyPlanLocalAuth2026
 
 `auth.handlers.ts` ordnet `register`, `login`, `logout` und `getMe` den Service-Aufrufen zu und übersetzt deklarierte Fehler. `AuthService` übernimmt Registrierung, Passwortprüfung und Benutzerzuordnung; `UsersRepository` führt die Drizzle-Abfragen aus. Nach der Datenbankinitialisierung werden die Module erzeugt und die Handler registriert. Damit ist die in A2 geforderte Trennung erstmals für eine vollständige Operationsgruppe umgesetzt. @StudyPlanLocalAuth2026
 
@@ -344,15 +340,17 @@ Diese Grundstruktur kann für weitere CRUD-Bereiche erneut angewandt werden. Dab
 
 `scripts/grades/grades.test.ts` verbindet den generierten Client mit Dispatcher, Handlern, Service, Repositories und einer SQLite-Datenbank im Arbeitsspeicher. Geprüft werden Sitzung, persönliche Datenzuordnung, Änderungen, Aktivitäten und Statistik. Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation. Der Test prüft damit die Fachlogik samt Datenzugriff; Oberfläche und Electron-Laufzeit werden gesondert bewertet. @StudyPlanGradesMigration2026
 
+Der vorhandene Gruppenbereich wurde in dieser Phase ebenfalls als lokaler CRUD-Bereich übernommen. `GroupsService` und `GroupsRepository` verwenden die Kerndatenbank; die Oberfläche ist unter `/gruppen` erreichbar. Die spätere Kollaboration ergänzt einen eigenen synchronisierten Bereich unter `/gruppen-sync`. Diese beiden Implementierungen sind im Demonstrator nebeneinander vorhanden und werden bei der Darstellung von Phase 2 unterschieden. @StudyPlanGroupTransition2026
+
 === Lokaler Dateiimport am Beispiel iCal <sec:file-import-migration>
 
-Das Importmuster wird am iCal-Import aus Commit `fe08220` beschrieben. Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`. Multer nahm den Upload entgegen; der Route-Handler interpretierte die Kalenderdaten und schrieb die Termine in die Datenbank. @StudienplanerSource2026 @StudyPlanIcalMigration2026
+Das Importmuster wird am iCal-Import aus Commit `fe08220` beschrieben. Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`. Multer nahm den Upload entgegen; der Route-Handler interpretierte die Kalenderdaten mit `node-ical` und schrieb die Termine in die Datenbank. Bereits vorhanden waren die Übernahme von Titel, Beschreibung und Ort, die Ableitung des Termintyps, eine Standarddauer bei fehlendem Enddatum, die Mehrtageskennzeichnung und der Aktivitätseintrag. Die fachliche Grundlage des Imports stammt somit aus dem Ausgangsartefakt. @StudienplanerSource2026 @StudyPlanIcalMigration2026
 
 In der Desktop-Anwendung wurde diese Upload-Verarbeitung in eine lokale Importoperation überführt. Hierfür wurde der OpenAPI-Vertrag um `importEventsIcal` und das Ergebnisschema `EventIcalImportResult` ergänzt. Anschließend wurden Client, Hook und Validierungsschemata neu erzeugt. Die Operation besitzt keine Dateipfad- oder Inhaltsparameter: Der Renderer löst über `useImportEventsIcal` die Auswahl aus, während der Main-Prozess die Datei ermittelt und verarbeitet. Damit wird die in @sec:api-contract-migration beschriebene zentrale Vertragspflege an einer zusätzlichen Schnittstelle angewandt. @StudyPlanIcalMigration2026
 
 Die Dateiauswahl übernimmt `NativeIcalFilePicker` im Main-Prozess. Er verwendet `dialog.showOpenDialog` mit einem Filter für ICS-Dateien und bindet den Dialog, sofern verfügbar, an das aus dem IPC-Absender ermittelte Anwendungsfenster. @StudyPlanIcalMigration2026 Electron liefert aus diesem Dialog die ausgewählten Pfade beziehungsweise einen Abbruchzustand zurück. @ElectronDialog2026 Der Pfad bleibt innerhalb der nativen Auswahl und wird nicht vom Renderer als frei wählbares Argument übergeben. Die Implementierung prüft die Endung `.ics`, den regulären Dateityp und eine Größenobergrenze von 10 MiB vor sowie nach dem Einlesen. Anschließend stellt sie den Inhalt als UTF-8-Text für die Verarbeitung bereit. @StudyPlanIcalMigration2026
 
-Die Interpretation der Kalenderdaten wurde in `src/main/services/events-ical.parser.ts` ausgelagert. Das Modul verwendet weiterhin `node-ical`, prüft die grundlegende Kalenderstruktur und bildet verwertbare `VEVENT`-Einträge auf interne Termindaten ab. Fehlende Titel oder ungültige Datumswerte führen zum Überspringen der betreffenden Einträge; diese werden gezählt. Aus der ursprünglichen Verarbeitung wurden unter anderem die Ableitung des Termintyps aus dem Titel und eine Standarddauer bei fehlendem Enddatum übernommen. Der Parser erzeugt die Termindaten ohne Benutzerkennung und ohne Datenbankzugriff. @StudienplanerSource2026 @StudyPlanIcalMigration2026
+Die Interpretation der Kalenderdaten wurde in `src/main/services/events-ical.parser.ts` ausgelagert. Das Modul verwendet weiterhin `node-ical` und die übernommenen fachlichen Abbildungen. Bereits der Web-Handler übersprang Einträge ohne Titel oder Startdatum. Ergänzt wurden die Prüfung der grundlegenden Kalenderstruktur, die Prüfung gültiger Datumswerte und die Zurückweisung eines Enddatums vor dem Startdatum. Übersprungene Einträge werden nun gezählt. Der Parser erzeugt die Termindaten ohne Benutzerkennung und ohne Datenbankzugriff. Die Eigenleistung der Migration liegt damit in der neuen lokalen Dateischnittstelle, der Aufteilung der Verarbeitung und der ergänzten Validierungs- und Ergebnisbehandlung; die Bibliothek und wesentliche fachliche Importregeln wurden wiederverwendet. Die Größenobergrenze von 10 MiB bestand bereits im ursprünglichen Multer-Upload und wurde an die lokale Dateiverarbeitung angepasst. @StudienplanerSource2026 @StudyPlanIcalMigration2026
 
 `EventsService.importEventsIcal` übernimmt die fachliche Verarbeitung der Parserausgabe. Der Service ergänzt die aus der Sitzung stammende Benutzerkennung, übergibt die Datensätze an `EventsRepository.createManyEvents` und veranlasst den Aktivitätseintrag zum Import. Dateiauswahl, Formatinterpretation, fachliche Zuordnung und Datenzugriff erhalten dadurch getrennte Zuständigkeiten. Beim Start wird der native Picker als Abhängigkeit an `createEventsHandlers` übergeben. Die Schnittstelle `IcalFilePicker` ermöglicht zugleich, die Dateiauswahl in Tests durch eine geeignete Implementierung zu ersetzen. @StudyPlanIcalMigration2026
 
@@ -437,6 +435,20 @@ Die Integration begann mit der Abstimmung des Datenmodells zwischen Supabase und
 
 Anschließend wurden die Tabellen in die PostgreSQL-Publication `powersync` aufgenommen und für deren Replikationsrolle lesbar gemacht. Die Verbindung des PowerSync-Dienstes zu Supabase umfasst die Datenbankanbindung und die Anerkennung der Supabase-Anmeldetoken. @PowerSyncSupabase2026 Die Datenverteilung wurde in `sync-streams-v4.yaml` beschrieben und als Dienstkonfiguration bereitgestellt. Die Abfragen berücksichtigen Gruppenmitgliedschaften sowie Absender und Empfänger von Einladungen. Diese Datei steuert den Download; die für Schreibzugriffe geltenden Berechtigungen sind zusätzlich im Backend definiert. @StudyPlanSyncIntegration2026 Die entfernten SQL-Migrationen und Sync Streams ergänzen damit das lokale Anwendungsschema und werden getrennt von der Desktop-Paketierung gepflegt.
 
+Der Ausschnitt in @lst:collaboration-stream zeigt die Auswahl gemeinsamer Aufgaben. `auth.user_id()` bezeichnet die gegenüber PowerSync authentifizierte Supabase-Identität. Die Unterabfrage `user_groups` bestimmt ihre Gruppenmitgliedschaften; die anschließende Abfrage beschränkt die Aufgaben auf diese Gruppen. Weitere Abfragen desselben Streams verteilen Gruppen, Mitglieder und zugehörige Profile. Ein eigener Stream behandelt Einladungen anhand von Absender und Empfänger. @StudyPlanSyncIntegration2026
+
+#figure(
+  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+    set text(size: 8.5pt)
+    raw(read("../code/collaboration-stream.yaml"), lang: "yaml", block: true)
+  }),
+  kind: raw,
+  supplement: [Quellcode],
+  caption: [Auswahl gemeinsamer Aufgaben in `sync-streams-v4.yaml`; die übrigen Abfragen wurden weggelassen.],
+) <lst:collaboration-stream>
+
+Die YAML-Datei wird im PowerSync-Dienst ausgewertet. Dieser übernimmt Änderungen aus der angebundenen Supabase-Datenbank und verteilt die durch den Stream ausgewählten Daten an die zugehörigen Clients. `auto_subscribe: true` aktiviert den Stream beim Verbinden automatisch. Das lokale SDK speichert die empfangenen Daten in SQLite; die Repositories lesen sie über Drizzle. @PowerSyncStreams2026 Der Renderer führt die Stream-Abfragen somit nicht selbst aus. In Gegenrichtung übermittelt der Connector lokale Aufgabenänderungen über die Supabase-API. Die Streams ersetzen weder diesen Upload noch die dortigen Berechtigungsprüfungen. @StudyPlanSyncIntegration2026
+
 #figure(
   {
     set par(justify: false)
@@ -484,11 +496,15 @@ Die Preload-Ebene stellt nun zwei begrenzte Aufrufwege bereit. Über `window.api
 
 === Anpassung des Einladungsablaufs und vorausgesetzte Konten <sec:collaboration-invitations>
 
-Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail, ohne den Ablauf einer gezielten Benutzerauswahl innerhalb der Anwendung festzulegen. Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken. Die Oberfläche bildete daraus eine URL und kopierte sie in die Zwischenablage; die Weitergabe an andere Personen erfolgte außerhalb der Anwendung. @StudienplanerSource2026 Dieser Code beschreibt einen vorgesehenen Ablauf. Ein Nachweis seiner tatsächlichen Nutzbarkeit für die untersuchte Zusammenarbeit wurde in dieser Arbeit nicht geführt. Die Migration konnte deshalb nicht von einem bereits vollständig geprüften Kollaborationsprozess ausgehen.
+Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail. Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken. Die Oberfläche bildete daraus eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung. Bereits vorhanden waren außerdem die Seite `/einladung/:token` zum Anzeigen und Annehmen der Einladung sowie Backend-Routen zum Lesen des Tokens und zum Gruppenbeitritt. @StudienplanerInviteReview2026 Der alternative Ablauf lässt sich daher nicht mit vollständig fehlender Beitrittslogik begründen.
+
+Die statische Prüfung zeigt allerdings eine Lücke im Übergang zur Anmeldung: Die Einladungsseite übergibt mit `redirect` eine Rücksprungadresse, die Login-Seite navigiert nach erfolgreicher Anmeldung jedoch zu `/`, ohne diesen Parameter auszuwerten. Damit ist keine automatische Rückkehr zur Einladung umgesetzt. @StudienplanerInviteReview2026 Eine Laufzeitprüfung der ursprünglichen Replit-Bereitstellung wurde nicht durchgeführt; aus diesem Befund folgt kein Nachweis, dass der gesamte Einladungsablauf dort grundsätzlich unbrauchbar war.
 
 Für den synchronisierten Gruppenbereich wurde ein anderer Einladungsablauf implementiert. Supabase Auth verwaltet die entfernten Benutzerkonten; die anwendungsbezogenen Namen und Kennungen liegen in einer zugeordneten `profiles`-Tabelle. Die Trennung zwischen Auth-Daten und über die Anwendungs-API zugänglichen Profilen entspricht dem von Supabase dokumentierten Ansatz. @SupabaseUserManagement2026 Neu entwickelt wurde eine Suche nach Benutzer- oder Anzeigenamen. Die Funktion `search_invitable_profiles` steht dem angemeldeten Gruppeneigentümer zur Verfügung und liefert bis zu 20 passende, als auffindbar markierte Profile. Eigene Identität, vorhandene Mitglieder und Personen mit bereits ausstehender Einladung werden ausgeschlossen. Als Ergebnis werden Kennung, Benutzername und Anzeigename übermittelt. @StudyPlanSyncArchitecture2026
 
-Die Auswahl eines Profils führt zu einer personenbezogenen Einladung über `send_group_invitation`. Die eingeladene Person erhält den Eintrag durch PowerSync und kann ihn mit `respond_group_invitation` annehmen oder ablehnen. Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden. @StudyPlanSyncArchitecture2026 Diese Benutzersuche und der zugehörige Einladungsablauf sind fachliche Anpassungen des Demonstrators. Sie gehen über den Austausch des Transports hinaus und konkretisieren die im Ausgangsartefakt nur teilweise festgelegte Zusammenarbeit.
+Dieser Entwurf setzt für den Demonstrator voraus, dass Gruppeneigentümer die Existenz und die angegebenen Namen auffindbarer Profile kennen dürfen. Die Annahme vereinfacht die Auswahl innerhalb der Anwendung und ist eine fachliche Entscheidung der Fallstudie. Sie bedeutet keine Freigabe sämtlicher Auth-Daten und ersetzt keine Festlegung der gewünschten Auffindbarkeit in einer produktiven Anwendung.
+
+Die Auswahl eines Profils führt zu einer personenbezogenen Einladung über `send_group_invitation`. Die eingeladene Person erhält den Eintrag durch PowerSync und kann ihn mit `respond_group_invitation` annehmen oder ablehnen. Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden. @StudyPlanSyncArchitecture2026 Die Benutzersuche und der zugehörige Einladungsablauf verändern die ursprüngliche Benutzerführung. Damit konnte die Interaktion mit dem entfernten Backend innerhalb der Anwendung demonstriert werden, ohne zusätzlich die externe Linkweitergabe und den Wiedereinstieg in die Desktop-Anwendung auszuarbeiten. Der Ablauf ist eine fachliche Anpassung des Untersuchungsumfangs und keine technisch zwingende Folge des Transportwechsels.
 
 Für die Fallstudie wurden die benötigten entfernten Testkonten vorab über das Supabase-Dashboard angelegt. Ihre E-Mail-Adressen und Passwörter mussten somit bereits vorliegen. Die Desktop-Anwendung enthält eine Anmeldung für diese Konten: Im Main-Prozess ruft der Connector `signInWithPassword` mit den eingegebenen Zugangsdaten auf. @StudyPlanSyncArchitecture2026 Die Methode authentifiziert bestehende Konten und übernimmt keine Registrierung. @SupabasePasswordSignIn2026 Die lokale Kontoverwaltung aus Phase 1 bleibt davon getrennt.
 
@@ -496,9 +512,31 @@ Eine Registrierung für das entfernte Backend, E-Mail-Bestätigung und Passwortz
 
 === Schrittweise Überführung weiterer Funktionen
 
-Die parallele Datenhaltung ermöglicht eine Migration nach Funktionsbereichen: Ein vorhandener Bereich bleibt zunächst bestehen, während ein ausgewählter Bereich mit dem neuen Datenzugriff umgesetzt wird. Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns, bestehende Funktionen schrittweise durch neue Implementierungen abzulösen. @FowlerStranglerFig2024 Im Demonstrator sind die beiden Gruppenbereiche jedoch noch getrennt; vorhandene Gruppendaten werden nicht automatisch übernommen. @StudyPlanSyncArchitecture2026
+Die parallele Datenhaltung ermöglicht eine Migration nach Funktionsbereichen: Ein vorhandener Bereich bleibt zunächst bestehen, während ein ausgewählter Bereich mit dem neuen Datenzugriff umgesetzt wird. Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns, bestehende Funktionen schrittweise durch neue Implementierungen abzulösen. @FowlerStranglerFig2024 Im Demonstrator bleibt der in Phase 1 lokal übernommene Gruppenbereich unter `/gruppen` bestehen. Der in Phase 2 ergänzte Bereich unter `/gruppen-sync` verwendet die neue Kollaborationsdatenbank. Die Oberfläche unterscheidet beide als „Gruppen“ und „Gruppen (Sync)“. Die Koexistenz ist ein Übergangsstand der Umsetzung; bestehende lokale Gruppendaten werden nicht automatisch in den synchronisierten Bereich übertragen. @StudyPlanGroupTransition2026
 
 Das Terminbeispiel aus der Vorprüfung konkretisiert die erforderlichen Anpassungen. Die ursprüngliche `events`-Tabelle besitzt numerische, automatisch erzeugte Kennungen und lokale Benutzerkennungen. Für die separate Prototyptabelle `spike_events` wurden clientseitige UUIDs, eine Supabase-Benutzerzuordnung und geeignete Datentypabbildungen verwendet. Geprüft wurden typisierte CRUD-Zugriffe, Persistenz ausstehender Änderungen und der Abgleich zwischen Replikaten. Damit liegt ein Beispiel für die technische Überführung eines weiteren Datenbereichs vor; die Übernahme vorhandener Termine einschließlich ihrer Referenzen wurde damit noch nicht durchgeführt. @StudyPlanSyncSpikes2026 Weitere Bereiche würden dieselben Grundschritte durchlaufen: Schema und Identitäten anpassen, Daten und Referenzen zuordnen, Repositories anbinden und das Verhalten prüfen. Die Umsetzung jedes weiteren CRUD-Pfads würde das bereits gezeigte Muster wiederholen und wird daher nicht vollständig ausgearbeitet.
+
+@lst:events-local-sqlite und @lst:events-powersync zeigen ausgewählte Felder vor und nach dieser Anpassung. Der Vergleich beginnt beim bereits auf SQLite übertragenen Schema aus Phase 1. Im Prototyp ersetzt eine Textkennung den automatisch erzeugten Integer; `ownerId` verweist auf die entfernte Supabase-Identität. Datumswerte werden als Text gespeichert: Das Repository erzeugt beim Schreiben ISO-Strings und wandelt sie beim Lesen wieder in `Date`-Werte um. Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet. Die Ausschnitte zeigen somit eine Schema- und Repository-Anpassung, keine Migration vorhandener Benutzerdaten. @StudyPlanSchemaReview2026
+
+#figure(
+  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+    set text(size: 8.5pt)
+    raw(read("../code/events-local-sqlite.ts"), lang: "typescript", block: true)
+  }),
+  kind: raw,
+  supplement: [Quellcode],
+  caption: [Ausgewählte Felder des lokalen Terminschemas aus Phase 1; weitere Felder weggelassen.],
+) <lst:events-local-sqlite>
+
+#figure(
+  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+    set text(size: 8.5pt)
+    raw(read("../code/events-powersync.ts"), lang: "typescript", block: true)
+  }),
+  kind: raw,
+  supplement: [Quellcode],
+  caption: [Entsprechende Felder der separaten PowerSync-Prototyptabelle und Schemaableitung; weitere Felder und Indizes weggelassen.],
+) <lst:events-powersync>
 
 Eine spätere Zusammenführung in einer PowerSync-verwalteten lokalen Datenbank wäre grundsätzlich möglich, ohne sämtliche Inhalte zu teilen. Persönliche Tabellen müssten dafür ausdrücklich als lokale Tabellen konfiguriert werden, etwa mit `localOnly: true`; ihre Änderungen gelangen dann nicht in die Upload-Warteschlange. @PowerSyncLocalOnly2026 @PowerSyncDrizzleDriver2026 Das bloße Weglassen eines Sync Streams reicht hierfür nicht aus, da Streams den Download steuern. Benutzerzuordnung und Zugriff ohne entfernte Anmeldung wären bei einer solchen Zusammenführung weiterhin zu erhalten. Erst nach Ablösung aller bisherigen libSQL-Zugriffe könnte `@libsql/client` entfallen. Dazu wären die betroffenen Repositories, Datenbankinitialisierung und Schemaverwaltung zu überführen. Im gewählten Entwurf bliebe `better-sqlite3` als lokaler Treiber erhalten. Eine solche vollständige Ablösung wurde nicht geprüft; sie beschreibt eine mögliche Weiterentwicklung, nicht den erreichten Projektstand.
 

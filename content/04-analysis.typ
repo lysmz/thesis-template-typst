@@ -120,13 +120,13 @@ Darstellung, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichke
 
 Bestandteile des Ausgangsartefakts sollen soweit möglich weiterverwendet werden. Notwendige Anpassungen und Ersetzungen sind nach Komponenten beziehungsweise Schichten zu dokumentieren und zu begründen. Bewertet wird die Nachvollziehbarkeit der Eingriffe; ein global minimaler Entwicklungsaufwand oder eine gemessene Zeitersparnis wird nicht verlangt.
 
-=== A4: Lokale Kommunikation ohne HTTP-Wrapper
+=== A4: Lokale Kommunikation im Electron-Prozessmodell
 
-Lokale Fachoperationen müssen über Preload und IPC ausgeführt werden. Der Nachweis beschreibt den tatsächlichen Aufrufweg und zeigt, dass hierfür kein lokaler HTTP-Server erforderlich ist. Externe HTTPS-Anbindungen werden gesondert betrachtet.
+Lokale Fachoperationen müssen über begrenzte Preload-Schnittstellen und IPC ausgeführt werden. Dies nutzt den in @sec:theory-electron beschriebenen Kommunikationsweg des Electron-Prozessmodells. Die zusätzliche Entwurfsentscheidung dieser Arbeit besteht darin, das ursprüngliche HTTP-Routing nicht als lokalen Server weiterzuführen. Der Nachweis beschreibt den tatsächlichen Aufrufweg und zeigt, dass hierfür kein lokaler HTTP-Server erforderlich ist. Externe HTTPS-Anbindungen werden gesondert betrachtet.
 
 === A5: Lokale Datenhaltung und Offline-Kernfunktionen
 
-Die ausgewählten persönlichen Kernfunktionen und die lokale Identitätsverwaltung müssen ohne Netzwerkverbindung nutzbar sein. Änderungen müssen einen Anwendungsneustart überdauern. Für katalogabhängige Funktionen wird ein bereits lokal verfügbarer Datenbestand vorausgesetzt. Der Nachweis umfasst lokale Verarbeitung und anschließendes erneutes Lesen der gespeicherten Daten.
+Die ausgewählten persönlichen Kernfunktionen und die lokale Identitätsverwaltung müssen ohne Netzwerkverbindung nutzbar sein. Änderungen müssen einen Anwendungsneustart überdauern. Damit wird die lokale Nutzbarkeit als Grundlage des in @sec:theory-local-first beschriebenen Local-First-Anspruchs konkretisiert; A6 ergänzt die Zusammenarbeit. Für katalogabhängige Funktionen wird ein bereits lokal verfügbarer Datenbestand vorausgesetzt. Der Nachweis umfasst lokale Verarbeitung und anschließendes erneutes Lesen der gespeicherten Daten.
 
 === A6: Local-First-Kollaboration am Gruppenfeature „Aufgaben“
 
@@ -146,10 +146,8 @@ Der Leitfaden muss Voraussetzungen, Reihenfolge, Änderungen, Entscheidungen und
 
 == Abgrenzung des Untersuchungsumfangs
 
-Untersucht werden die Migration und Härtung der Desktop-Anwendung im festgelegten Kernumfang. Die Sicherheitsbetrachtung umfasst ihre Schnittstellen, Eingabevalidierung, anwendungsinterne Zugriffskontrollen und die Verarbeitung externer Daten.
+Die interne Sicherheit und der Betrieb entfernter Dienste für Synchronisierung oder Datenbereitstellung liegen außerhalb des Umfangs. Ebenso ausgeschlossen sind die Verschlüsselung der lokalen Datenbankdatei und ihr Schutz gegenüber anderen Betriebssystemprozessen oder Benutzern.
 
-Die interne Sicherheit und der Betrieb entfernter Dienste liegen außerhalb des Umfangs. Ebenso ausgeschlossen sind die Verschlüsselung der lokalen Datenbankdatei und ihr Schutz gegenüber anderen Betriebssystemprozessen oder Benutzern.
-
-Die Kollaborationsuntersuchung bleibt auf Gruppen, Einladungen und gemeinsame Aufgaben begrenzt. Kommentare, weitere gemeinsame Gruppeninhalte, die Synchronisierung persönlicher Daten über mehrere Endgeräte und gemeinsame Echtzeitbearbeitung von Dokumenten werden nicht untersucht.
+Kommentare, weitere gemeinsame Gruppeninhalte, die Synchronisierung persönlicher Daten über mehrere Endgeräte und gemeinsame Echtzeitbearbeitung von Dokumenten werden nicht untersucht. Auch die Entwicklung eines vollständigen entfernten Kontolebenszyklus mit Registrierung und Passwortzurücksetzung sowie die Übertragung von Dateien über entfernte Speicherbereiche gehören nicht zum Umfang.
 
 Frontend-Unit-Tests, automatisierte End-to-End-Tests, ein umfassender Sicherheitsvergleich zwischen Web- und Desktop-Laufzeit sowie ein unabhängiger Reproduktionsdurchlauf des Leitfadens sind ausgeschlossen. Aussagen zur Sicherheit und Übertragbarkeit bleiben auf die ausgewiesenen Verfahren und Nachweise begrenzt.

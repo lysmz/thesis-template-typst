@@ -1,0 +1,18 @@
+config:
+  edition: 3
+
+streams:
+  collaboration_groups:
+    auto_subscribe: true
+    with:
+      user_groups: |
+        SELECT group_id
+        FROM group_members
+        WHERE user_id = auth.user_id()
+    queries:
+      - |
+        SELECT id, group_id, title, description, due_date,
+               assignee_id, status, created_by, updated_by,
+               created_at, updated_at
+        FROM group_tasks
+        WHERE group_id IN user_groups

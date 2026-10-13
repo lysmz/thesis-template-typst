@@ -44,6 +44,12 @@ Interprozesskommunikation (IPC) vermittelt Nachrichten zwischen den beteiligten 
 
 Die technische Prozessstruktur und die fachlichen Schichten sind somit unabhängig voneinander zu beschreiben. Der Renderer kann die Darstellung übernehmen, während Controller, Services und Repositories im Main-Prozess liegen. Preload und IPC bilden den Kommunikationsweg zwischen diesen Zuständigkeiten. Eine solche Zuordnung macht die privilegierten Eingangsstellen sichtbar; ihre Begrenzung und Absicherung sind eigene Entwurfs- und Prüfaufgaben.
 
+=== Navigation über Hashrouting <sec:hash-routing>
+
+Bei einer Single-Page-Anwendung bestimmt ein clientseitiger Router, welche Ansicht innerhalb des geladenen Dokuments dargestellt wird. Hashrouting legt die Anwendungsroute im Fragment der Adresse hinter `#` ab, beispielsweise als `#/kalender`. Das Fragment wird clientseitig verarbeitet und bei einer HTTP-Anfrage nicht an den Server übermittelt. @MDNFragment2026 Der Ressourcenpfad des Dokuments bleibt dadurch unverändert, während sich die ausgewählte Ansicht ändern kann.
+
+Dies ist für eine lokal geladene Electron-Oberfläche eine mögliche Navigationsstrategie: Eine fachliche Route muss nicht als eigener Dateipfad aufgelöst werden. Wouter stellt dafür den Hook `useHashLocation` bereit. @WouterHashRouting2026 Hashrouting ist keine zwingende Vorgabe von Electron; seine Eignung hängt vom Laden der Renderer-Ressourcen und der gewählten Navigation ab.
+
 == Lokale Persistenz, Schema und Identität <sec:theory-persistence>
 
 Persistenz bezeichnet den Erhalt von Daten über die aktuelle Programmausführung hinaus. Eine lokal ausgeführte Funktion ist daher erst dann dauerhaft nutzbar, wenn ihre Ergebnisse gespeichert und nach einem Neustart wieder gelesen werden können. SQLite stellt hierfür eine eingebettete SQL-Datenbank bereit. Die Bibliothek benötigt keinen eigenen Datenbankserver und liest beziehungsweise schreibt Datenbankdateien direkt. @SQLiteAbout2026 Das Öffnen, Initialisieren und Aktualisieren dieses Datenbestands wird damit Teil der Anwendungszuständigkeit.
