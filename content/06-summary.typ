@@ -2,10 +2,28 @@
 = Fazit und Ausblick <ch:summary>
 //---------------------------------------------------------------------
 
-#lorem(200)
+== Fazit <sec:conclusion>
 
-#lorem(300)
+Diese Arbeit hat einen Migrationsleitfaden für die Überführung eines KI-generierten Webprototyps in eine Electron-Anwendung mit lokaler Datenhaltung und ergänzender Synchronisierung entwickelt. Ausgangspunkt war der auf Replit erzeugte Studienplaner. Seine Funktionen und Architektur wurden analysiert, Anforderungen an die Zielanwendung abgeleitet und die erforderlichen Veränderungen anhand eines repräsentativen Kernumfangs umgesetzt.
 
-#lorem(100)
+Die Forschungsfrage aus @ch:intro lässt sich für den untersuchten Fall durch die systematische Neuordnung von Verantwortlichkeiten beantworten. Vorhandene Komponenten werden zunächst nach Darstellung, Schnittstellenverarbeitung, Fachlogik, Datenhaltung und externen Abhängigkeiten eingeordnet. Darauf aufbauend entsteht eine lokal verarbeitende Kernarchitektur mit begrenzten Prozessschnittstellen. Externe Datenübernahme und die Synchronisierung gemeinsamer Aufgaben ergänzen diese Grundlage. Die Härtung begleitet die Entwurfsentscheidungen und wird abschließend anhand der tatsächlich entstandenen Anwendung konsolidiert.
 
-#lorem(200)
+Die Umsetzung zeigt, auf welchen Ebenen Wiederverwendung möglich ist. React-Oberfläche, fachliche Regeln, Drizzle und der OpenAPI-Vertrag konnten als Grundlagen erhalten bleiben. Notwendige Änderungen betrafen insbesondere Datenbankdialekt und Schemaverwaltung, Identitätszuordnung sowie den Wechsel von HTTP-Aufrufen zu Preload und IPC. Die Trennung in Handler, Services und Repositories machte diese Eingriffe nachvollziehbar und schuf eine Grundlage für fachliche Tests. Dateiimporte und Katalogabruf ergänzten das CRUD-Muster um begrenzte Datei- und Netzwerkoperationen. Die Kollaboration erforderte zusätzlich eine eigenständige Behandlung lokaler Änderungen, ihrer entfernten Annahme und möglicher Ablehnungen oder Wiederholungen.
+
+Das zentrale Ergebnis ist der in @sec:migration-recommendations formulierte Leitfaden. Seine Handlungsempfehlungen verbinden Voraussetzungen, Transformationsschritte und Kontrollpunkte mit dem Demonstrator. Wiederkehrende Aufgaben werden dadurch als fortführbare Muster beschrieben. Der frameworkagnostische Anteil liegt auf der Ebene dieser Verantwortlichkeiten und Prüffragen; Generator, Treiber und Konfigurationen bleiben an den konkreten Technologiestack gebunden.
+
+Die Evaluation stützt die Architektur, ausgewählte funktionale Verarbeitungspfade und die dokumentierte Härtung innerhalb des festgelegten Umfangs. Die wichtigste offene funktionale Nachweisaufgabe betrifft A5: Ein vollständiger Offline-Paketdurchlauf aller persönlichen Kernfunktionen einschließlich Neustartpersistenz ist nicht dokumentiert. Die Sicherheitsbewertung bleibt an ihre ausgewiesenen Nachweisebenen und Grenzen gebunden. Eine unabhängige Übertragung des Leitfadens auf weitere Artefakte und ein vergleichender Nachweis geringsten Migrationsaufwands wurden nicht durchgeführt. @sec:requirements-evaluation und @sec:discussion-validity ordnen diese Grenzen ein.
+
+Der Beitrag der Arbeit besteht damit in einer fallbezogen entwickelten und begründeten Vorgehensweise. Sie verbindet die Weiterverwendung eines vorhandenen Prototyps mit architektonischer Neuordnung, lokaler Nutzbarkeit und expliziten Prüfaufgaben. Die Zuordnung von Entscheidung, Umsetzung und Nachweis ermöglicht es, sowohl erreichte Eigenschaften als auch noch erforderliche Arbeiten nachvollziehbar zu benennen.
+
+== Ausblick <sec:future-work>
+
+Als nächster Schritt ist der fehlende Nachweis der Offline-Kernfunktionen am festgelegten Windows-Paketstand zu vervollständigen. Dazu gehören die Anmeldung und persönliche Datenzuordnung, die ausgewählten Bearbeitungs- und Importabläufe bei unterbrochener Verbindung sowie das erneute Lesen gespeicherter Änderungen nach einem Neustart. Für katalogabhängige Abläufe ist der vorausgesetzte lokale Datenbestand festzuhalten. Die Prüfungen sollten die gebaute Anwendung, ihre Datenbankinitialisierung und die nativen Dateidialoge gemeinsam erfassen, damit die vorhandenen Service-Tests durch Beobachtungen des vollständigen Verarbeitungspfads ergänzt werden.
+
+Für die weitere Erprobung des Leitfadens bietet sich eine unabhängige Migration eines zweiten Ausgangsartefakts an. Eine andere Frontend-Technologie könnte zeigen, welche Empfehlungen auf der beschriebenen Abstraktionsebene fortgeführt werden können. Ein dienstgebundenes Backend würde zusätzlich die in Kapitel 4 eingegrenzte Frage aufgreifen, wie bislang entfernte Verantwortlichkeiten lokal nachgebildet werden müssen. Zu erfassen wären insbesondere erforderliche Anpassungen, unklare Anleitungsschritte und fehlende Kontrollpunkte. So ließe sich die Übertragbarkeit des Leitfadens über den bisherigen Prozess- und Strukturabgleich hinaus bewerten.
+
+Eine Fortführung des Demonstrators kann anschließend die Datenhaltungs- und Updatearchitektur vertiefen. Eine Zusammenführung der lokalen Datenbestände müsste bestehende Datensätze und Beziehungen erhalten. Für synchronisierte Bereiche wäre ein koordinierter Schemaübergang mit unterschiedlichen Client-Versionen und ausstehenden Änderungen zu erproben. Weitergehende Konfliktregeln wären aus konkreten fachlichen Anforderungen abzuleiten. Diese Erweiterungen setzen die untersuchten Muster fort, benötigen aber eigene Implementierungs- und Funktionsnachweise.
+
+Die Sicherheitsprüfung sollte bei solchen Änderungen an den neuen Paketstand angepasst werden. Ein offener Prüfpunkt bleibt insbesondere die SDK-interne Redirectbehandlung des Synchronisierungstransports. Neue privilegierte Fähigkeiten oder Datenflüsse erfordern zudem einen erneuten Abgleich der Prozess- und Schnittstellengrenzen. Eine spätere praktische Nutzung müsste ihren erweiterten Funktions-, Betriebs- und Sicherheitsumfang ausdrücklich festlegen.
+
+Diese weiteren Schritte können die technische Belegbasis vervollständigen und den Geltungsbereich der Handlungsempfehlungen erweitern. Der entwickelte Leitfaden bildet dafür eine nachvollziehbare Grundlage, die anhand zusätzlicher Fälle und ihrer Ergebnisse weiter geprüft und präzisiert werden kann.
