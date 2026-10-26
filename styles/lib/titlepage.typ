@@ -22,7 +22,10 @@
   v(6 * ex)
   text(size: 14.4pt, p("type", map: t))
   v(8 * ex)
-  text(size: 20.74pt, p("title"))
+  block(above: 0pt, below: 0pt, {
+    set par(justify: false)
+    text(size: 20.74pt, p("title"))
+  })
   v(8 * ex)
   text(size: 14.4pt, p("author"))
   if p("student-id", default: none) != none {
@@ -34,7 +37,16 @@
     row-gutter: 1.6em,
     column-gutter: 1em,
     align: (right, left),
-    ..if examiners != none { (if examiners.len() == 1 [#t("examiners-singular"):] else [#t("examiners-plural"):], stack(spacing: 0.65em, ..examiners)) },
+    ..if examiners != none {
+      if examiners.len() == 2 {
+        (
+          [#t("first-examiner"):], examiners.at(0),
+          [#t("second-examiner"):], examiners.at(1),
+        )
+      } else {
+        (if examiners.len() == 1 [#t("examiners-singular"):] else [#t("examiners-plural"):], stack(spacing: 0.65em, ..examiners))
+      }
+    },
     ..if supervisors != none { (if supervisors.len() == 1 [#t("supervisors-singular"):] else [#t("supervisors-plural"):], stack(spacing: 0.65em, ..supervisors, p("company"))) },
   ))
   v(1fr)
