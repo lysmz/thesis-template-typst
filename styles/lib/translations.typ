@@ -14,9 +14,12 @@
     "master": "Masterarbeit",
     "report": "Bericht",
     "faculty": "Fakultät Informatik",
+    "university": "Georg Simon Ohm",
     "student-id": "Matrikelnummer",
     "examiners-singular": "Prüfer",
     "examiners-plural": "Prüfer",
+    "first-examiner": "Erstprüfer",
+    "second-examiner": "Zweitprüfer",
     "supervisors-singular": "Betreuer",
     "supervisors-plural": "Betreuer",
     "copyright": context [
@@ -67,6 +70,8 @@
     "student-id": "Student ID",
     "examiners-singular": "Examiner",
     "examiners-plural": "Examiners",
+    "first-examiner": "First examiner",
+    "second-examiner": "Second examiner",
     "supervisors-singular": "Supervisor",
     "supervisors-plural": "Supervisors",
     "copyright": context [

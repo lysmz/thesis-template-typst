@@ -228,6 +228,8 @@ Bei einer bekannten, aber nicht registrierten Operation liefert der Dispatcher `
 
 === Begründung und Grenzen der vertragsbasierten Generierung
 
+Die Entscheidung berücksichtigt auch den Vorversuch aus @sec:migration-preliminary. Die dort beobachteten, schwer zuzuordnenden Änderungen begründeten das Ziel, notwendige Schnittstellenanpassungen nachvollziehbarer von zusätzlichen Verhaltensänderungen zu trennen. Die gemeinsame Vertragsgrundlage unterstützt hierfür die abgestimmte Ableitung der Schnittstellenbausteine.
+
 Alternativ hätten die von Orval erzeugten Hooks, Typen und Zod-Schemata manuell angepasst werden können. Der eigene Generator wäre entfallen, Änderungen hätten jedoch in mehreren abhängigen Modulen abgestimmt werden müssen. Für den erweiterbaren Demonstrator wurde deshalb die zentrale Vertragsgrundlage beibehalten und ihre Übersetzung nach IPC automatisiert.
 
 Für Erweiterungen wird der Vertrag an einer Stelle ergänzt und die Änderung durch erneute Generierung in Typen, Client, Hooks und Laufzeitschemata übertragen. Anschließend werden Handler, Fachlogik und Oberflächenabläufe implementiert. Dieses Vorgehen unterstützt die Wiederverwendung nach A3 und das Erweiterungsmuster nach A8 und A9. Der anfängliche Entwicklungs- und spätere Pflegeaufwand des Generators bleibt zu berücksichtigen; eine quantitative Aufwandsersparnis wurde nicht nachgewiesen. @StudyPlanApiMigration2026
