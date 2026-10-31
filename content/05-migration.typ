@@ -397,67 +397,32 @@ Wartbarkeit	Vermeidung manueller Synchronisationsfehler zwischen den Prozessen (
 Eine quantitative Aufwandsersparnis gegenüber einer manuellen Anpassung vorhandener Orval-Artefakte konnte im Rahmen der Arbeit nicht empirisch nachgewiesen werden @StudyPlanApiMigration2026. 
 Der Hauptgewinn des gewählten Ansatzes liegt somit nicht zwingend in kürzeren Entwicklungszeiten, sondern primär in der strukturellen Verlässlichkeit: Fehlerhafte Schnittstellenaufrufe und Datenformate werden bereits zur Übersetzungs- bzw. Generierungszeit erkannt, wodurch die strikte Trennung von Schnittstellenvertrag und Fachlogik (A2) architektonisch erzwungen wird.
 
-=== Übernahme der React-Oberfläche in den Renderer <sec:frontend-migration>
+=== Übernahme der React-Oberfläche in den Renderer sec:frontend-migration
 
-Die React-Oberfläche aus `artifacts/studienplaner/` wurde im Commit `f4ea658` nach `src/renderer/src/` übernommen.
-Dazu gehören Layout, UI-Komponenten, Hilfsmodule unter `hooks/` und `lib/` sowie die Seiten für Dashboard, Kalender, Noten und Stundenplan @StudyPlanFrontendMigration2026.
+Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert. 
 
-`App.tsx` und `main.tsx` behielten die Einbindung von React Query über `QueryClientProvider` sowie die Anbieter für Tooltips und Benachrichtigungen bei.
-Die Darstellungsstruktur konnte weitgehend weiterverwendet werden; anzupassen waren insbesondere Modulauflösung, Datenzugriffe und Navigation @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
+Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt. 
+Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf src/renderer/index.html zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, BASE_PATH und Replit-Plugins des Ausgangsprojekts ersatzlos @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
 
-Die übernommene `index.css` enthält Theme-Variablen und die Einbindung von Tailwind CSS, `tw-animate-css` und dem Typografie-Plugin.
-Die Vorlagendateien `assets/main.css` und `assets/base.css` wurden samt Beispielkomponenten und Grafiken entfernt.
-Der zunächst ebenfalls kopierte Google-Fonts-Import wurde im Commit `36ff5f9` entfernt.
-Die Schriftstapel nennen weiterhin „Plus Jakarta Sans“ und „Fraunces“ und enthalten System- beziehungsweise generische Fallbacks @StudyPlanFrontendMigration2026.
-Damit entfällt der externe Schriftabruf; die Verfügbarkeit der ursprünglich vorgesehenen Schriftarten ist dadurch jedoch nicht nachgewiesen.
-Eine Prüfung ihrer lokalen Installation ist für den damaligen Stand nicht dokumentiert.
-Für eine verlässlich gleiche Offline-Darstellung hätten die benötigten Schriftdateien mitgeliefert werden können, beispielsweise über Fontsource-Pakete, deren CSS-Imports Vite als lokale Build-Ressourcen verarbeitet @FontsourceVite2026.
-Diese Alternative wurde im Demonstrator nicht umgesetzt.
+Um bestehende Modulpfade wie @/components/ui/badge ohne Refaktorisierung beizubehalten, wurde der Pfadalias @ in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für @/* hinterlegt @StudyPlanFrontendMigration2026. 
+Der synchrone Eintrag in beiden Dateien stellt sicher, dass Vite die Pfade beim Bündeln auflöst und TypeScript sie bei der Typprüfung korrekt zuordnet @TypeScriptPaths2026.
 
-Mitkopierte Paket- und Konfigurationsdateien wurden nach dem Abgleich mit der Electron-Struktur im Commit `8b9bd66` entfernt: `package.json`, `vite.config.ts`, `tsconfig.json`, `components.json` und die zusätzliche `index.html`.
-Der Renderer verwendet `src/renderer/index.html` und die Paket- und Build-Konfiguration des Zielprojekts @StudyPlanFrontendMigration2026.
+Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein. 
+@tailwindcss/vite über tailwindcss() neben react() registriert und die Vite-Typreferenz in src/renderer/src/env.d.ts hinterlegt @TailwindVite2026 @StudyPlanFrontendMigration2026. 
+Die Vorlagenstile assets/main.css und assets/base.css wurden samt Beispielkomponenten gelöscht.
 
-Die Replit-Plugins, `PORT`, `BASE_PATH` sowie Webserver- und Ausgabeeinstellungen der ursprünglichen Vite-Konfiguration wurden nicht übernommen @StudienplanerSource2026.
-electron-vite verwaltet Main, Preload und Renderer in einer gemeinsamen Konfiguration; für den Renderer verwendet es standardmäßig `src/renderer` und die dortige `index.html` @ElectronViteConfig2026.
+Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt. 
 
-Im Commit `ceccf8f` wurde der Alias `@` in `electron.vite.config.ts` unter `renderer.resolve.alias` auf `src/renderer/src` gesetzt.
-`tsconfig.web.json` erhielt die entsprechende Zuordnung für `@/*`; `@renderer` blieb erhalten.
-So konnten Imports wie `@/components/ui/badge` weiterverwendet werden @StudyPlanFrontendMigration2026.
-Vite benötigt die Zuordnung für den Build, TypeScript für die Modul- und Typprüfung.
-TypeScript-`paths` allein schreibt die ausgegebenen Importpfade nicht um @TypeScriptPaths2026.
+=== Anbindung der Seiten und Navigation
 
-Für die Styles wurde `@tailwindcss/vite` mit `tailwindcss()` neben `react()` registriert, entsprechend dem dokumentierten Tailwind-Integrationsweg @TailwindVite2026.
-Diese Anpassung und die Vite-Typreferenz in `src/renderer/src/env.d.ts` gehören zur Oberflächenintegration im Commit `f03ab7f`; dessen Generatoränderungen wurden bereits in @sec:api-contract-migration behandelt @StudyPlanFrontendMigration2026.
+Die bisherigen API-Aufrufe über @workspace/api-client-react wurden in den Seiten und im Layout durch @/api ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026. 
+Da der Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt.
 
-Die Paketdefinition wurde anhand des Ausgangsartefakts um Radix UI, `clsx`, `class-variance-authority`, `tailwind-merge`, React Hook Form samt Resolver, React Query, `date-fns`, Lucide und Wouter ergänzt.
-Die shadcn/ui-Komponenten wurden als Quelldateien übernommen.
-Die Abhängigkeitsauflösung entstand im Zielprojekt neu: Das Ausgangsartefakt verwendet `pnpm-lock.yaml`, das Electron-Projekt `package-lock.json` @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
+Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt. 
 
-=== Anbindung der Seiten, Datumswerte und Navigation
-
-Die bisherigen Imports aus `@workspace/api-client-react` wurden in den Seiten und im Layout durch Imports aus `@/api` ersetzt.
-Dieses Modul exportiert die für IPC erzeugten Hooks und zugehörigen Typen.
-Die Generatoranpassungen aus @sec:api-contract-migration ermöglichten, vorhandene Hook-Namen und typische Aufrufmuster beizubehalten.
-Beispielsweise blieb die Verwendung von `useListEvents(monthParams)` beziehungsweise einer Mutation mit `{ data: ... }` erhalten.
-Die Änderung des Imports allein genügte allerdings dort nicht, wo sich die Datendarstellung an der Schnittstelle änderte @StudyPlanFrontendMigration2026.
-
-Im Commit `ce275e4` wurde beispielsweise in `pages/kalender.tsx` die Verarbeitung von Datumsstrings an die generierten `Date`-Typen angepasst.
-`eventsForDay` verwendet `new Date(e.startDate)` anstelle von `parseISO`; für das Enddatum gilt dieselbe Anpassung.
-Formulareingaben werden in `Date`-Werte umgewandelt und Abfragegrenzen als solche übergeben.
-Vorhandene Werte können direkt formatiert oder über `getTime()` sortiert werden.
-Das Dashboard wurde entsprechend angepasst @StudyPlanFrontendMigration2026.
-
-Ungenutzte Imports, Variablen und Zustandseinträge wurden ebenfalls entfernt.
-Die geerbte Electron-Toolkit-Konfiguration aktiviert `noUnusedLocals` und `noUnusedParameters`; das Ausgangsartefakt setzte `noUnusedLocals` auf `false` @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
-Die Bereinigung war daher auch für die Typprüfung erforderlich, da TypeScript ungenutzte lokale Deklarationen bei aktivierter Prüfung als Fehler meldet @TypeScriptUnused2026.
-
-Die direkten HTTP-Dateiimporte der kopierten Kalender- und Notenseiten wurden im nachfolgend beschriebenen Importschritt durch lokale Operationen ersetzt @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
-
-Für die Navigation wurde das bereits verwendete Paket `wouter` beibehalten.
-Im Web-Prototyp erhielt dessen Router den aus `import.meta.env.BASE_URL` abgeleiteten Basispfad.
-Im Authentifizierungscommit `1c1988d` wurde stattdessen `useHashLocation` aus `wouter/use-hash-location` eingebunden und mit `<WouterRouter hook={useHashLocation}>` aktiviert @StudyPlanFrontendMigration2026.
-Die in @sec:hash-routing erläuterte Navigation über das Adressfragment ermöglicht etwa `#/kalender`, ohne den Pfad der geladenen Renderer-Ressource zu ändern.
-Die vorhandenen React-Routen und Navigationskomponenten konnten auf dieser Grundlage weiterverwendet werden.
+Für die Navigation nutzt die Anwendung weiterhin wouter. 
+Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) bindet den Router über useHashLocation aus wouter/use-hash-location ein (<WouterRouter hook="{useHashLocation}">) @StudyPlanFrontendMigration2026. 
+Wie in @sec:hash-routing ausgeführt, steuert das Adressfragment (z. B. #/kalender) den internen Seitenwechsel, ohne den Dateipfad der geladenen Renderer-Ressource im Electron-Kontext zu verändern.
 
 === Lokale Authentifizierung als erster vollständiger Verarbeitungspfad
 
@@ -467,7 +432,6 @@ Erwogen wurden das Entfernen der Anmeldung oder eine automatische Zuordnung zu e
 Diese Varianten hätten Änderungen an der bestehenden Benutzerführung und Kontozuordnung erfordert.
 Die Anmeldung wurde beibehalten, weil sie zum ursprünglichen Funktionsumfang gehörte und ihre Entfernung für die lokale Ausführung technisch nicht erforderlich war.
 Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufweg zwischen Oberfläche, Preload, Dispatcher und lokaler Datenhaltung an einem zusammenhängenden Ablauf genutzt werden konnte.
-Dieser Schritt ist im Commit `1c1988d` dokumentiert @StudyPlanLocalAuth2026.
 
 `auth.handlers.ts` ordnet `register`, `login`, `logout` und `getMe` den Service-Aufrufen zu und übersetzt deklarierte Fehler.
 `AuthService` übernimmt Registrierung, Passwortprüfung und Benutzerzuordnung; `UsersRepository` führt die Drizzle-Abfragen aus.
@@ -547,6 +511,13 @@ Der generierte Hook bildet die Eingabe auf den IPC-Vertrag ab.
 Nach Prüfung und Ausführung gelangt das Ergebnis über den Dispatcher und den API-Client zurück zum Hook.
 Die Oberfläche aktualisiert anschließend die Abfragen für Notenliste und Statistik @StudyPlanGradesMigration2026.
 
+@fig:grades-crud-flow stellt diesen Ablauf mit den beteiligten Prozessbereichen und dem Rückweg des Ergebnisses dar.
+
+#figure(
+  image("../figures/grades-crud-flow.svg", width: 100%),
+  caption: [Lokaler CRUD-Aufrufweg am Beispiel der Notenerfassung. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg und die anschließende Aktualisierung der Oberfläche.],
+) <fig:grades-crud-flow>
+
 Diese Grundstruktur kann für weitere CRUD-Bereiche erneut angewandt werden.
 Dabei sind jeweils die zugehörigen Vertragsdefinitionen, fachlichen Regeln, Datenzugriffe und Berechtigungen zu berücksichtigen.
 Die Wiederholung betrifft die Verteilung der Verantwortlichkeiten und den Kommunikationsweg; die Berechtigungsregeln gemeinsamer Gruppenressourcen sind gesondert von der persönlichen Datenzuordnung zu prüfen.
@@ -555,12 +526,7 @@ Die Struktur konkretisiert damit A2 und das in A8 geforderte Erweiterungsmuster.
 `scripts/grades/grades.test.ts` verbindet den generierten Client mit Dispatcher, Handlern, Service, Repositories und einer SQLite-Datenbank im Arbeitsspeicher.
 Geprüft werden Sitzung, persönliche Datenzuordnung, Änderungen, Aktivitäten und Statistik.
 Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.
-Der Test prüft damit die Fachlogik samt Datenzugriff; Oberfläche und Electron-Laufzeit werden gesondert bewertet @StudyPlanGradesMigration2026.
-
-Der vorhandene Gruppenbereich wurde in dieser Phase ebenfalls als lokaler CRUD-Bereich übernommen.
-`GroupsService` und `GroupsRepository` verwenden die Kerndatenbank; die Oberfläche ist unter `/gruppen` erreichbar.
-Die spätere Kollaboration ergänzt einen eigenen synchronisierten Bereich unter `/gruppen-sync`.
-Diese beiden Implementierungen sind im Demonstrator nebeneinander vorhanden und werden bei der Darstellung von Phase 2 unterschieden @StudyPlanGroupTransition2026.
+Der Test prüft damit die Fachlogik samt Datenzugriff.
 
 === Lokaler Dateiimport am Beispiel iCal <sec:file-import-migration>
 

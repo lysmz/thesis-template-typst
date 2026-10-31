@@ -1,0 +1,79 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" role="img" aria-labelledby="title description">
+  <title id="title">Lokaler CRUD-Aufrufweg am Beispiel der Notenerfassung</title>
+  <desc id="description">Das Formular ruft einen generierten Hook auf. Über API-Client, Preload und IPC erreicht die Anfrage den Dispatcher im Main-Prozess. Nach der Vertragsvalidierung folgen authentifizierter Handler, Service, Repository und SQLite. Das Ergebnis durchläuft dieselben Schichten zurück zum Hook. Anschließend werden Notenliste und Statistik aktualisiert. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg.</desc>
+  <defs>
+    <marker id="request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
+    <marker id="response" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; font-size: 25px; fill: #17242c; text-anchor: middle; }
+      .heading { font-size: 28px; font-weight: 700; }
+      .note { font-size: 23px; fill: #475761; }
+      .box { fill: #fff; stroke: #6d7f8b; stroke-width: 2; }
+      .call { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#request); }
+      .return { fill: none; stroke: #68737b; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#response); }
+    </style>
+  </defs>
+
+  <rect x="20" y="20" width="440" height="360" rx="10" fill="#f3f7fa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="240" y="63" class="heading">Renderer / React</text>
+  <rect x="50" y="90" width="380" height="85" rx="8" class="box"/>
+  <text x="240" y="124" class="heading">Formular</text>
+  <text x="240" y="154" class="note">Note anlegen oder bearbeiten</text>
+  <path d="M170 175 V255" class="call"/>
+  <text x="265" y="221" class="note">Eingabe</text>
+  <rect x="50" y="255" width="380" height="100" rx="8" class="box"/>
+  <text x="240" y="289" class="heading">Generierter Hook</text>
+  <text x="240" y="318" class="note">useCreateGrade / useUpdateGrade</text>
+  <text x="240" y="344" class="note">API-Client: Eingabe → IPC-Vertrag</text>
+
+  <rect x="20" y="420" width="440" height="120" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="240" y="457" class="heading">Preload / IPC</text>
+  <text x="240" y="490" class="note">Begrenzte Bridge</text>
+  <text x="240" y="519" class="note">Aufruf an den Main-Prozess</text>
+  <path d="M170 355 V420" class="call"/>
+  <path d="M310 420 V355" class="return"/>
+
+  <rect x="580" y="20" width="500" height="715" rx="10" fill="#f3f7fa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="830" y="63" class="heading">Main-Prozess</text>
+  <rect x="610" y="90" width="440" height="85" rx="8" class="box"/>
+  <text x="830" y="124" class="heading">Dispatcher</text>
+  <text x="830" y="154" class="note">Vertrag prüfen, Operation zuordnen</text>
+  <path d="M460 480 H505 V120 H610" class="call"/>
+  <path d="M610 150 H545 V510 H460" class="return"/>
+
+  <rect x="610" y="225" width="440" height="85" rx="8" class="box"/>
+  <text x="830" y="259" class="heading">Handler</text>
+  <text x="830" y="289" class="note">Sitzung → Benutzerkennung</text>
+  <path d="M750 175 V225" class="call"/>
+  <path d="M910 225 V175" class="return"/>
+
+  <rect x="610" y="360" width="440" height="85" rx="8" class="box"/>
+  <text x="830" y="394" class="heading">Service</text>
+  <text x="830" y="424" class="note">Fachliche Regeln und Aktivitäten</text>
+  <path d="M750 310 V360" class="call"/>
+  <path d="M910 360 V310" class="return"/>
+
+  <rect x="610" y="495" width="440" height="85" rx="8" class="box"/>
+  <text x="830" y="529" class="heading">Repository</text>
+  <text x="830" y="559" class="note">Drizzle-Abfragen mit Benutzerbezug</text>
+  <path d="M750 445 V495" class="call"/>
+  <path d="M910 495 V445" class="return"/>
+
+  <rect x="610" y="630" width="440" height="75" rx="8" class="box"/>
+  <text x="830" y="661" class="heading">SQLite</text>
+  <text x="830" y="690" class="note">Lokale Daten lesen / schreiben</text>
+  <path d="M750 580 V630" class="call"/>
+  <path d="M910 630 V580" class="return"/>
+
+  <path d="M85 355 V400 H5 V600 H85 V630" class="return"/>
+  <text x="260" y="594" class="note">Nach erfolgreicher Mutation</text>
+  <rect x="20" y="630" width="440" height="105" rx="8" class="box"/>
+  <text x="240" y="667" class="heading">Oberfläche aktualisieren</text>
+  <text x="240" y="698" class="note">Abfragen für Notenliste</text>
+  <text x="240" y="725" class="note">und Statistik aktualisieren</text>
+
+  <path d="M80 785 H145" class="call"/>
+  <text x="255" y="793" class="note">Anfrage</text>
+  <path d="M430 785 H495" class="return"/>
+  <text x="785" y="793" class="note">Ergebnis zurück über dieselben Schichten</text>
+</svg>
