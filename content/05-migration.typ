@@ -438,7 +438,7 @@ Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufw
 Nach der Datenbankinitialisierung werden die Module erzeugt und die Handler registriert.
 Damit ist die in A2 geforderte Trennung erstmals für eine vollständige Operationsgruppe umgesetzt @StudyPlanLocalAuth2026.
 
-Für das Hashen und Vergleichen der Passwörter wurde das bereits im Web-Backend verwendete Paket `bcryptjs` mit dem dort angegebenen Versionsbereich `^3.0.3` übernommen.
+Für das Hashen und Vergleichen der Passwörter wurde das bereits im Web-Backend verwendete Paket `bcryptjs` übernommen.
 Passwort-Hashes bleiben im Main-Prozess und in der lokalen Benutzertabelle; die Oberfläche erhält nur die vorgesehenen Benutzerdaten.
 An die Stelle der HTTP-Sitzung tritt `SessionService`, der die aktuelle Benutzerkennung im Main-Prozess hält.
 Diese lokale Sitzung liegt im Arbeitsspeicher und endet beim Beenden der Anwendung; die Benutzerdatensätze bleiben dagegen in der SQLite-Datenbank gespeichert.
@@ -454,7 +454,7 @@ Die Weiterleitung bei bestehender Anmeldung erfolgt über einen React-Effekt @St
 Nach der Oberflächenintegration und der lokalen Authentifizierung wurden die weiteren fachlichen Funktionen mit dem vorbereiteten Aufrufweg verbunden.
 Die Migration der CRUD-Operationen wird exemplarisch an der Notenverwaltung beschrieben.
 Anlegen, Lesen, Bearbeiten und Löschen folgen in den persönlichen Anwendungsbereichen einer wiederkehrenden Grundstruktur; eine separate Beschreibung jeder Variante würde überwiegend dieselben Transformationsschritte wiederholen.
-Die Notenverwaltung wurde im Commit `f97642b` integriert, zunächst ohne CSV-Import.
+Die Notenverwaltung wurde integriert, zunächst ohne CSV-Import.
 Als fachliche Vorlage dienten die ursprünglichen Routen aus `artifacts/api-server/src/routes/grades.ts` @StudienplanerSource2026 @StudyPlanGradesMigration2026.
 
 Die Übertragung bestand darin, die innerhalb der Route verbundenen Aufgaben nach ihren Verantwortlichkeiten aufzuteilen.
@@ -528,64 +528,51 @@ Geprüft werden Sitzung, persönliche Datenzuordnung, Änderungen, Aktivitäten 
 Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.
 Der Test prüft damit die Fachlogik samt Datenzugriff.
 
-=== Lokaler Dateiimport am Beispiel iCal <sec:file-import-migration>
+=== Lokaler Dateiimport am Beispiel iCal sec:file-import-migration
+Das Importmuster wird am iCal-Import beschrieben.
+Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als FormData mit fetch an /api/events/import-ical.@lst:ical-web-upload zeigt die Dateiannahme und den Parseraufruf aus artifacts/api-server/src/routes/events.ts des Web-Prototyps.
+Der Ausschnitt verdeutlicht die Bindung an HTTP: Die Datei stammt aus req.file, die Benutzerkennung aus der Sitzung und Fehler werden unmittelbar als HTTP-Antwort ausgegeben.
+Die anschließende fachliche Abbildung und Speicherung lagen im selben Route-Handler und sind hier ausgelassen.
+#figure(
+block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+set text(size: 8.5pt)
+raw(read("../code/ical-web-upload.ts"), lang: "typescript", block: true)
+}),
+kind: raw,
+supplement: [Quellcode],
+caption: [Dateiannahme und iCal-Parseraufruf im Web-Prototyp; gekürzter und für die Darstellung umgebrochener Ausschnitt aus der ursprünglichen Express-Route @StudienplanerSource2026.],
+) lst:ical-web-upload
 
-Das Importmuster wird am iCal-Import aus Commit `fe08220` beschrieben.
-Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`.
-Multer nahm den Upload entgegen; der Route-Handler interpretierte die Kalenderdaten mit `node-ical` und schrieb die Termine in die Datenbank.
-Bereits vorhanden waren die Übernahme von Titel, Beschreibung und Ort, die Ableitung des Termintyps, eine Standarddauer bei fehlendem Enddatum, die Mehrtageskennzeichnung und der Aktivitätseintrag.
 Die fachliche Grundlage des Imports stammt somit aus dem Ausgangsartefakt @StudienplanerSource2026 @StudyPlanIcalMigration2026.
-
-In der Desktop-Anwendung wurde diese Upload-Verarbeitung in eine lokale Importoperation überführt.
-Hierfür wurde der OpenAPI-Vertrag um `importEventsIcal` und das Ergebnisschema `EventIcalImportResult` ergänzt.
-Anschließend wurden Client, Hook und Validierungsschemata neu erzeugt.
-Die Operation besitzt keine Dateipfad- oder Inhaltsparameter: Der Renderer löst über `useImportEventsIcal` die Auswahl aus, während der Main-Prozess die Datei ermittelt und verarbeitet.
-Damit wird die in @sec:api-contract-migration beschriebene zentrale Vertragspflege an einer zusätzlichen Schnittstelle angewandt @StudyPlanIcalMigration2026.
-
-Die Dateiauswahl übernimmt `NativeIcalFilePicker` im Main-Prozess.
-Er verwendet `dialog.showOpenDialog` mit einem Filter für ICS-Dateien und bindet den Dialog, sofern verfügbar, an das aus dem IPC-Absender ermittelte Anwendungsfenster @StudyPlanIcalMigration2026.
-Electron liefert aus diesem Dialog die ausgewählten Pfade beziehungsweise einen Abbruchzustand zurück @ElectronDialog2026.
-Der Pfad bleibt innerhalb der nativen Auswahl und wird nicht vom Renderer als frei wählbares Argument übergeben.
-Die Implementierung prüft die Endung `.ics`, den regulären Dateityp und eine Größenobergrenze von 10 MiB vor sowie nach dem Einlesen.
-Anschließend stellt sie den Inhalt als UTF-8-Text für die Verarbeitung bereit @StudyPlanIcalMigration2026.
-
-Die Interpretation der Kalenderdaten wurde in `src/main/services/events-ical.parser.ts` ausgelagert.
-Das Modul verwendet weiterhin `node-ical` und die übernommenen fachlichen Abbildungen.
-Bereits der Web-Handler übersprang Einträge ohne Titel oder Startdatum.
-Ergänzt wurden die Prüfung der grundlegenden Kalenderstruktur, die Prüfung gültiger Datumswerte und die Zurückweisung eines Enddatums vor dem Startdatum.
-Übersprungene Einträge werden nun gezählt.
-Der Parser erzeugt die Termindaten ohne Benutzerkennung und ohne Datenbankzugriff.
-Die Eigenleistung der Migration liegt damit in der neuen lokalen Dateischnittstelle, der Aufteilung der Verarbeitung und der ergänzten Validierungs- und Ergebnisbehandlung; die Bibliothek und wesentliche fachliche Importregeln wurden wiederverwendet.
-Die Größenobergrenze von 10 MiB bestand bereits im ursprünglichen Multer-Upload und wurde an die lokale Dateiverarbeitung angepasst @StudienplanerSource2026 @StudyPlanIcalMigration2026.
-
-`EventsService.importEventsIcal` übernimmt die fachliche Verarbeitung der Parserausgabe.
-Der Service ergänzt die aus der Sitzung stammende Benutzerkennung, übergibt die Datensätze an `EventsRepository.createManyEvents` und veranlasst den Aktivitätseintrag zum Import.
-Dateiauswahl, Formatinterpretation, fachliche Zuordnung und Datenzugriff erhalten dadurch getrennte Zuständigkeiten.
-Beim Start wird der native Picker als Abhängigkeit an `createEventsHandlers` übergeben.
-Die Schnittstelle `IcalFilePicker` ermöglicht zugleich, die Dateiauswahl in Tests durch eine geeignete Implementierung zu ersetzen @StudyPlanIcalMigration2026.
-
-Für den Import wurde eine ausdrückliche Ergebnisbehandlung eingerichtet.
-Ein erfolgreicher Import liefert `status: imported` sowie `importedCount` und `skippedCount`.
-Ein abgebrochener Dateidialog liefert `status: cancelled` mit beiden Zählwerten `0` und verändert den Datenbestand nicht.
-Ungültige Dateiauswahl oder Kalenderinhalte werden im Handler über die vorgesehenen Fehlerklassen in `VALIDATION_ERROR` und die deklarierte Fehlerantwort überführt.
-Diese Ergebnisse durchlaufen denselben Dispatcher und API-Client wie die CRUD-Operationen @StudyPlanIcalMigration2026.
-
-In der Kalenderseite ersetzt der generierte Mutation-Hook den direkten HTTP-Aufruf und das HTML-Dateifeld.
-Während der Operation wird der Importknopf über `isPending` deaktiviert.
-Nach einem erfolgreichen Import wird die Terminanfrage invalidiert; die Oberfläche zeigt die Anzahl importierter und gegebenenfalls übersprungener Einträge an.
-Ein Abbruch beendet den Ablauf ohne Erfolgsmeldung, während ein Fehler gesondert angezeigt wird.
-Die ursprüngliche Upload-Oberfläche wird damit zu einem Auslöser für die im Main-Prozess ausgeführte lokale Importfunktion @StudyPlanIcalMigration2026.
-
-Die Termintests prüfen Parserfälle, Benutzerzuordnung, Aktivitätseintrag, Abbruch und ungültige Kalenderinhalte.
-Ein ersetzter `IcalFilePicker` liefert vorgegebene Inhalte oder einen Abbruchzustand.
-So werden Handler, Parser, Service und Repository unabhängig vom Dateidialog geprüft.
-Native Dialoginteraktion und die Prüfungen beim Lesen realer Dateien benötigen einen gesonderten Nachweis @StudyPlanIcalMigration2026.
-
-Der CSV-Notenimport aus Commit `d37f1b5` verwendet dieselbe Aufteilung in nativen Dateipicker, Import-Handler, Service und Repository.
-Die Formatverarbeitung übernimmt hier der eigene Parser `grades-csv.parser.ts`, der Spalten erkennt und unter anderem Trennzeichen, zitierte Felder und Dezimalkommas verarbeitet.
-Die Vertragsoperation `importGradesCsv` und der erzeugte Hook liefern entsprechend den Import- oder Abbruchstatus sowie Zählwerte.
-CSV zeigt damit, dass das beschriebene Importmuster sowohl eine eingebundene Parserbibliothek als auch einen eigenen Parser aufnehmen kann @StudyPlanCsvMigration2026.
-
+In der Desktop-Anwendung wurde dieser HTTP-Upload in eine lokale Importoperation überführt.
+Aus Sicherheitsgründen – insbesondere zur Wahrung des Prinzips der geringsten Rechte und zur Vermeidung von Path-Traversal-Schwachstellen – darf der Renderer keine absoluten Dateipfade anfordern oder übergeben.
+Stattdessen löst die Oberfläche die Operation lediglich aus, während die Dateiauswahl und das Einlesen vollständig im privilegierten Main-Prozess verbleiben @ElectronContextBridge2026.
+Hierfür wurde der OpenAPI-Vertrag um die parameterlose Operation importEventsIcal sowie das Ergebnisschema EventIcalImportResult erweitert.
+Die bereits etablierte Generierungs- und Validierungspipeline greift dadurch unmittelbar @StudyPlanIcalMigration2026.
+@fig:local-file-import-flow
+fasst den daraus resultierenden Ablauf zusammen.
+Der Renderer reagiert auf den Klick in der Oberfläche und sendet ausschließlich die Importanfrage; Dateiauswahl, Einlesen und Verarbeitung werden vom Main-Prozess veranlasst.
+Der native Dateidialog liefert dabei zunächst den ausgewählten Pfad oder einen Abbruch zurück, nicht den Dateiinhalt.
+#figure(
+image("../figures/local-file-import-flow.svg", width: 100%),
+caption: [Lokaler Dateiimport am Beispiel iCal. Der Renderer löst den Import über IPC aus; der Main-Prozess öffnet den nativen Dateidialog und verarbeitet die ausgewählte Datei. Ein Abbruch überspringt die Verarbeitung und Speicherung.],
+) fig:local-file-import-flowDie Dateiauswahl steuert NativeIcalFilePicker im Main-Prozess.
+Er ruft dialog.showOpenDialog mit einem Filter für ICS-Dateien auf und bindet den Dialog modal an das anfragende Anwendungsfenster @ElectronDialog2026 @StudyPlanIcalMigration2026.
+Bricht der Benutzer den Vorgang ab, endet die Verarbeitung unmittelbar mit status: cancelled und beiden Zählwerten auf 0, ohne den Datenbestand zu verändern.
+Wird eine Datei gewählt, verbleibt der absolute Pfad innerhalb des Main-Prozesses.
+Die Implementierung prüft die Endung .ics, den regulären Dateityp sowie die aus der ursprünglichen Multer-Konfiguration übernommene Größenobergrenze von 10 MiB vor und nach dem Einlesen, bevor der Inhalt als UTF-8-Text bereitgestellt wird @StudienplanerSource2026 @StudyPlanIcalMigration2026.
+Die semantische Interpretation der Kalenderdaten kapselt src/main/services/events-ical.parser.ts.
+Das Modul nutzt weiterhin die Bibliothek node-ical und übernimmt die bestehenden fachlichen Abbildungen, trennt die Formatprüfung jedoch strikt von Sitzungskontext und Datenbankzugriff.
+Gegenüber dem Prototyp wurden Prüfungen der grundlegenden Kalenderstruktur, der Validität von Zeitangaben sowie der Ausschluss invertierter Zeitspannen (Enddatum vor Startdatum) ergänzt.
+Übersprungene Einträge werden nun separat erfasst @StudyPlanIcalMigration2026.EventsService.importEventsIcal verarbeitet die validierte Parserausgabe fachlich.
+Der Dienst reichert die Termine mit der Benutzerkennung an, übergibt sie gesammelt an EventsRepository.createManyEvents und legt den zugehörigen Aktivitätseintrag an.
+Über die Schnittstelle IcalFilePicker wird der konkrete Picker als Abhängigkeit an createEventsHandlers übergeben.
+Dateiauswahl, Parsing, fachliche Koordination und Datenpersistenz sind dadurch in klar voneinander getrennte Schichten unterteilt @StudyPlanIcalMigration2026.Das Ergebnis der Operation wird über den Dispatcher typisiert an das Frontend zurückgegeben:
+Bei erfolgreicher Verarbeitung liefert der Handler status: imported zusammen mit importedCount und skippedCount; fehlerhafte Kalenderstrukturen werden in VALIDATION_ERROR überführt.
+In der Kalenderseite stößt der generierte Mutation-Hook useImportEventsIcal den Ablauf an, deaktiviert während der Laufzeit die Bedienelemente (isPending) und invalidiert bei Erfolg die Termin-Caches zur Aktualisierung der Ansicht @StudyPlanIcalMigration2026. 
+Dasselbe Architekturmuster (nativer Picker $\rightarrow$ Format-Parser $\rightarrow$ Service $\rightarrow$ Repository) wurde analog für den CSV-Notenimport (importGradesCsv) adaptiert.
+Anstelle einer externen Bibliothek kommt dort ein maßgeschneiderter Parser (grades-csv.parser.ts) zum Einsatz.
+Dies zeigt, dass das vorgestellte Entwurfsmuster für lokale Dateiimporte sowohl Standardbibliotheken als auch spezialisierte Eigenimplementierungen gleichermaßen aufnehmen kann @StudyPlanCsvMigration2026.
 === Abschluss der Offline-Kernanwendung und Übergang zu Phase 2
 
 Mit der lokalen Datenhaltung, der übernommenen Oberfläche, den generierten Aufrufhilfen und den implementierten Verarbeitungspfaden ist die erste Migrationsphase abgeschlossen.

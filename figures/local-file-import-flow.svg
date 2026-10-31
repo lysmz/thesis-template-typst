@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="720" viewBox="0 0 1100 720" role="img" aria-labelledby="title description">
+  <title id="title">Lokaler Dateiimport über den nativen Dateidialog</title>
+  <desc id="description">Der Renderer reagiert auf den Importklick und sendet über Hook, Preload und IPC eine Importanfrage ohne Dateipfad oder Dateiinhalt. Der Main-Prozess prüft Vertrag und Sitzung und öffnet den nativen Dateidialog. Dieser liefert den ausgewählten Pfad oder einen Abbruch zurück. Nur bei einer Auswahl prüft und liest der Main-Prozess die Datei, parst den Inhalt und speichert die Termine in SQLite. Ergebnis, Abbruch oder Fehler gelangen über IPC zurück zum Renderer.</desc>
+  <defs>
+    <marker id="call" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
+    <marker id="return" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; font-size: 25px; fill: #17242c; text-anchor: middle; }
+      .heading { font-size: 28px; font-weight: 700; }
+      .note { font-size: 23px; fill: #475761; }
+      .box { fill: #f3f7fa; stroke: #6d7f8b; stroke-width: 2; }
+      .lifeline { stroke: #bdc6cc; stroke-width: 2; stroke-dasharray: 6 6; }
+      .call { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#call); }
+      .return { fill: none; stroke: #68737b; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#return); }
+    </style>
+  </defs>
+  <rect x="25" y="20" width="270" height="80" rx="8" class="box"/>
+  <text x="160" y="55" class="heading">Renderer</text>
+  <text x="160" y="84" class="note">Importklick auslösen</text>
+  <rect x="415" y="20" width="270" height="80" rx="8" class="box"/>
+  <text x="550" y="55" class="heading">Main-Prozess</text>
+  <text x="550" y="84" class="note">Import ausführen</text>
+  <rect x="805" y="20" width="270" height="80" rx="8" class="box"/>
+  <text x="940" y="55" class="heading">Betriebssystem</text>
+  <text x="940" y="84" class="note">Nativer Dateidialog</text>
+  <path d="M160 100 V650 M550 100 V650 M940 100 V650" class="lifeline"/>
+
+  <text x="355" y="137">1. Importanfrage</text>
+  <path d="M160 155 H550" class="call"/>
+  <text x="355" y="185" class="note">Hook → Preload / IPC</text>
+  <text x="355" y="214" class="note">Ohne Dateipfad oder Inhalt</text>
+
+  <text x="745" y="250">2. Dateidialog öffnen</text>
+  <path d="M550 268 H940" class="call"/>
+  <text x="745" y="299" class="note">Nach Vertrags- und Sitzungsprüfung</text>
+
+  <text x="745" y="345">3. Auswahl oder Abbruch</text>
+  <path d="M940 363 H550" class="return"/>
+
+  <rect x="340" y="400" width="420" height="135" rx="8" class="box"/>
+  <text x="550" y="433" class="heading">4. Nur bei Dateiauswahl</text>
+  <text x="550" y="465" class="note">Datei prüfen und lokal lesen</text>
+  <text x="550" y="494" class="note">Inhalt parsen, Termine zuordnen</text>
+  <text x="550" y="523" class="note">Über Repository in SQLite speichern</text>
+
+  <text x="355" y="579">5. Ergebnis / Abbruch / Fehler</text>
+  <path d="M550 597 H160" class="return"/>
+  <text x="355" y="628" class="note">Rückgabe über IPC und Hook</text>
+  <text x="550" y="681" class="note">Bei Erfolg: Terminanfrage aktualisieren und Importanzahl anzeigen.</text>
+  <text x="550" y="710" class="note">Dateipfad und Dateiinhalt bleiben im Main-Prozess.</text>
+</svg>
