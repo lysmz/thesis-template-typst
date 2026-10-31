@@ -111,67 +111,49 @@ caption: [Ausgewählte Abbildungen der PostgreSQL-Schemadefinitionen auf SQLite 
 
 === Versionierte Schemamigrationen und Datenbankinitialisierung
 
-Nach der Anpassung der Tabellen wurden zwei Wege zur Einrichtung des Datenbankschemas unterschieden.
-Mit `drizzle-kit push` können die Schemadefinitionen unmittelbar mit einer angebundenen Datenbank abgeglichen und die Änderungen ohne gesondert gespeicherte SQL-Migrationsdateien angewandt werden @DrizzlePush2026.
-Alternativ erzeugt `drizzle-kit generate` SQL-Dateien anhand der aktuellen Definitionen und der bisherigen Schema-Snapshots.
-Diese Dateien können anschließend durch den Drizzle-Migrator angewandt werden @DrizzleGenerate2026.
+Zur Einrichtung des Datenbankschemas standen mit Drizzle zwei Ansätze zur Auswahl: Während `drizzle-kit push` Schemadefinitionen direkt und ohne gesonderte SQL-Dateien mit der Zieldatenbank abgleicht @DrizzlePush2026, erzeugt `drizzle-kit generate` versionierte SQL-Migrationsdateien auf Basis von Schema-Snapshots @DrizzleGenerate2026.
 
-Für den Demonstrator wurde der zweite Weg gewählt.
-Die Migrationsdateien liegen im Verzeichnis `drizzle` und können gemeinsam mit dem Anwendungscode versioniert und ausgeliefert werden.
-Beim Start verarbeitet der Migrator die noch nicht angewandten Migrationen.
-Damit steht ein nachvollziehbarer Ablauf für spätere Schemaänderungen bereit, ohne die vorhandene Benutzerdatenbank bei jedem Update neu anzulegen.
-Die Verträglichkeit einer konkreten Schemaänderung mit bestehenden Daten muss dennoch anhand der jeweiligen Migration geprüft werden.
+Für den Demonstrator wurde der generatorbasierte Ansatz gewählt. 
+Die im Verzeichnis `drizzle` abgelegten Dateien werden gemeinsam mit dem Quellcode versioniert. 
+Dies gewährleistet einen nachvollziehbaren Migrationspfad bei künftigen Schemaerweiterungen, ohne bestehende Benutzerdatenbanken bei Updates zurücksetzen zu müssen. 
+Die Kompatibilität konkreter Migrationen mit Altdaten bleibt dabei fallweise zu prüfen.
 
-Die resultierende Konfiguration beschreibt deshalb nur den SQLite-Dialekt, den Einstiegspunkt der Schemadefinitionen und das Ausgabeverzeichnis der Migrationen.
-Der Laufzeitpfad der Benutzerdatenbank wird separat im Main-Prozess festgelegt.
-@lst:drizzle-config zeigt diese Konfiguration des Demonstrators @StudyPlanDatabase2026.
+Die zugehörige Konfiguration in @lst:drizzle-config definiert den SQLite-Dialekt, den Schema-Einstiegspunkt sowie das Ausgabeverzeichnis der Migrationen @StudyPlanDatabase2026. 
+In der `package.json` wurden hierfür die Skripte `db:generate` (`drizzle-kit generate`) und `db:check` (`drizzle-kit check`) eingerichtet.
 
 #figure(
-  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
-    set text(size: 8.5pt)
-    raw(read("../code/drizzle-config.ts"), lang: "typescript", block: true)
-  }),
-  kind: raw,
-  supplement: [Quellcode],
-  caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQLite-Migrationen.],
-) <lst:drizzle-config>
+block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+set text(size: 8.5pt)
+raw(read("../code/drizzle-config.ts"), lang: "typescript", block: true)
+}),
+kind: raw,
+supplement: [Quellcode],
+caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQLite-Migrationen.],
+) [lst:drizzle-config](https://www.google.com/search?q=lst:drizzle-config)
 
-In `package.json` wurden `db:generate` für `drizzle-kit generate` und `db:check` für `drizzle-kit check` eingerichtet.
-Zur Laufzeit verwendet die Anwendung die erzeugten Dateien über den ORM-Migrator @StudyPlanDatabase2026.
-
-Innerhalb des mit `app.whenReady()` begonnenen Ablaufs in `src/main/index.ts` wird `initDatabase()` abgewartet, bevor die lokale Datenbank an Repositories und Dienste übergeben und das Anwendungsfenster geöffnet wird.
-Scheitert die Vorbereitung, zeigt die Anwendung eine Fehlermeldung an und beendet den Start.
-Die Oberfläche wird dadurch nicht mit einer unvollständig vorbereiteten Datenbank geöffnet @StudyPlanDatabase2026.
-
-In `src/main/db/index.ts` wird der Speicherort aus `app.getPath('userData')` und dem Unterverzeichnis `data` gebildet.
-Die paketierte Anwendung verwendet `studyplan.db`, die Entwicklung `studyplan-dev.db`.
-Unter Windows ergibt sich beispielsweise `%APPDATA%\studyplan\data\studyplan.db` innerhalb von `AppData\Roaming`.
-Der Unterordner wird vor dem Öffnen der Datei angelegt @StudyPlanDatabase2026.
-
-Danach öffnet der libSQL-Client die Datei über eine lokale `file:`-URL.
-Die Initialisierung setzt ausdrücklich `PRAGMA foreign_keys = ON` und `PRAGMA journal_mode = WAL`.
-Die erste Einstellung aktiviert die Prüfung der im Schema tatsächlich definierten Fremdschlüsselbedingungen; sie ergänzt selbst keine solchen Bedingungen.
-Die zweite wählt den Write-Ahead-Logging-Modus für die Datenbank @SQLitePragma2026.
-Anschließend werden die ausstehenden Migrationen angewandt und die Verbindung mit einer einfachen Abfrage geprüft.
-Die konkrete Implementierung legt außerdem die SQLite-kompatible Migrationstabelle `__drizzle_migrations` vor dem Aufruf des Migrators an @StudyPlanDatabase2026.
-
-Damit die Migrationen auch in der installierten Anwendung verfügbar sind, wurde das Verzeichnis `drizzle` in `electron-builder.yml` unter `extraResources` aufgenommen.
-@lst:migration-resources zeigt diesen Eintrag.
-In der Entwicklung liest die Anwendung die Dateien aus dem Projektverzeichnis; im paketierten Zustand verwendet sie `process.resourcesPath` und den dort enthaltenen Unterordner `drizzle` @StudyPlanDatabase2026.
+Damit die Migrationen auch im Produktivbetrieb ausgeführt werden können, bindet `electron-builder.yml` den Ordner `drizzle` über `extraResources` in das Installationspaket ein (@lst:migration-resources). 
+Die Anwendung greift während der Entwicklung direkt auf das Projektverzeichnis zu, im paketierten Zustand hingegen über `process.resourcesPath` @StudyPlanDatabase2026.
 
 #figure(
-  block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
-    set text(size: 8.5pt)
-    raw(read("../code/migration-resources.yml"), lang: "yaml", block: true)
-  }),
-  kind: raw,
-  supplement: [Quellcode],
-  caption: [Auslieferung der Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],
-) <lst:migration-resources>
+block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
+set text(size: 8.5pt)
+raw(read("../code/migration-resources.yml"), lang: "yaml", block: true)
+}),
+kind: raw,
+supplement: [Quellcode],
+caption: [Auslieferung der Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],
+) [lst:migration-resources](https://www.google.com/search?q=lst:migration-resources)
 
-Für Funktionen mit Referenzdaten wurden außerdem Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen über die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` bereitgestellt.
-Sie werden beim Einrichten der Datenbank lokal eingefügt und stehen damit auch vor dem in Phase 2 ergänzten Katalogabruf zur Verfügung.
-Dies ist für die Offline-Nutzung entscheidend: Ein lokal ausführbarer Handler kann nur auf den tatsächlich vorhandenen Datenbestand zugreifen @StudyPlanDatabase2026.
+Der eigentliche Initialisierungsprozess wird beim Anwendungsstart innerhalb von `app.whenReady()` über `initDatabase()` ausgeführt, bevor Dienste initialisiert oder Fenster geöffnet werden @StudyPlanDatabase2026:
+
+1. **Speicherort auflösen:** In `src/main/db/index.ts` wird der Pfad aus `app.getPath('userData')` und dem Unterordner `data` gebildet (unter Windows beispielsweise `%APPDATA%\studyplan\data\studyplan.db`, im Entwicklungsbetrieb `studyplan-dev.db`). Der Zielordner wird vor dem Öffnen automatisch angelegt.
+2. **Verbindung und Pragmas:** Der libSQL-Client öffnet die Datei über eine lokale `file:`-URL. Zur Laufzeit werden unmittelbar `PRAGMA foreign_keys = ON` (Aktivierung der referenziellen Integritätsprüfung) und `PRAGMA journal_mode = WAL` (Write-Ahead-Logging) gesetzt @SQLitePragma2026.
+3. **Migration und Integritätstest:** Nach Bereitstellung der SQLite-kompatiblen Migrationstabelle `__drizzle_migrations` wendet der Drizzle-Migrator alle noch ausstehenden SQL-Dateien an. Abschließend bestätigt eine einfache Prüfabfrage die Funktionsfähigkeit der Verbindung.
+
+Scheitert dieser Ablauf an einem beliebigen Punkt, bricht die Anwendung mit einer Fehlermeldung ab. Dadurch wird ausgeschlossen, dass die Benutzeroberfläche mit einer unvollständig vorbereiteten oder inkonsistenten Datenbank startet.
+
+Für Funktionen mit Referenzdaten stellen die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen bereit. 
+Sie werden während des Migrationsschritts lokal eingefügt und garantieren die Offline-Fähigkeit der Anwendung, da lokale IPC-Handler bereits vor einem externen Katalogabruf auf einen konsistenten Datenbestand zugreifen können @StudyPlanDatabase2026.
 
 === Übernahme des API-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>
 
