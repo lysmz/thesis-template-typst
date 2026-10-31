@@ -169,137 +169,108 @@ Die genaue Funktionsweise des Generators, die Transformation der Schemata sowie 
 
 === Funktionsweise der OpenAPI-IPC-Codegenerierung <sec:api-generator-concept>
 
-Der Generator übersetzt die Vertragsbeschreibung während der Entwicklung in TypeScript-Quelltext.
-Dabei sind drei Schritte zu unterscheiden: das Einlesen und Strukturieren des YAML-Dokuments, das Zusammensetzen von Quelltext-Zeichenketten und das Schreiben der erzeugten Module.
-Die Generierungsfunktionen erstellen somit zunächst Text; die darin beschriebenen Zod-Schemata und Client-Funktionen entstehen erst beim Laden der kompilierten Module in der Anwendung @StudyPlanApiMigration2026.
+Die Codeerzeugung übersetzt die Vertragsbeschreibung während der Entwicklung schrittweise in TypeScript-Module. 
+Der Ablauf gliedert sich in drei aufeinander aufbauende Phasen: das Einlesen und Strukturieren des Dokuments, das programmatische Zusammensetzen der Quelltext-Zeichenketten sowie die Formatierung und Ausgabe der Dateien @StudyPlanApiMigration2026.
 
-`buildGeneratedFiles` liest die konfigurierte Datei mit `readFile` und überführt sie mit `parse` aus dem Paket `yaml` in ein JavaScript-Objekt.
-`collectOperations` durchläuft dessen Pfade und Methoden und erzeugt für jede Operation einen internen Datensatz.
-Dieser enthält unter anderem Kennung, ersten Tag, Parameter, Antwortschemata und die Einordnung als Query oder Mutation.
-`operationInputSchema` fasst Pfad- und Query-Parameter sowie den Request-Body zu den Eingabegruppen `path`, `query` und `body` zusammen.
-Fehlende oder doppelte Operationskennungen werden zurückgewiesen @StudyPlanApiMigration2026.
+Die Orchestrierung übernimmt `buildGeneratedFiles`. 
+Die Funktion liest die Spezifikation mit `readFile` ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft `collectOperations` alle Pfade und HTTP-Methoden:
 
-Die rekursive Funktion `zodSchema` übersetzt anschließend einzelne Schemadefinitionen in Zod-Ausdrücke als Zeichenketten.
-@lst:generator-string-construction zeigt den Aufbau für einen String mit Mindestlänge.
-Für das Titelfeld aus `EventInput` enthält `expression` zunächst den Text `z.string()`.
-Durch `minLength: 1` wird dieser um `.min(1)` ergänzt.
-In einem Objektschema wird daraus die Feldzeile `title: z.string().min(1)`.
-Fehlt ein Feld in der Liste `required`, ergänzt der Objektzweig `.optional()`, wie bei der Beschreibung des Termins @StudyPlanApiMigration2026.
+* Für jede Operation entsteht ein Datensatz mit Operationskennung, primärem Tag, Parametern, Antwortschemata sowie der Klassifikation als Query (`get`) oder Mutation (`post`, `put`, `delete`).
+* Fehlende oder mehrfach vergebene Operationskennungen werden strikt zurückgewiesen.
+* `operationInputSchema` konsolidiert Pfad- und Query-Parameter sowie den Request-Body in die festen Eingabegruppen `path`, `query` und `body`.
 
-#figure(
-  ```ts
-  expression = 'z.string()'
-  if (typeof schema.minLength === 'number')
-    expression += `.min(${schema.minLength})`
-  // Nach Verarbeitung der weiteren Eigenschaften:
-  return expression
-  ```,
-  caption: [Aufbau eines Zod-Ausdrucks als Zeichenkette in `zodSchema`; gekürzter Auszug, Kommentar ergänzt @StudyPlanApiMigration2026.],
-) <lst:generator-string-construction>
+Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion `zodSchema`. 
+Sie übersetzt einzelne Schemadefinitionen in Zod-Ausdrücke. Für zusammengesetzte Objekte fügt `zodSchema` die Feldzeilen zusammen und ergänzt für nicht in `required` geführte Eigenschaften `.optional()`.
 
-Der Objektzweig setzt die erzeugten Feldzeilen mit `map` und `join` zu einem `z.object`-Ausdruck zusammen.
-`contractSource` bettet diesen mittels Template-Strings in eine exportierte Schemadeklaration ein und ergänzt den mit `z.infer` abgeleiteten TypeScript-Typ.
-@lst:generator-event-example stellt die YAML-Eingabe und das Ergebnis gegenüber.
-Das Beispiel ist auf Titel und Beschreibung reduziert; weitere Terminfelder sind ausgelassen.
-Die erzeugte Prüfung verlangt einen nicht leeren Titel und erlaubt eine fehlende Beschreibung @StudyPlanApiMigration2026.
+Die Generatorfunktion `contractSource` bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über `z.infer` den passenden TypeScript-Typ ab. 
+@lst:generator-event-example stellt diese Transformation am Beispiel von Termindaten gegenüber.
 
 #figure(
-  {
-    set par(justify: false)
-    grid(
-      columns: (1fr, 1fr),
-      column-gutter: 12pt,
-      align: left,
-      [
-        *YAML-Eingabe (reduziert)*
-        ```yaml
-        EventInput:
-          type: object
-          required: [title]
-          properties:
-            title:
-              type: string
-              minLength: 1
-            description:
-              type: string
-        ```
-      ],
-      [
-        *TypeScript-Ausgabe (reduziert)*
-        ```ts
-        export const EventInputSchema = z
-          .object({
-            title: z.string().min(1),
-            description: z.string().optional()
-          })
-          .passthrough()
-        export type EventInput =
-          z.infer<typeof EventInputSchema>
-        ```
-      ],
-    )
-  },
-  kind: raw,
-  caption: [Übersetzung ausgewählter Terminfelder in ein Laufzeitschema und einen abgeleiteten Typ; reduzierte Darstellung nach @StudyPlanApiMigration2026.],
-) <lst:generator-event-example>
+{
+set par(justify: false)
+grid(
+columns: (1fr, 1fr),
+column-gutter: 12pt,
+align: left,
+[
+*YAML-Eingabe (Auszug)*
+`yaml EventInput: type: object required: [title] properties: title: type: string minLength: 1 description: type: string `
+],
+[
+*TypeScript-Ausgabe (Auszug)*
+```ts
+export const EventInputSchema = z
+.object({
+title: z.string().min(1),
+description: z.string().optional()
+})
+.passthrough()
 
-Für zusammengesetzte Schemata erfolgt dieselbe Übersetzung schrittweise: Array-Elemente werden rekursiv verarbeitet, und lokale `$ref`-Verweise werden als Referenzen auf benannte Schemakonstanten ausgegeben.
-`orderSchemas` ordnet deren Deklarationen anhand der Abhängigkeiten.
-`contractSource` erzeugt außerdem die Eingabe-, Ausgabe- und Fehlerschemata der Operationen sowie `operationContracts`, das diese Schemata den Operationskennungen zuordnet @StudyPlanApiMigration2026.
-@tab:api-generator-mapping fasst ausgewählte Zuordnungen zusammen.
+```
+    export type EventInput = 
+      z.infer<typeof EventInputSchema>
+    ```
+  ],
+)
+
+```
+
+},
+kind: raw,
+caption: [Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ @StudyPlanApiMigration2026.],
+) [lst:generator-event-example](https://www.google.com/search?q=lst:generator-event-example)
+
+Für komplexere Schemastrukturen löst `orderSchemas` Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. 
+`contractSource` erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt `operationContracts` zusammen @StudyPlanApiMigration2026.
+
+Die Abbildung der Vertragsbestandteile auf die generierten Zielbausteine fasst @tab:api-generator-mapping zusammen.
 
 #figure(
-  {
-    set par(justify: false)
-    set text(size: 9pt)
-    table(
-      columns: (1.2fr, 1.2fr, 1.5fr),
-      inset: 5pt,
-      align: left,
-      table.header([*OpenAPI-Eingabe*],
-      [*Generatorfunktion*],
-      [*Erzeugtes Element*]),
-      [`type: string` mit `minLength: 1`],
-      [`zodSchema`],
-      [`z.string().min(1)`],
-      [Feld außerhalb von `required`],
-      [`zodSchema`, Objektzweig],
-      [Ergänzung von `.optional()` am Feldausdruck.],
-      [Array mit `$ref` auf `Event` als Element],
-      [`zodSchema`],
-      [`z.array(EventSchema)`],
-      [Optionaler Integer-Parameter `month` mit `in: query`],
-      [`operationInputSchema`, anschließend `zodSchema`],
-      [Optionales Feld `query.month` mit `z.number().int()`.],
-      [Erforderlicher Request-Body mit Verweis auf `EventInput`],
-      [`operationInputSchema`, anschließend `contractSource`],
-      [Erforderliches Feld `body: EventInputSchema` im Operations-Eingabeschema.],
-      [`operationId: listEvents`, `tags: [events]`],
-      [`collectOperations`, anschließend `clientSource`],
-      [Client-Methode `api.events.listEvents(...)` und Aufruf mit der Kennung `listEvents`.],
-      [Methode `get` beziehungsweise `post`],
-      [`collectOperations`, anschließend `rendererReactQuerySource`],
-      [Query-Hook `useListEvents` beziehungsweise Mutation-Hook `useCreateEvent`.],
-      [Erste deklarierte `2xx`-Antwort und deklarierte Fehlerantworten],
-      [`collectOperations`, anschließend `contractSource`],
-      [Ausgabeschema sowie Vereinigung der deklarierten Fehlerformen.],
-    )
-  },
-  caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die projektspezifischen IPC-Module @StudyPlanApiMigration2026.],
-) <tab:api-generator-mapping>
+{
+set par(justify: false)
+set text(size: 9pt)
+table(
+columns: (1.2fr, 1.2fr, 1.5fr),
+inset: 5pt,
+align: left,
+table.header(
+[*OpenAPI-Eingabe*],
+[*Generatorfunktion*],
+[*Erzeugtes Element*],
+),
+[Array mit `$ref` auf `Event`],
+[`zodSchema`],
+[`z.array(EventSchema)`],
+[Optionaler Query-Parameter `month`],
+[`operationInputSchema`],
+[Eingabefeld `query.month` mit `z.number().int()`],
+[Request-Body mit Verweis auf `EventInput`],
+[`operationInputSchema` / `contractSource`],
+[Eingabefeld `body: EventInputSchema`],
+[`operationId: listEvents`, `tags: [events]`],
+[`collectOperations` / `clientSource`],
+[Client-Methode `api.events.listEvents(...)`],
+[Methode `get` bzw. `post`],
+[`collectOperations` / `rendererReactQuerySource`],
+[Hook `useListEvents` (Query) bzw. `useCreateEvent` (Mutation)],
+[`2xx`-Antwort und Fehlerdefinitionen],
+[`collectOperations` / `contractSource`],
+[Rückgabeschema und typisierte Fehlervereinigung],
+)
+},
+caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module @StudyPlanApiMigration2026.],
+) [tab:api-generator-mapping](https://www.google.com/search?q=tab:api-generator-mapping)
 
-`clientSource` gruppiert die Operationen nach ihrem ersten Tag und erzeugt typisierte Methoden, die Operationskennung und Eingaben an den übergebenen Transport weiterreichen.
-`rendererReactQuerySource` baut daraus die React-Query-Anbindung: `get` wird als Query behandelt, die übrigen unterstützten Methoden als Mutationen.
-Die erzeugten Hooks rufen die Client-Methoden auf; aus den HTTP-Pfaden werden dabei keine Netzwerkaufrufe erzeugt.
-Die Laufzeitweiterleitung über IPC wird im folgenden Abschnitt beschrieben @StudyPlanApiMigration2026.
+Aufbauend auf diesen Schemata erzeugt `clientSource` die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. 
+Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen `operationId` an den Transport weiter. 
+`rendererReactQuerySource` generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Query Keys.
 
-Abschließend liefert `buildGeneratedFiles` eine Liste aus Zielpfaden und vollständigen Quelltexten.
-Prettier formatiert diese mit dem TypeScript-Parser.
-`generate.ts` legt die Zielverzeichnisse an und schreibt die Zeichenketten mit `writeFile` als UTF-8-Dateien.
-Neben `contract.generated.ts` und `client.generated.ts` entstehen `react-query.generated.ts` und die Exportmodule.
-Diese Dateien werden anschließend durch den regulären TypeScript- und Electron-Build verarbeitet.
-Der Modus `--check` vergleicht die erzeugten Inhalte mit den vorhandenen Dateien, ohne sie zu überschreiben.
-Der Generator erzeugt damit konsistente Schnittstellenbausteine; Handler, Services und Repositories werden weiterhin fachlich implementiert @StudyPlanApiMigration2026.
+Im letzten Schritt formatiert der Generator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser. 
+Das Skript `scripts/openapi-ipc/generate.ts` legt die Zielverzeichnisse an und speichert `contract.generated.ts`, `client.generated.ts`, `react-query.generated.ts` sowie die Exportmodule als UTF-8-Dateien ab. 
+Über das `package.json`-Skript `api:generate` wird dieser Ablauf manuell oder im Build angestoßen; `api:check` (`--check`) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der `openapi.yaml` entsprechen @StudyPlanApiMigration2026.
+
+Der Generator deckt gezielt den für den Demonstrator erforderlichen Spezifikationsumfang ab. 
+Da er primär auf IPC ausgelegt ist, werden nicht benötigte HTTP-Konzepte ignoriert und nicht unterstützte Schemastrukturen, wie etwa rekursive Objektreferenzen, zur Entwurfszeit mit einem Fehler abgewiesen.
 
 === IPC-Transport, Preload-Schnittstelle und Dispatcher
 
