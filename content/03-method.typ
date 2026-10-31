@@ -72,11 +72,11 @@ Hierzu wurden die Komponenten auf eine Desktop-Architektur mit getrennten Verant
 Die Datenhaltung wurde lokal bereitgestellt.
 Aufrufe der bisherigen Webschnittstellen wurden in einen begrenzten Kommunikationsweg zwischen Renderer, Preload und Main-Prozess überführt.
 
-Ziel dieser Phase war die Entwicklung einer Electron-Anwendung, deren lokale Kernfunktionen ohne Netzwerkverbindung ausführbar sind und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet.
+Ziel dieser Phase war die Entwicklung einer Electron-Anwendung, deren lokale Kernfunktionen ohne Netzwerkverbindung ausführbar [verbindung zu Local-First Paradigma Offline by Default] sind und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet.
 Die Verantwortlichkeiten und Schnittstellen wurden so gestaltet, dass Synchronisierung und weitere externe Dienste später integriert werden können, ohne die lokale Kernarchitektur erneut grundlegend umzustrukturieren.
 Damit verbindet diese Phase die Herstellung lokaler Nutzbarkeit mit der Vorbereitung einer schrittweise erweiterbaren Anwendung.
 
-=== Phase 2: Ergänzung um Synchronisierung und weitere Online-Anbindungen
+=== Phase 2: Ergänzung um Synchronisierung [Collaboration] und weitere Online-Anbindungen
 
 Aufbauend auf der lokal ausführbaren Kernanwendung wurden in der zweiten Phase die netzwerkabhängigen Funktionen betrachtet.
 Diese waren bei der Herstellung der Offline-Kernanwendung zunächst ausgeklammert worden.
@@ -91,27 +91,18 @@ Dieser zweite Fall greift gezielt Eigenschaften des Local-First-Paradigmas auf.
 
 === Phase 3: Konsolidierte Prüfung und Härtung
 
-Nach der funktionalen Umsetzung wurden die entstandenen lokalen und netzwerkbezogenen Schnittstellen systematisch hinsichtlich der Electron-Sicherheitsrichtlinien geprüft und erforderliche Anpassungen vorgenommen.
+Nach der funktionalen Umsetzung wurden die entstandenen lokalen und netzwerkbezogenen Schnittstellen systematisch hinsichtlich der Electron-Sicherheitsrichtlinien geprüft und erforderliche Anpassungen vorgenommen. 
+Die Darstellung einer abschließenden Härtung bedeutet daher nicht, dass Sicherheit erst nach Abschluss der Entwicklung berücksichtigt wird.
 Der Sicherheitsbegriff wird für diese Arbeit über die Umsetzung der anwendbaren Electron Security Guidelines einschließlich Eingabevalidierung und Maßnahmen gegen die Ausführung fremden Codes operationalisiert @ElectronSecurity2026.
 
 Diese abschließende Phase bündelt die Prüfung der fertigen Anwendung.
 Sicherheitsrelevante Architekturentscheidungen, insbesondere die Trennung privilegierter Funktionen vom Renderer und die Begrenzung der Preload-Schnittstellen, betreffen bereits die vorausgehenden Phasen.
-Die Darstellung einer abschließenden Härtung bedeutet daher nicht, dass Sicherheit erst nach Abschluss der Entwicklung berücksichtigt wird.
 
 == Ableitung des Leitfadens und Bewertung
 
 Aus dem dokumentierten Migrationsprozess werden die Schritte des Leitfadens abgeleitet.
-Für jeden Schritt werden Ausgangszustand, Ziel, notwendige Änderungen und ein Kontrollpunkt beschrieben.
-Dabei werden architektonische Prinzipien von Anpassungen unterschieden, die an den konkreten Technologieeinsatz der Fallstudie gebunden sind.
-Die technischen Schritte und ihre Zuordnung zum Demonstrator werden in @ch:migration erläutert.
 
 Die Bewertung orientiert sich am Anforderungskatalog aus @ch:analysis.
 Architektur- und Quellcodeinspektionen, vorhandene Service-Unit-Tests sowie begrenzte manuelle Demonstrationen bilden die vorgesehenen Nachweisformen.
 Für den Sicherheitsnachweis werden Anwendbarkeit, Umsetzung und Beleg jeder Electron-Empfehlung getrennt erfasst.
-Bereits vorliegende Sicherheitsberichte werden mit ihrem jeweiligen Prüfstand und ihren Nachweisgrenzen berücksichtigt.
-
-Die Festlegung der Nachweise ist von den Ergebnissen ihrer Durchführung zu unterscheiden.
-Aus der Beschreibung des Verfahrens folgt keine pauschale Erfüllung der Anforderungen.
 Die Ergebnisdarstellung erfolgt in @ch:experiments.
-Ein weiterer Migrationsdurchlauf zur unabhängigen Erprobung des Leitfadens ist nicht Bestandteil der Arbeit.
-Die Bewertung stützt sich auf den dokumentierten Prozess und den vorhandenen Demonstrator; eine empirisch bestätigte Übertragbarkeit auf weitere Plattformen wird daraus nicht abgeleitet.

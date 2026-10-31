@@ -3,13 +3,10 @@
 //---------------------------------------------------------------------
 
 Dieses Kapitel dokumentiert den durchgeführten Migrationsprozess und die dabei getroffenen Entscheidungen.
-Die Darstellung beginnt mit der Vorbereitung der lokalen Datenhaltung und folgt anschließend den weiteren Transformationsschritten.
 Auf dieser Grundlage werden die Handlungsempfehlungen des Migrationsleitfadens abgeleitet.
-Die Beschreibung der konkreten Umsetzung und die daraus gewonnenen Empfehlungen sind dabei zu unterscheiden.
 
 == Struktur des Migrationsleitfadens
 
-Der Leitfaden ordnet die Migration in drei Phasen: die Überführung in eine lokal nutzbare Offline-Anwendung, die Ergänzung um Synchronisierung und weitere Online-Anbindungen sowie die konsolidierte Härtung.
 Innerhalb dieser Phasen werden zusammengehörige Änderungen nach ihrer Aufgabe erläutert, etwa Datenhaltung, Schnittstellen, CRUD-Oberflächeninteraktionen, Dateiimporte und Netzwerkanbindungen.
 Die Darstellung bündelt die tatsächlich vorgenommenen Anpassungen und erklärt exemplarisch ihre Entscheidungen und Prinzipien.
 Sie beschreibt daher nicht jede migrierte Funktion einzeln.
@@ -29,22 +26,19 @@ Jede Phase beschreibt deshalb neben ihrem funktionalen Ziel auch die relevanten 
     [*Zielzustand*],
     [*Kontrollpunkt*]),
     [1],
-    [Lokale Kernfunktionen mit lokaler Datenhaltung und begrenzter IPC-Kommunikation.],
+    [Lokale Kernfunktionen mit lokaler Datenhaltung [Local-First Bezug] und begrenzter IPC-Kommunikation.],
     [Kernabläufe ohne Netzwerk ausführen; Änderungen nach Neustart erneut lesen.],
     [2],
-    [Synchronisierte Aufgaben und gesonderte Online-Anbindungen.],
+    [Synchronisierte Aufgaben und Online-Anbindungen.],
     [Lokale Speicherung, spätere Übermittlung und Verhalten bei Netzwerkausfall unterscheiden.],
     [3],
-    [Geprüfte Härtung im festgelegten Electron-Sicherheitsrahmen.],
+    [Geprüfte Härtung],
     [Anwendbarkeit, Umsetzung und Nachweis jeder Empfehlung dokumentieren.],
   ),
   caption: [Phasen und Kontrollpunkte des fallbezogenen Migrationsleitfadens.],
 ) <tab:migration-phases>
 
 == Phase 1: Von der Webanwendung zur Offline-Kernanwendung <sec:offline-core-migration>
-
-Die Umsetzung beginnt mit der lokalen Datenbank und der Schnittstelle, auf die anschließend die vorhandene Oberfläche und die fachlichen Verarbeitungspfade aufbauen.
-Katalogabhängige Funktionen verwenden in dieser Phase einen lokal bereitgestellten Datenbestand.
 
 === Initialisierung des Electron-Projekts und Übernahme der Datenbankmodule
 
@@ -60,15 +54,15 @@ Für Electron sprach die unmittelbare Ausführung der übernommenen Backend-Komp
 
 Das Zielprojekt wurde mit der `react-ts`-Vorlage von electron-vite initialisiert @ElectronViteGettingStarted2026.
 Damit blieb die im Replit-Frontend verwendete Kombination aus React, TypeScript und Vite erhalten @StudienplanerSource2026.
-Die betrachtete React-TypeScript-Anleitung von Electron Forge verwendet `webpack-typescript`; Forge bietet daneben auch Vite-Vorlagen an @ElectronForgeReact2026 @ElectronForgeGettingStarted2026.
+Die betrachtete React-TypeScript-Anleitung von Electron Forge verwendet `webpack-typescript`; 
+Forge bietet daneben auch Vite-Vorlagen an [aber nicht out of the box mit react] @ElectronForgeReact2026 @ElectronForgeGettingStarted2026.
 Die Wahl von electron-vite beruhte auf der erwarteten Begrenzung der Anpassungen durch kompatible Technologien.
 Ein geringerer Migrationsaufwand gegenüber Tauri oder Electron Forge wurde nicht vergleichend evaluiert.
 
-Anschließend wurden die Drizzle-Schemadefinitionen für Benutzer, Stundenpläne, Studiengänge, Gruppen, Noten, Termine und das Aktivitätsprotokoll samt Exportmodul nach `src/main/db/schema` übernommen.
-Die angepasste `drizzle.config.ts` liegt im Projektstamm.
-Für die erste Entwicklung ersetzte eine lokale SQLite-Datei die PostgreSQL-Verbindung: Der Dialekt wechselte zu `sqlite`, und `DATABASE_URL` entfiel für die lokale Datenhaltung @StudienplanerSource2026 @StudyPlanDatabase2026.
+Anschließend wurden die Drizzle-Schemadefinitionen für Benutzer, Stundenpläne, Studiengänge, Gruppen, Noten, Termine und das Aktivitätsprotokoll [alle Tables inklusive drizzle.config.ts] samt Exportmodul nach `src/main/db/schema` übernommen.
+Für die erste Entwicklung ersetzte eine lokale SQLite-Datei die PostgreSQL-Verbindung [als Benutzerdatenbank. Mit dem Umgebungswechsel übernahm die Desktop-Anwendung im Main-Prozess das Anlegen, Öffnen und Migrieren der Benutzerdatenbank.
+ ]: Der Dialekt wechselte zu `sqlite`, und `DATABASE_URL` entfiel für die lokale Datenhaltung @StudienplanerSource2026 @StudyPlanDatabase2026.
 
-Mit dem Umgebungswechsel übernahm die Desktop-Anwendung im Main-Prozess das Anlegen, Öffnen und Migrieren der Benutzerdatenbank.
 Die Datei wird zur Laufzeit unter dem von Electron bereitgestellten Pfad `userData` angelegt @ElectronAppPaths2026.
 Dieser liegt außerhalb des Projekt- und Installationsverzeichnisses, trennt veränderliche Daten von Programmdateien und vermeidet Schreibzugriffe auf das Installationsverzeichnis.
 Ein Update kann so Programmdateien ersetzen, ohne die Benutzerdatenbank auszutauschen.
@@ -76,58 +70,44 @@ Ausgeliefert werden die Migrationen zur Einrichtung und Aktualisierung ihres Sch
 
 === Anpassung der Tabellen und Datenbankabhängigkeiten an SQLite
 
-Die Übernahme der Dateien genügte noch nicht, da die bestehenden Definitionen PostgreSQL-spezifische Datentypen und Tabellenkonstruktoren verwendeten.
-Diese wurden durch die entsprechenden SQLite-Konstrukte ersetzt.
-Die fachlichen Tabellen- und Spaltennamen sowie die vorhandenen Pflichtfelder und Standardwerte wurden dabei möglichst beibehalten.
-Dieser Ansatz begrenzte die Änderungen am Datenmodell und entsprach dem in @ch:analysis festgelegten Ziel, vorhandene Komponenten mit möglichst geringem Refactoring-Aufwand weiterzuverwenden.
+Die Übernahme der bestehenden Schemadefinitionen erforderte Anpassungen, da diese auf PostgreSQL-spezifische Datentypen und Tabellenkonstruktoren aufbauten. Um das in @ch:analysis festgelegte Ziel eines minimalen Refactoring-Aufwands zu erreichen, wurden die Konstrukte durch entsprechende SQLite-Äquivalente ersetzt, während fachliche Tabellen- und Spaltennamen, Pflichtfelder sowie Standardwerte unverändert blieben.
 
-@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen.
-Das Stundenplanschema liefert Beispiele für Kennungen, boolesche Werte und Enums; das Terminschema ergänzt die Datumsabbildung @StudienplanerSource2026 @StudyPlanDatabase2026.
+Auf Treiberebene wurde die PostgreSQL-Bibliothek `pg` für die lokale Datenhaltung durch `@libsql/client` abgelöst. Drizzle blieb dabei als einheitliche Abstraktionsschicht für das Schema und den Datenzugriff erhalten.
+
+@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen. 
+Das Stundenplanschema liefert hierbei Beispiele für Kennungen, boolesche Werte und Enums, während das Terminschema die Datumsabbildung ergänzt @StudienplanerSource2026 @StudyPlanDatabase2026.
 
 #figure(
-  {
-    set par(justify: false)
-    table(
-      columns: (1fr, 1.2fr, 1.5fr),
-      inset: 6pt,
-      align: left,
-      table.header([*PostgreSQL / Drizzle*],
-      [*SQLite / Drizzle*],
-      [*Bedeutung der Anpassung*]),
-      [`pgTable`],
-      [`sqliteTable`],
-      [Tabellenkonstruktor für den neuen Dialekt.],
-      [`serial` als Primärschlüssel],
-      [`integer` mit `autoIncrement`],
-      [Numerische, automatisch erzeugte Kennung bleibt erhalten.],
-      [`boolean`],
-      [`integer` im Modus `boolean`],
-      [Integer-Speicherung mit booleschen TypeScript-Werten.],
-      [`pgEnum`],
-      [`text` mit `enum`-Werteliste],
-      [Typableitung bleibt erhalten; keine gleichwertige Datenbankprüfung.],
-      [`timestamp` mit Zeitzone],
-      [`integer` im Modus `timestamp`],
-      [Zeitpunkt wird als Unix-Zeit gespeichert und im Code als `Date` verwendet.],
-    )
-  },
-  caption: [Ausgewählte Abbildungen der PostgreSQL-Schemadefinitionen auf SQLite im Demonstrator.],
-) <tab:postgresql-sqlite-mapping>
-
-Die PostgreSQL-Enums für Wochentage und Zeitblöcke wurden durch konstante Wertelisten und daraus abgeleitete TypeScript-Union-Typen ersetzt.
-Die `enum`-Option des Text-Konstruktors unterstützt diese Typableitung, erzwingt jedoch zur Laufzeit keinen zulässigen Wertebereich in der Datenbank @DrizzleSQLiteTypes2026.
-Eingehende Werte müssen deshalb weiterhin geprüft werden.
-Auch die Datumsabbildung verlangt einen konsistenten Umgang mit Zeiteinheit und Zeitzonen; im gewählten Modus wird der Zeitpunkt in Sekunden gespeichert.
-Die aus den Tabellen abgeleiteten Insert- und Select-Typen sowie die Erzeugung der Zod-Schemata konnten weiterhin nach dem vorhandenen Muster verwendet werden @StudyPlanDatabase2026.
-
-Für die benötigten Pakete wurde zunächst die Abhängigkeitskonfiguration des Ausgangsartefakts herangezogen.
-Die angegebenen Versionsbereiche für `drizzle-orm` (`^0.45.2`), `drizzle-kit` (`^0.31.10`) und `drizzle-zod` (`^0.8.3`) wurden übernommen.
-Der PostgreSQL-Treiber `pg` wurde für die lokale Datenhaltung durch `@libsql/client` ersetzt; im Demonstrator ist hierfür der Versionsbereich `^0.18.0` angegeben @StudienplanerSource2026 @StudyPlanDatabase2026.
-Damit blieb Drizzle als Abstraktion für Schema und Datenzugriff erhalten, während der verwendete Treiber wechselte.
-
-Die Verantwortlichkeiten der Pakete sind dabei zu unterscheiden: Der libSQL-Client öffnet die lokale Datenbankdatei, Drizzle ORM führt die Datenbankoperationen aus und Drizzle Kit erzeugt die SQL-Migrationsdateien.
-Das Anwenden dieser Dateien beim Anwendungsstart übernimmt der Migrator aus `drizzle-orm/libsql/migrator`.
-Die automatische Anwendung vorbereiteter Migrationen ist somit Bestandteil der eingerichteten Drizzle-Initialisierung und keine alleinige Eigenschaft des Datenbanktreibers @StudyPlanDatabase2026.
+{
+set par(justify: false)
+table(
+columns: (1fr, 1.2fr, 1.5fr),
+inset: 6pt,
+align: left,
+table.header(
+[*PostgreSQL / Drizzle*],
+[*SQLite / Drizzle*],
+[*Bedeutung der Anpassung*],
+),
+[`pgTable`],
+[`sqliteTable`],
+[Tabellenkonstruktor für den neuen Dialekt.],
+[`serial` als Primärschlüssel],
+[`integer` mit `autoIncrement`],
+[Numerische, automatisch erzeugte Kennung bleibt erhalten.],
+[`boolean`],
+[`integer` im Modus `boolean`],
+[Integer-Speicherung mit booleschen TypeScript-Werten.],
+[`pgEnum`],
+[`text` mit `enum`-Werteliste],
+[Typableitung bleibt erhalten; keine gleichwertige Datenbankprüfung.],
+[`timestamp` mit Zeitzone],
+[`integer` im Modus `timestamp`],
+[Zeitpunkt wird als Unix-Zeit gespeichert und im Code als `Date` verwendet.],
+)
+},
+caption: [Ausgewählte Abbildungen der PostgreSQL-Schemadefinitionen auf SQLite im Demonstrator.],
+) [tab:postgresql-sqlite-mapping](https://www.google.com/search?q=tab:postgresql-sqlite-mapping)
 
 === Versionierte Schemamigrationen und Datenbankinitialisierung
 
@@ -143,7 +123,6 @@ Damit steht ein nachvollziehbarer Ablauf für spätere Schemaänderungen bereit,
 Die Verträglichkeit einer konkreten Schemaänderung mit bestehenden Daten muss dennoch anhand der jeweiligen Migration geprüft werden.
 
 Die resultierende Konfiguration beschreibt deshalb nur den SQLite-Dialekt, den Einstiegspunkt der Schemadefinitionen und das Ausgabeverzeichnis der Migrationen.
-Ein Verbindungsparameter zur Entwicklungsdatenbank ist für die Generierung nicht mehr erforderlich @DrizzleGenerate2026.
 Der Laufzeitpfad der Benutzerdatenbank wird separat im Main-Prozess festgelegt.
 @lst:drizzle-config zeigt diese Konfiguration des Demonstrators @StudyPlanDatabase2026.
 
@@ -160,7 +139,6 @@ Der Laufzeitpfad der Benutzerdatenbank wird separat im Main-Prozess festgelegt.
 In `package.json` wurden `db:generate` für `drizzle-kit generate` und `db:check` für `drizzle-kit check` eingerichtet.
 Zur Laufzeit verwendet die Anwendung die erzeugten Dateien über den ORM-Migrator @StudyPlanDatabase2026.
 
-Die Initialisierung wurde in den Startablauf des Main-Prozesses eingebunden.
 Innerhalb des mit `app.whenReady()` begonnenen Ablaufs in `src/main/index.ts` wird `initDatabase()` abgewartet, bevor die lokale Datenbank an Repositories und Dienste übergeben und das Anwendungsfenster geöffnet wird.
 Scheitert die Vorbereitung, zeigt die Anwendung eine Fehlermeldung an und beendet den Start.
 Die Oberfläche wird dadurch nicht mit einer unvollständig vorbereiteten Datenbank geöffnet @StudyPlanDatabase2026.
