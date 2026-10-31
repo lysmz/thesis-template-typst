@@ -155,34 +155,94 @@ Scheitert dieser Ablauf an einem beliebigen Punkt, bricht die Anwendung mit eine
 Für Funktionen mit Referenzdaten stellen die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen bereit. 
 Sie werden während des Migrationsschritts lokal eingefügt und garantieren die Offline-Fähigkeit der Anwendung, da lokale IPC-Handler bereits vor einem externen Katalogabruf auf einen konsistenten Datenbestand zugreifen können @StudyPlanDatabase2026.
 
-=== Übernahme des API-Vertrags und Anpassung der Codegenerierung sec:api-contract-migration
+=== Übernahme des API-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>
 
-Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter lib/api-spec/openapi.yaml aus, der nach api/openapi.yaml in das Desktop-Projekt übernommen wurde. Dessen Operationskennungen, Parameter und Datenschemata dienten bereits im Web-Prototyp als zentrale Informationsquelle für Validierung und Client-Generierung @StudienplanerSource2026.
+Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter `lib/api-spec/openapi.yaml` aus, der nach `api/openapi.yaml` in das Desktop-Projekt übernommen wurde. 
+Dessen Operationskennungen, Parameter und Datenschemata dienten bereits im Web-Prototyp als zentrale Spezifikation für Validierung und Client-Generierung @StudienplanerSource2026.
 
-Während das Ausgangsartefakt für diesen Schritt das externe Werkzeug Orval mit orval.config.ts verwendete, übernehmen im Desktop-Projekt eigene TypeScript-Generatoren unter scripts/openapi-ipc diese Aufgabe. Die Konfigurationsdatei api/ipc-generator.config.ts legt hierfür den Eingabevertrag und die Zielpfade fest. 
-Damit bleibt das Prinzip einer gemeinsamen Vertragsgrundlage erhalten, die Codegenerierung wird jedoch gezielt auf die Anforderungen und Prozessgrenzen der Electron-Anwendung ausgerichtet @StudyPlanApiMigration2026.
+Die Entscheidung, an diesem zentralen Vertrag festzuhalten, resultiert wesentlich aus den Erfahrungen des Vorversuchs (@sec:migration-preliminary). 
+Die dort beobachteten, schwer nachvollziehbaren Moduländerungen begründeten das Ziel, notwendige Schnittstellenanpassungen strikt von funktionellen Verhaltensänderungen zu trennen.
 
-Der Generator parst den Vertrag während der Entwicklung und erzeugt die erforderlichen Schnittstellenmodule für beide Prozesswelten:
-Gemeinsame Module (src/shared/api/generated): Typdefinitionen, Zod-Laufzeitschemata zur Eingabevalidierung, die Zuordnungstabelle operationContracts sowie der typisierte Basis-Client.
-Renderer-Module (src/renderer/src/api/generated): React-Query-Hooks für die Benutzeroberfläche sowie das zugehörige zentrale Exportmodul src/renderer/src/api/index.ts.
-Die genaue Funktionsweise des Generators, die Transformation der Schemata sowie die Laufzeitweiterleitung über den IPC-Transport werden in den folgenden Abschnitten detailliert beschrieben @StudyPlanApiMigration2026.
+Als Alternative hätte das bisherige Werkzeug Orval beibehalten und die damit erzeugten Hooks, Typen und Zod-Schemata manuell für Electron-IPC adaptiert werden können. 
+Dies hätte jedoch bedeutet, bei künftigen Schemaänderungen mehrere abhängige Module händisch synchronisieren zu müssen. Um diesen Bruch zu vermeiden, wurde die zentrale Vertragsgrundlage beibehalten und deren Übersetzung auf den IPC-Transport über eigene TypeScript-Generatoren unter `scripts/openapi-ipc` automatisiert @StudyPlanApiMigration2026. 
+Das Vorgehen unterstützt die Wiederverwendung nach A3 sowie die Entkopplung nach A8 und A9: Der Vertrag wird zentral gepflegt und Anpassungen propagieren automatisiert in alle abgeleiteten Schnittstellenbausteine.
+
+@fig:api-interface-migration stellt den ursprünglichen HTTP-basierten Aufrufweg der Web-Anwendung der lokalen Electron-Architektur gegenüber.
+
+#figure(
+image("../figures/api-interface-migration.svg", width: 100%),
+placement: top,
+caption: [Vertragsbasierte Codegenerierung und Aufrufwege im Web-Prototyp und in der lokalen Electron-Kernanwendung.
+Gestrichelte Pfeile zeigen Generierung oder Einbindung, durchgezogene Pfeile Laufzeitkommunikation.
+Spätere Synchronisierungs- und Online-Pfade sind nicht dargestellt.],
+) [fig:api-interface-migration](https://www.google.com/search?q=fig:api-interface-migration)
+
+Die wesentliche Verschiebung liegt in der Realisierung des Transports: Anstelle von HTTP-Requests an einen Express-Server tritt eine typisierte Prozesskommunikation über Preload und IPC. 
+@tab:api-interface-changes fasst diese strukturellen Unterschiede zusammen.
+
+#figure(
+{
+set par(justify: false)
+table(
+columns: (1.1fr, 1.9fr, 2fr),
+inset: 6pt,
+align: left,
+table.header(
+[*Aspekt*],
+[*Web-Prototyp*],
+[*Electron-Kernanwendung*],
+),
+[Vertragsgrundlage],
+[OpenAPI mit Operationskennungen und Datenschemata.],
+[Bestehende Definitionen übernommen und gezielt für Desktop-Zwecke ergänzt.],
+[Codegenerierung],
+[Orval für React Query und Zod.],
+[Projektspezifische TypeScript-Generatoren für Client, Hooks und Zod-Verträge.],
+[Aufrufweg],
+[HTTP-Methode und URL über `customFetch`.],
+[`operationId` und Eingabeobjekt über Preload und den Kanal `api:invoke`.],
+[Parameter],
+[Pfad, Query-String und HTTP-Body.],
+[Strukturierte Eingabeobjekte mit `path`, `query` und `body`.],
+[Ergebnis],
+[HTTP-Antwort bzw. HTTP-Fehlerstatus.],
+[Geprüftes `ApiResult`; Fehler werden typisiert als `ApiClientError` weitergegeben.],
+[Datumswerte],
+[Strings im generierten Client; Datumsprüfung in Zod-Schemata.],
+[`Date`-Werte und `z.date()` in den gemeinsamen Modulen.],
+[Zugriffsgrenze],
+[Serverseitige HTTP-Verarbeitung und Sitzungszuordnung.],
+[Begrenzte Bridge, Absender- und Schemaprüfung sowie fachliche Sitzungsprüfung.],
+)
+},
+caption: [Wiederverwendete Vertragsgrundlage und Änderungen an ihrer Umsetzung.],
+) [tab:api-interface-changes](https://www.google.com/search?q=tab:api-interface-changes)
+
+Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt die Toolchain aus der `openapi.yaml` die benötigten Module getrennt nach Zielumgebung @StudyPlanApiMigration2026:
+
+* **Gemeinsame Module (`src/shared/api/generated`):** Typdefinitionen, Zod-Laufzeitschemata, die Zuordnungstabelle `operationContracts` sowie der Basistransport.
+* **Renderer-Module (`src/renderer/src/api/generated`):** React-Query-Hooks für die Benutzeroberfläche und standardisierte Query-Key-Hilfsfunktionen.
+
+Wie diese Artefakte im Detail aus den OpenAPI-Definitionen abgeleitet werden, beschreibt der folgende Abschnitt.
 
 === Funktionsweise der OpenAPI-IPC-Codegenerierung <sec:api-generator-concept>
 
 Die Codeerzeugung übersetzt die Vertragsbeschreibung während der Entwicklung schrittweise in TypeScript-Module. 
 Der Ablauf gliedert sich in drei aufeinander aufbauende Phasen: das Einlesen und Strukturieren des Dokuments, das programmatische Zusammensetzen der Quelltext-Zeichenketten sowie die Formatierung und Ausgabe der Dateien @StudyPlanApiMigration2026.
 
-Die Orchestrierung übernimmt `buildGeneratedFiles`. 
-Die Funktion liest die Spezifikation mit `readFile` ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft `collectOperations` alle Pfade und HTTP-Methoden:
+Die Orchestrierung übernimmt buildGeneratedFiles. 
+Die Funktion liest die Spezifikation mit readFile ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft collectOperations alle Pfade und HTTP-Methoden:
 
-* Für jede Operation entsteht ein Datensatz mit Operationskennung, primärem Tag, Parametern, Antwortschemata sowie der Klassifikation als Query (`get`) oder Mutation (`post`, `put`, `delete`).
-* Fehlende oder mehrfach vergebene Operationskennungen werden strikt zurückgewiesen.
-* `operationInputSchema` konsolidiert Pfad- und Query-Parameter sowie den Request-Body in die festen Eingabegruppen `path`, `query` und `body`.
+Für jede Operation entsteht ein Datensatz mit Operationskennung, primärem Tag, Parametern, Antwortschemata sowie der Klassifikation als Query (get) oder Mutation (post, put, delete).
 
-Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion `zodSchema`. 
-Sie übersetzt einzelne Schemadefinitionen in Zod-Ausdrücke. Für zusammengesetzte Objekte fügt `zodSchema` die Feldzeilen zusammen und ergänzt für nicht in `required` geführte Eigenschaften `.optional()`.
+Fehlende oder mehrfach vergebene Operationskennungen werden strikt zurückgewiesen.
 
-Die Generatorfunktion `contractSource` bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über `z.infer` den passenden TypeScript-Typ ab. 
+operationInputSchema konsolidiert Pfad- und Query-Parameter sowie den Request-Body in die festen Eingabegruppen path, query und body.
+
+Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion zodSchema. 
+Sie übersetzt einzelne Schemadefinitionen in Zod-Ausdrücke. Für zusammengesetzte Objekte fügt zodSchema die Feldzeilen zusammen und ergänzt für nicht in required geführte Eigenschaften .optional().
+
+Die Generatorfunktion contractSource bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über z.infer den passenden TypeScript-Typ ab. 
 @lst:generator-event-example stellt diese Transformation am Beispiel von Termindaten gegenüber.
 
 #figure(
@@ -193,11 +253,10 @@ columns: (1fr, 1fr),
 column-gutter: 12pt,
 align: left,
 [
-*YAML-Eingabe (Auszug)*
-`yaml EventInput: type: object required: [title] properties: title: type: string minLength: 1 description: type: string `
+YAML-Eingabe (Auszug)yaml EventInput: type: object required: [title] properties: title: type: string minLength: 1 description: type: string 
 ],
 [
-*TypeScript-Ausgabe (Auszug)*
+TypeScript-Ausgabe (Auszug)
 ```ts
 export const EventInputSchema = z
 .object({
@@ -206,22 +265,18 @@ description: z.string().optional()
 })
 .passthrough()
 
-```
     export type EventInput = 
       z.infer<typeof EventInputSchema>
     ```
   ],
 )
-
-```
-
 },
 kind: raw,
 caption: [Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ @StudyPlanApiMigration2026.],
-) [lst:generator-event-example](https://www.google.com/search?q=lst:generator-event-example)
+) lst:generator-event-example
 
-Für komplexere Schemastrukturen löst `orderSchemas` Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. 
-`contractSource` erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt `operationContracts` zusammen @StudyPlanApiMigration2026.
+Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen $ref-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. 
+contractSource erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt operationContracts zusammen @StudyPlanApiMigration2026.
 
 Die Abbildung der Vertragsbestandteile auf die generierten Zielbausteine fasst @tab:api-generator-mapping zusammen.
 
@@ -234,47 +289,41 @@ columns: (1.2fr, 1.2fr, 1.5fr),
 inset: 5pt,
 align: left,
 table.header(
-[*OpenAPI-Eingabe*],
-[*Generatorfunktion*],
-[*Erzeugtes Element*],
+[OpenAPI-Eingabe],
+[Generatorfunktion],
+[Erzeugtes Element],
 ),
-[Array mit `$ref` auf `Event`],
-[`zodSchema`],
-[`z.array(EventSchema)`],
-[Optionaler Query-Parameter `month`],
-[`operationInputSchema`],
-[Eingabefeld `query.month` mit `z.number().int()`],
-[Request-Body mit Verweis auf `EventInput`],
-[`operationInputSchema` / `contractSource`],
-[Eingabefeld `body: EventInputSchema`],
-[`operationId: listEvents`, `tags: [events]`],
-[`collectOperations` / `clientSource`],
-[Client-Methode `api.events.listEvents(...)`],
-[Methode `get` bzw. `post`],
-[`collectOperations` / `rendererReactQuerySource`],
-[Hook `useListEvents` (Query) bzw. `useCreateEvent` (Mutation)],
-[`2xx`-Antwort und Fehlerdefinitionen],
-[`collectOperations` / `contractSource`],
+[Array mit $ref auf Event],
+[zodSchema],
+[z.array(EventSchema)],
+[Optionaler Query-Parameter month],
+[operationInputSchema],
+[Eingabefeld query.month mit z.number().int()],
+[Request-Body mit Verweis auf EventInput],
+[operationInputSchema / contractSource],
+[Eingabefeld body: EventInputSchema],
+[operationId: listEvents, tags: [events]],
+[collectOperations / clientSource],
+[Client-Methode api.events.listEvents(...)],
+[Methode get bzw. post],
+[collectOperations / rendererReactQuerySource],
+[Hook useListEvents (Query) bzw. useCreateEvent (Mutation)],
+[2xx-Antwort und Fehlerdefinitionen],
+[collectOperations / contractSource],
 [Rückgabeschema und typisierte Fehlervereinigung],
 )
 },
 caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module @StudyPlanApiMigration2026.],
-) [tab:api-generator-mapping](https://www.google.com/search?q=tab:api-generator-mapping)
+) tab:api-generator-mapping
 
-Aufbauend auf diesen Schemata erzeugt `clientSource` die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. 
-Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen `operationId` an den Transport weiter. 
-`rendererReactQuerySource` generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Query Keys.
+Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Query Keys.
 
 Im letzten Schritt formatiert der Generator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser. 
-Das Skript `scripts/openapi-ipc/generate.ts` legt die Zielverzeichnisse an und speichert `contract.generated.ts`, `client.generated.ts`, `react-query.generated.ts` sowie die Exportmodule als UTF-8-Dateien ab. 
-Über das `package.json`-Skript `api:generate` wird dieser Ablauf manuell oder im Build angestoßen; `api:check` (`--check`) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der `openapi.yaml` entsprechen @StudyPlanApiMigration2026.
-
-Der Generator deckt gezielt den für den Demonstrator erforderlichen Spezifikationsumfang ab. 
-Da er primär auf IPC ausgelegt ist, werden nicht benötigte HTTP-Konzepte ignoriert und nicht unterstützte Schemastrukturen, wie etwa rekursive Objektreferenzen, zur Entwurfszeit mit einem Fehler abgewiesen.
-
+Das Skript scripts/openapi-ipc/generate.ts legt die Zielverzeichnisse an und speichert contract.generated.ts, client.generated.ts, react-query.generated.ts sowie die Exportmodule als UTF-8-Dateien ab. 
+Über das package.json-Skript api:generate wird dieser Ablauf manuell oder im Build angestoßen; api:check (--check) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der openapi.yaml entsprechen @StudyPlanApiMigration2026.
 === IPC-Transport, Preload-Schnittstelle und Dispatcher
 
-Zur Laufzeit lösen prozessübergreifende IPC-Aufrufe die herkömmliche HTTP-Kommunikation ab. 
+ur Laufzeit lösen prozessübergreifende IPC-Aufrufe die herkömmliche HTTP-Kommunikation ab. 
 Die Kommunikation folgt dabei dem Prinzip eines typisierten Remote Procedure Call (RPC): Der Renderer-Prozess stößt eine benannte Operation im Main-Prozess an und erhält asynchron das validierte Ergebnis zurück @StudienplanerSource2026 @StudyPlanApiMigration2026.
 
 Die Vermittlung übernimmt ein Transportadapter vom Typ ApiTransport. 
@@ -283,7 +332,8 @@ Anstelle von HTTP-Methode und URL erwartet dieser die generierte operationId sow
 Die Anbindung des Renderers an den Electron-IPC-Kanal erfolgt streng nach dem Prinzip der geringsten Rechte (Principle of Least Privilege) @ElectronContextBridge2026:
 
 Preload-Bridge (src/preload/index.ts): Über contextBridge.exposeInMainWorld wird dem Renderer ausschließlich die Methode window.apiTransport.invoke bereitgestellt. 
-Das vollständige ipcRenderer-Modul sowie frei wählbare Kanalnamen bleiben der Renderer-Umgebung vorenthalten. Die Typdeklaration in src/preload/index.d.ts erweitert das globale Window-Interface für die statische Typprüfung.
+Das vollständige ipcRenderer-Modul sowie frei wählbare Kanalnamen bleiben der Renderer-Umgebung vorenthalten. 
+Die Typdeklaration in src/preload/index.d.ts erweitert das globale Window-Interface für die statische Typprüfung.
 
 Kanalabstraktion: Aufrufe werden im Preload-Skript mit einer eindeutigen requestId versehen und über den festen Kanal api:invoke via ipcRenderer.invoke an den Main-Prozess gesendet @ElectronIpc2026.
 
@@ -308,11 +358,15 @@ Im Main-Prozess nimmt ipcMain.handle die Nachrichten entgegen und übergibt sie 
        ├─ 3. Eingabe mit Zod validieren
        ├─ 4. Registrierten Handler aufrufen
        └─ 5. Rückgabe / Fehler validieren (ApiResult)
-Der Dispatcher prüft zunächst den anfragenden Frame sowie die Struktur der Nachricht. Anhand der übergebenen operationId schlägt er die zugehörigen Schemadefinitionen in operationContracts nach und validiert die Eingabedaten mit dem generierten Zod-Eingabeschema. Ungültige Datenstrukturen oder unbekannte Operationskennungen werden unmittelbar abgewiesen.
+Der Dispatcher prüft zunächst den anfragenden Frame sowie die Struktur der Nachricht. 
+Anhand der übergebenen operationId schlägt er die zugehörigen Schemadefinitionen in operationContracts nach und validiert die Eingabedaten mit dem generierten Zod-Eingabeschema. 
+Ungültige Datenstrukturen oder unbekannte Operationskennungen werden unmittelbar abgewiesen.
 
-Ist die Operation zwar im Schema definiert, aber kein passender Handler registriert, antwortet der Dispatcher mit dem Fehlercode NOT_IMPLEMENTED. Die Codegenerierung stellt somit lediglich das typisierte Gerüst bereit; die eigentliche Geschäftslogik, Sitzungsprüfungen und Datenbankzugriffe verbleiben in den Handlern und Services des Main-Prozesses @StudyPlanApiMigration2026.
+Ist die Operation zwar im Schema definiert, aber kein passender Handler registriert, antwortet der Dispatcher mit dem Fehlercode NOT_IMPLEMENTED. 
+Die Codegenerierung stellt somit lediglich das typisierte Gerüst bereit; die eigentliche Geschäftslogik, Sitzungsprüfungen und Datenbankzugriffe verbleiben in den Handlern und Services des Main-Prozesses @StudyPlanApiMigration2026.
 
-Nach der Ausführung des Handlers validiert der Dispatcher das Ergebnis gegen das deklarierte Antwort- bzw. Fehlerschema. Die Antwort wird in ein einheitliches ApiResult gekapselt:
+Nach der Ausführung des Handlers validiert der Dispatcher das Ergebnis gegen das deklarierte Antwort- bzw. Fehlerschema. 
+Die Antwort wird in ein einheitliches ApiResult gekapselt:
 
 Erfolg: { ok: true, data: ..., requestId }
 
@@ -320,80 +374,28 @@ Fehler: { ok: false, error: ..., requestId }
 
 Dieses standardisierte Antwortformat erlaubt es dem Client im Renderer, erfolgreiche Nutzdaten transparent auszupacken und kontrollierte Anwendungsfehler konsistent an die aufrufenden React-Query-Hooks weiterzureichen.
 
-=== Begründung und Grenzen der vertragsbasierten Generierung
+=== Grenzen und kritische Würdigung des Generatoransatzes
 
-Die Entscheidung berücksichtigt auch den Vorversuch aus @sec:migration-preliminary.
-Die dort beobachteten, schwer zuzuordnenden Änderungen begründeten das Ziel, notwendige Schnittstellenanpassungen nachvollziehbarer von zusätzlichen Verhaltensänderungen zu trennen.
-Die gemeinsame Vertragsgrundlage unterstützt hierfür die abgestimmte Ableitung der Schnittstellenbausteine.
+Die automatisierte Generierung der IPC-Schnittstellen aus einer zentralen Spezifikation gewährleistet zwar eine konsistente Brücke zwischen Renderer- und Main-Prozess, bringt jedoch methodische und architektonische Einschränkungen mit sich.
 
-Alternativ hätten die von Orval erzeugten Hooks, Typen und Zod-Schemata manuell angepasst werden können.
-Der eigene Generator wäre entfallen, Änderungen hätten jedoch in mehreren abhängigen Modulen abgestimmt werden müssen.
-Für den erweiterbaren Demonstrator wurde deshalb die zentrale Vertragsgrundlage beibehalten und ihre Übersetzung nach IPC automatisiert.
+Eine fundamentale Grenze liegt in der Natur des Ausgangsformats: OpenAPI ist primär auf zustandslose HTTP-Kommunikation ausgelegt @OpenApi310. 
+Bei der Übertragung auf Electron-IPC verlieren klassische REST-Konzepte ihre ursprüngliche Funktion:
 
-Für Erweiterungen wird der Vertrag an einer Stelle ergänzt und die Änderung durch erneute Generierung in Typen, Client, Hooks und Laufzeitschemata übertragen.
-Anschließend werden Handler, Fachlogik und Oberflächenabläufe implementiert.
-Dieses Vorgehen unterstützt die Wiederverwendung nach A3 und das Erweiterungsmuster nach A8 und A9.
-Der anfängliche Entwicklungs- und spätere Pflegeaufwand des Generators bleibt zu berücksichtigen; eine quantitative Aufwandsersparnis wurde nicht nachgewiesen @StudyPlanApiMigration2026.
+HTTP-Methoden (GET, POST etc.) und URI-Pfade fungieren im Generator lediglich als Klassifikations- und Routing-Metadaten zur Unterscheidung zwischen Queries und Mutationen; sie repräsentieren keine Netzwerkendpunkte.
 
-Die gemeinsame Vertragsbindung definiert die Schnittstelle zwischen Renderer und Main-Prozess.
-Die fachliche Implementierung bleibt hinter dieser Grenze im Main-Prozess.
-Damit können Schnittstellenverarbeitung, Fachlogik und Datenzugriff getrennt geprüft werden, wie A2 verlangt.
+Statuscodes wie 404 oder 500 entfallen auf Transportebene und werden stattdessen in das anwendungsspezifische Fehlerformat von ApiResult überführt.
 
-@fig:api-interface-migration stellt den ursprünglichen Aufrufweg demjenigen der lokalen Electron-Kernanwendung gegenüber.
-In beiden Fällen bildet ein gemeinsamer Vertrag die Grundlage für Client und Validierung.
-Die wesentliche Änderung liegt in der Umsetzung dieses Vertrags zur Laufzeit: HTTP-Aufrufe an einen Express-Server werden durch begrenzte Aufrufe über Preload und IPC ersetzt.
-Die eingezeichnete Trennung in Handler, Services und Repositories zeigt die resultierende Desktop-Architektur; ihre fachliche Ausarbeitung ist ein weiterer Migrationsschritt @StudienplanerSource2026 @StudyPlanApiMigration2026.
+Der Generator deckt bewusst nur den im Demonstrator tatsächlich benötigten Funktionsumfang der Spezifikation ab. 
+Komplexere OpenAPI-Konstrukte, wie rekursive Schemadefinitionen oder tief verschachtelte oneOf-Vereinigungen, werden vom Parser nicht aufgelöst, sondern zur Generierungszeit als Fehler abgewiesen @StudyPlanApiMigration2026.
 
-#figure(
-  image("../figures/api-interface-migration.svg", width: 100%),
-  placement: top,
-  caption: [Vertragsbasierte Codegenerierung und Aufrufwege im Web-Prototyp und in der lokalen Electron-Kernanwendung.
-    Gestrichelte Pfeile zeigen Generierung oder Einbindung, durchgezogene Pfeile Laufzeitkommunikation.
-    Spätere Synchronisierungs- und Online-Pfade sind nicht dargestellt.],
-) <fig:api-interface-migration>
+Zudem muss der gewählte Ansatz im Hinblick auf den Entwicklungs- und Wartungsaufwand kritisch betrachtet werden:
 
-Die Umsetzung der gemeinsamen Vertragsgrundlage im Web-Prototyp und in der Electron-Kernanwendung wird in @tab:api-interface-changes gegenübergestellt.
-
-#figure(
-  {
-    set par(justify: false)
-    table(
-      columns: (1fr, 2fr, 2fr),
-      inset: 6pt,
-      align: left,
-      table.header([*Aspekt*],
-      [*Web-Prototyp*],
-      [*Electron-Kernanwendung*]),
-      [Vertragsgrundlage],
-      [OpenAPI mit Operationskennungen und Datenschemata.],
-      [Bestehende Definitionen übernommen und gezielt ergänzt.],
-      [Generierung],
-      [Orval für React Query und Zod.],
-      [Projektspezifische TypeScript-Generatoren für Client, Hooks und gemeinsame Zod-Verträge.],
-      [Aufrufweg],
-      [HTTP-Methode und URL über `customFetch`.],
-      [`operationId` und Eingabeobjekt über Preload und den Kanal `api:invoke`.],
-      [Parameter],
-      [Pfad, Query-String und HTTP-Body.],
-      [Strukturierte Eingabe mit `path`, `query` und `body`.],
-      [Ergebnis],
-      [HTTP-Antwort beziehungsweise HTTP-Fehler.],
-      [Geprüftes `ApiResult`; Fehler werden als `ApiClientError` weitergegeben.],
-      [Datumswerte],
-      [Strings im generierten Client; Datumsprüfung in Zod-Schemata.],
-      [`Date`-Werte und `z.date()` in den gemeinsamen Modulen.],
-      [Zugriffsgrenze],
-      [Serverseitige HTTP-Verarbeitung und Sitzungszuordnung.],
-      [Begrenzte Bridge, Absender- und Schemaprüfung sowie fachliche Sitzungsprüfung.],
-    )
-  },
-  caption: [Wiederverwendete Vertragsgrundlage und Änderungen an ihrer Umsetzung.],
-) <tab:api-interface-changes>
-
-OpenAPI beschreibt standardmäßig HTTP-APIs @OpenApi310.
-Die IPC-Nutzung übersetzt ausgewählte Vertragsbestandteile projektspezifisch: Methoden und Pfade bleiben Metadaten, die Weiterleitung verwendet die Operationskennung.
-Der Generator unterstützt die benötigten Schemakonstrukte und lokale Referenzen, weist jedoch beispielsweise rekursive Komponentenschemata zurück.
-Er bildet damit den verwendeten Vertragsumfang ab, ohne vollständige OpenAPI-Kompatibilität zu beanspruchen @StudyPlanApiMigration2026.
+Aspekt	Nutzen des Generatoransatzes	Verbleibende Einschränkungen / Kosten
+Typsicherheit	Durchgängige End-to-End-Typisierung vom Main-Handler bis zum React-Hook.	Bei Spezifikationsfehlern bricht der gesamte Generierungs- und Buildprozess ab.
+Änderungsaufwand	Schemaänderungen propagieren automatisch in Typen, Validierung und Client.	Hoher initialer Entwicklungsaufwand für Parser, AST-Mapping und Prettier-Pipeline.
+Wartbarkeit	Vermeidung manueller Synchronisationsfehler zwischen den Prozessen (A3, A8).	Laufender Pflegeaufwand der Toolchain bei künftigen Spezifikations- oder Framework-Updates.
+Eine quantitative Aufwandsersparnis gegenüber einer manuellen Anpassung vorhandener Orval-Artefakte konnte im Rahmen der Arbeit nicht empirisch nachgewiesen werden @StudyPlanApiMigration2026. 
+Der Hauptgewinn des gewählten Ansatzes liegt somit nicht zwingend in kürzeren Entwicklungszeiten, sondern primär in der strukturellen Verlässlichkeit: Fehlerhafte Schnittstellenaufrufe und Datenformate werden bereits zur Übersetzungs- bzw. Generierungszeit erkannt, wodurch die strikte Trennung von Schnittstellenvertrag und Fachlogik (A2) architektonisch erzwungen wird.
 
 === Übernahme der React-Oberfläche in den Renderer <sec:frontend-migration>
 
