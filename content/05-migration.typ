@@ -274,31 +274,51 @@ Da er primär auf IPC ausgelegt ist, werden nicht benötigte HTTP-Konzepte ignor
 
 === IPC-Transport, Preload-Schnittstelle und Dispatcher
 
-Der API-Client ersetzt HTTP-Methode, URL und `customFetch` durch eine Funktion vom Typ `ApiTransport`.
-Diese übermittelt `operationId` und typisierte Eingabedaten über Preload.
-Die übernommenen Gruppen `path`, `query` und `body` bezeichnen nun Felder des IPC-Eingabeobjekts.
-Die Schnittstelle folgt dem Prinzip eines Remote Procedure Call (RPC): Der Renderer ruft eine benannte Operation im Main-Prozess auf und erhält deren Ergebnis.
-Electron-IPC bildet dafür den lokalen Transport zwischen den Prozessen @StudienplanerSource2026 @StudyPlanApiMigration2026.
+Zur Laufzeit lösen prozessübergreifende IPC-Aufrufe die herkömmliche HTTP-Kommunikation ab. 
+Die Kommunikation folgt dabei dem Prinzip eines typisierten Remote Procedure Call (RPC): Der Renderer-Prozess stößt eine benannte Operation im Main-Prozess an und erhält asynchron das validierte Ergebnis zurück @StudienplanerSource2026 @StudyPlanApiMigration2026.
 
-In `src/preload/index.ts` sendet `apiTransport.invoke` die Operationskennung, Eingaben und eine `requestId` über `ipcRenderer.invoke` auf dem festen Kanal `api:invoke`.
-`contextBridge.exposeInMainWorld` stellt dem Renderer `window.apiTransport` bereit; `ipcMain.handle` nimmt den Aufruf im Main-Prozess entgegen.
-Dies entspricht dem von Electron dokumentierten Aufrufmuster mit Rückgabewert @ElectronIpc2026 @StudyPlanApiMigration2026.
+Die Vermittlung übernimmt ein Transportadapter vom Typ ApiTransport. 
+Anstelle von HTTP-Methode und URL erwartet dieser die generierte operationId sowie ein strukturiertes Eingabeobjekt mit den Feldern path, query und body.
 
-`src/preload/index.d.ts` erweitert `Window` für die Typprüfung; das Laufzeitobjekt stellt Preload bereit.
-Der Renderer erhält die begrenzte Transportmethode statt frei wählbarer IPC-Kanäle oder des vollständigen `ipcRenderer`-Objekts.
-Diese Begrenzung entspricht der Electron-Empfehlung für die Bridge @ElectronContextBridge2026.
+Die Anbindung des Renderers an den Electron-IPC-Kanal erfolgt streng nach dem Prinzip der geringsten Rechte (Principle of Least Privilege) @ElectronContextBridge2026:
 
-Der Dispatcher in `src/main/ipc/api-dispatcher.ts` prüft Absender und Anfrageform und ordnet die `operationId` einem Vertrag sowie einem registrierten Handler zu.
-Das generierte Zod-Schema validiert die Eingaben.
-Unbekannte Operationen und ungültige Daten werden abgewiesen @StudyPlanApiMigration2026.
+Preload-Bridge (src/preload/index.ts): Über contextBridge.exposeInMainWorld wird dem Renderer ausschließlich die Methode window.apiTransport.invoke bereitgestellt. 
+Das vollständige ipcRenderer-Modul sowie frei wählbare Kanalnamen bleiben der Renderer-Umgebung vorenthalten. Die Typdeklaration in src/preload/index.d.ts erweitert das globale Window-Interface für die statische Typprüfung.
 
-Nach der Handler-Ausführung validiert der Dispatcher auch Rückgabewerte und ausdrücklich deklarierte Fehlerantworten.
-Ein erfolgreiches `ApiResult` enthält `ok: true`, Daten und Anfragekennung; ein Fehler enthält `ok: false` und ein Fehlerobjekt.
-Der API-Client entnimmt die Daten beziehungsweise erzeugt `ApiClientError` @StudyPlanApiMigration2026.
+Kanalabstraktion: Aufrufe werden im Preload-Skript mit einer eindeutigen requestId versehen und über den festen Kanal api:invoke via ipcRenderer.invoke an den Main-Prozess gesendet @ElectronIpc2026.
 
-Bei einer bekannten, aber nicht registrierten Operation liefert der Dispatcher `NOT_IMPLEMENTED`.
-Generierte Hooks allein stellen somit keine ausführbare Funktion bereit.
-Fachlogik, Sitzungszuordnung und Berechtigungen werden in Handlern und Services umgesetzt; die konsolidierte Härtungsprüfung folgt in Phase 3 @StudyPlanApiMigration2026.
+Client-Instanziierung: Der im Renderer laufende API-Client nutzt diese exponierte Bridge-Funktion, verarbeitet die Rückgabewerte und wandelt Fehlermeldungen in typisierte ApiClientError-Instanzen um @StudyPlanLocalAuth2026.
+
+Im Main-Prozess nimmt ipcMain.handle die Nachrichten entgegen und übergibt sie dem zentralen Dispatcher in src/main/ipc/api-dispatcher.ts @StudyPlanApiMigration2026:
+
+[Renderer / React Query] 
+       │  api.events.listEvents(...)
+       ▼
+[API-Client & Transport] 
+       │  window.apiTransport.invoke('listEvents', input)
+       ▼
+[Preload (Bridge)] ── ipcRenderer.invoke('api:invoke', ...) ──┐
+                                                              │ IPC-Grenze
+[Main: ipcMain.handle] ◄──────────────────────────────────────┘
+       │
+       ▼
+[API-Dispatcher]
+       ├─ 1. Absender & Format prüfen
+       ├─ 2. Operation auflösen (operationContracts)
+       ├─ 3. Eingabe mit Zod validieren
+       ├─ 4. Registrierten Handler aufrufen
+       └─ 5. Rückgabe / Fehler validieren (ApiResult)
+Der Dispatcher prüft zunächst den anfragenden Frame sowie die Struktur der Nachricht. Anhand der übergebenen operationId schlägt er die zugehörigen Schemadefinitionen in operationContracts nach und validiert die Eingabedaten mit dem generierten Zod-Eingabeschema. Ungültige Datenstrukturen oder unbekannte Operationskennungen werden unmittelbar abgewiesen.
+
+Ist die Operation zwar im Schema definiert, aber kein passender Handler registriert, antwortet der Dispatcher mit dem Fehlercode NOT_IMPLEMENTED. Die Codegenerierung stellt somit lediglich das typisierte Gerüst bereit; die eigentliche Geschäftslogik, Sitzungsprüfungen und Datenbankzugriffe verbleiben in den Handlern und Services des Main-Prozesses @StudyPlanApiMigration2026.
+
+Nach der Ausführung des Handlers validiert der Dispatcher das Ergebnis gegen das deklarierte Antwort- bzw. Fehlerschema. Die Antwort wird in ein einheitliches ApiResult gekapselt:
+
+Erfolg: { ok: true, data: ..., requestId }
+
+Fehler: { ok: false, error: ..., requestId }
+
+Dieses standardisierte Antwortformat erlaubt es dem Client im Renderer, erfolgreiche Nutzdaten transparent auszupacken und kontrollierte Anwendungsfehler konsistent an die aufrufenden React-Query-Hooks weiterzureichen.
 
 === Begründung und Grenzen der vertragsbasierten Generierung
 
