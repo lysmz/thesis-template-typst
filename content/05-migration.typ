@@ -155,33 +155,17 @@ Scheitert dieser Ablauf an einem beliebigen Punkt, bricht die Anwendung mit eine
 Für Funktionen mit Referenzdaten stellen die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen bereit. 
 Sie werden während des Migrationsschritts lokal eingefügt und garantieren die Offline-Fähigkeit der Anwendung, da lokale IPC-Handler bereits vor einem externen Katalogabruf auf einen konsistenten Datenbestand zugreifen können @StudyPlanDatabase2026.
 
-=== Übernahme des API-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>
+=== Übernahme des API-Vertrags und Anpassung der Codegenerierung sec:api-contract-migration
 
-Die Schnittstellenmigration ging vom OpenAPI-Vertrag unter `lib/api-spec/openapi.yaml` aus, der nach `api/openapi.yaml` übernommen wurde.
-Seine Operationskennungen, Parameter und Datenschemata dienten bereits im Web-Prototyp zur Erzeugung von Aufrufhilfen und Zod-Schemata @StudienplanerSource2026.
+Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter lib/api-spec/openapi.yaml aus, der nach api/openapi.yaml in das Desktop-Projekt übernommen wurde. Dessen Operationskennungen, Parameter und Datenschemata dienten bereits im Web-Prototyp als zentrale Informationsquelle für Validierung und Client-Generierung @StudienplanerSource2026.
 
-Im Ausgangsartefakt verwendete Orval dafür `orval.config.ts`.
-Im Desktop-Projekt übernehmen eigene TypeScript-Skripte unter `scripts/openapi-ipc` die Generierung.
-Ihre Konfiguration `api/ipc-generator.config.ts` legt den Eingabevertrag und die Ausgabepfade fest.
-Das Prinzip der gemeinsamen Vertragsgrundlage bleibt damit erhalten, während die Umsetzung auf IPC ausgerichtet wird @StudyPlanApiMigration2026.
+Während das Ausgangsartefakt für diesen Schritt das externe Werkzeug Orval mit orval.config.ts verwendete, übernehmen im Desktop-Projekt eigene TypeScript-Generatoren unter scripts/openapi-ipc diese Aufgabe. Die Konfigurationsdatei api/ipc-generator.config.ts legt hierfür den Eingabevertrag und die Zielpfade fest. 
+Damit bleibt das Prinzip einer gemeinsamen Vertragsgrundlage erhalten, die Codegenerierung wird jedoch gezielt auf die Anforderungen und Prozessgrenzen der Electron-Anwendung ausgerichtet @StudyPlanApiMigration2026.
 
-Der Generator liest den Vertrag mit `yaml` und erzeugt TypeScript-Typen, Zod-Laufzeitschemata, die Zuordnungstabelle `operationContracts` sowie einen transportunabhängigen API-Client unter `src/shared/api/generated`.
-React-Query-Hooks liegen unter `src/renderer/src/api/generated`.
-Der Main-Prozess verwendet die gemeinsamen Schemata zur Validierung @StudyPlanApiMigration2026.
-
-`api:generate` erzeugt die Module; `api:check` prüft ihre Übereinstimmung mit der Generatorausgabe.
-Der YAML-Vertrag wird während der Entwicklung eingelesen.
-Zur Laufzeit werden die erzeugten Module verwendet.
-Die fachliche Implementierung und ihre Handler-Registrierung bleiben gesonderte Aufgaben @StudyPlanApiMigration2026.
-
-Während der Oberflächenintegration wurde `generator-lib.ts` im Commit `f03ab7f` um React-Query-Hooks und das Exportmodul `src/renderer/src/api/index.ts` erweitert.
-Die Aufrufformen orientieren sich am Web-Client: Queries erhalten Pfad- und Query-Parameter, Mutationen ein Variablenobjekt mit `data` für den bisherigen Request-Body.
-Auch Hilfsfunktionen für Query Keys werden erzeugt.
-Diese Orientierung ermöglicht die Weiterverwendung vorhandener Aufrufmuster @StudyPlanFrontendMigration2026 @StudyPlanApiMigration2026.
-
-Zunächst stellte Preload den vollständigen API-Client bereit.
-Im Authentifizierungscommit `1c1988d` wurde seine Erzeugung in den Renderer verlagert: Die Hooks verwenden dort `createApiClient` mit `window.apiTransport.invoke`.
-Preload vermittelt den Transport; der Client verarbeitet Ergebnisse und rekonstruiert Fehler als `ApiClientError` @StudyPlanLocalAuth2026.
+Der Generator parst den Vertrag während der Entwicklung und erzeugt die erforderlichen Schnittstellenmodule für beide Prozesswelten:
+Gemeinsame Module (src/shared/api/generated): Typdefinitionen, Zod-Laufzeitschemata zur Eingabevalidierung, die Zuordnungstabelle operationContracts sowie der typisierte Basis-Client.
+Renderer-Module (src/renderer/src/api/generated): React-Query-Hooks für die Benutzeroberfläche sowie das zugehörige zentrale Exportmodul src/renderer/src/api/index.ts.
+Die genaue Funktionsweise des Generators, die Transformation der Schemata sowie die Laufzeitweiterleitung über den IPC-Transport werden in den folgenden Abschnitten detailliert beschrieben @StudyPlanApiMigration2026.
 
 === Funktionsweise der OpenAPI-IPC-Codegenerierung <sec:api-generator-concept>
 
