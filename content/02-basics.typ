@@ -32,7 +32,7 @@ Es ist möglich durch Optionen verschiedene Einstellungen den Internen Flow und 
 Eine Strikte Trennung muss vom Entckler selbst eingehalten werden um die sicherheit zu gewährleisten.
 Es ist z.B. möglich mit NodeJS integration true NodeJS Schnittstellen direkt im Chromium Browser zu aktivieren. 
 Die Electron Security Guidelines sind Guidelines die sich damit beschäftigen welche eigenschaften und settings eine app aktiviert und deaktiviert haben sollten um die Sicherheit zu erhöhen.
-<exemplarische Architektur von zwei möglich Aufbauen von Electron apps. 1. mit strikter Trennung Renderer-IPC-Main 2. "all in one der Renderer kann node js ausführen und nimmt daten und links entgegen">
+\<exemplarische Architektur von zwei möglich Aufbauen von Electron apps. 1. mit strikter Trennung Renderer-IPC-Main 2. "all in one der Renderer kann node js ausführen und nimmt daten und links entgegen"\>
 durch eine mangelhafte Trennung kann es dazu führen das Remote-Code Execution direkt auf das Betriebssystem zugreifen könnten und nicht mehr in der Browser Sandbox gefangen sind.
 
 Die Electron Security Guidelines konkretisieren solche Schutzaufgaben für die Laufzeit.
@@ -71,16 +71,16 @@ Das Dateisystem antwortet: „Nein, hier liegt nur index.html, sonst nichts.“
 
 Ergebnis: 404 / ERR_FILE_NOT_FOUND und ein weißer Bildschirm.
 
-Warum das Hash (#) das Problem löst
-Das Dateisystem interpretiert URLs strikt nach Standards: Alles, was hinter einer Raute # steht, ist ein Client-seitiger Anker und wird niemals als Dateipfad gewertet.
+Warum das Hash (\#) das Problem löst
+Das Dateisystem interpretiert URLs strikt nach Standards: Alles, was hinter einer Raute \# steht, ist ein Client-seitiger Anker und wird niemals als Dateipfad gewertet.
 
 URL: file:///Users/deinName/app/dist/index.html#/settings
 
-Wenn du F5 drückst, fragt Chromium das Dateisystem: „Gib mir /Users/deinName/app/dist/index.html“ (alles ab # ignoriert Chromium beim Dateizugriff).
+Wenn du F5 drückst, fragt Chromium das Dateisystem: „Gib mir /Users/deinName/app/dist/index.html“ (alles ab \# ignoriert Chromium beim Dateizugriff).
 
 Die Datei index.html existiert -> sie wird geladen.
 
-Sobald dein JavaScript anspringt, sieht der HashRouter das #/settings und rendert die Settings-Seite.
+Sobald dein JavaScript anspringt, sieht der HashRouter das \#/settings und rendert die Settings-Seite.
 == Lokale Persistenz, Schema und Identität <sec:theory-persistence>
 
 Drizzle (meist als Drizzle ORM bezeichnet) ist ein modernes, leichtgewichtiges und typsicheres Object-Relational Mapping (ORM).

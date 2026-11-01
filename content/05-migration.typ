@@ -702,6 +702,36 @@ Gruppenanlage, Profilsuche und Einladungen verwenden unmittelbare Online-Aufrufe
 Die entfernte Sitzung wird im Demonstrator nur im Arbeitsspeicher gehalten; nach einem Neustart ist eine erneute Anmeldung erforderlich.
 Die lokale Speicherung von Aufgaben bedeutet deshalb keine uneingeschränkte Offline-Verfügbarkeit aller Gruppenoperationen @StudyPlanSyncArchitecture2026.
 
+=== Verantwortung für Schemaänderungen und Updates <sec:sync-schema-updates>
+
+Die Einführung der Synchronisierung verändert auch die Verantwortung für spätere Schemaänderungen.
+In Phase 1 verwaltet die Desktop-Anwendung ihre Datenbank durch mitgelieferte Drizzle-Migrationen.
+Für synchronisierte Funktionen sind nun das entfernte PostgreSQL-Schema, die PowerSync-Datenverteilung und das lokale Anwendungsschema aufeinander abzustimmen.
+Die Supabase-Datenbank erhält eigene versionierte SQL-Migrationen @SupabaseSchemaMigrations2026.
+Das Desktop-Update ist damit Bestandteil einer koordinierten Bereitstellung über mehrere Komponenten.
+
+Auf Clientseite wird das mit `DrizzleAppSchema` abgeleitete Schema beim Öffnen der PowerSync-Datenbank an das SDK übergeben @StudyPlanSyncIntegration2026.
+Im verwendeten Standardmodell speichert PowerSync Daten als JSON und stellt sie über SQLite-Views entsprechend dem lokalen Schema bereit.
+Eine aktualisierte Schemadefinition wird beim Start der neuen Anwendungsversion angewandt; für diese Views werden keine zusätzlichen Drizzle-SQL-Migrationsdateien benötigt @PowerSyncSchemaChanges2026.
+Die Drizzle-Migrationen aus Phase 1 bleiben für die separate persönliche Datenbank zuständig.
+
+Für eine additive Erweiterung, etwa eine neue synchronisierte Tabelle, ergibt sich folgender Bereitstellungsablauf:
+
++ Zunächst wird das Supabase-Schema erweitert.
+  Dazu gehören die erforderlichen Zugriffsregeln und gegebenenfalls Anpassungen der Backend-Operationen.
++ Anschließend wird die Tabelle in die PostgreSQL-Publication aufgenommen und die Sync-Stream-Konfiguration angepasst.
+  Die Verarbeitung der aktualisierten Konfiguration muss abgeschlossen sein, bevor die neue Funktion freigegeben wird.
++ Danach wird die Desktop-Version mit dem erweiterten Client-Schema und den zugehörigen Anwendungsfunktionen veröffentlicht.
+
+Diese Reihenfolge entspricht dem von PowerSync beschriebenen Vorgehen für additive Änderungen.
+Umbenennungen, Löschungen oder Typänderungen können andere Übergangsschritte erfordern @PowerSyncSchemaDeployment2026.
+
+Die Abstimmung muss auch ältere Clients berücksichtigen, die ein Update noch nicht installiert haben oder nach einer Offline-Phase ausstehende Änderungen übertragen.
+Bestehende Lese- und Schreibformate sind während des Übergangs kompatibel zu halten.
+PowerSync beschreibt dafür unter anderem versionierte Streams und Datentransformationen; deren konkrete Verwendung hängt von der Schemaänderung ab @PowerSyncSchemaChanges2026.
+Ein vollständiger Ablauf mit unterschiedlichen Anwendungsversionen, Backend-Änderung und anschließender Desktop-Aktualisierung wurde im Demonstrator nicht geprüft.
+Dieser Abschnitt benennt die daraus abgeleitete Anforderung an spätere Updates und erweitert den bisherigen Implementierungsnachweis nicht.
+
 === Technische Integration der Kollaborationsmodule <sec:sync-implementation>
 
 Die Integration begann mit der Abstimmung des Datenmodells zwischen Supabase und lokalem PowerSync.
@@ -911,36 +941,6 @@ Erst nach Ablösung aller bisherigen libSQL-Zugriffe könnte `@libsql/client` en
 Dazu wären die betroffenen Repositories, Datenbankinitialisierung und Schemaverwaltung zu überführen.
 Im gewählten Entwurf bliebe `better-sqlite3` als lokaler Treiber erhalten.
 Eine solche vollständige Ablösung wurde nicht geprüft; sie beschreibt eine mögliche Weiterentwicklung, nicht den erreichten Projektstand.
-
-=== Verantwortung für Schemaänderungen und Updates <sec:sync-schema-updates>
-
-Die Einführung der Synchronisierung verändert auch die Verantwortung für spätere Schemaänderungen.
-In Phase 1 verwaltet die Desktop-Anwendung ihre Datenbank durch mitgelieferte Drizzle-Migrationen.
-Für synchronisierte Funktionen sind nun das entfernte PostgreSQL-Schema, die PowerSync-Datenverteilung und das lokale Anwendungsschema aufeinander abzustimmen.
-Die Supabase-Datenbank erhält eigene versionierte SQL-Migrationen @SupabaseSchemaMigrations2026.
-Das Desktop-Update ist damit Bestandteil einer koordinierten Bereitstellung über mehrere Komponenten.
-
-Auf Clientseite wird das mit `DrizzleAppSchema` abgeleitete Schema beim Öffnen der PowerSync-Datenbank an das SDK übergeben @StudyPlanSyncIntegration2026.
-Im verwendeten Standardmodell speichert PowerSync Daten als JSON und stellt sie über SQLite-Views entsprechend dem lokalen Schema bereit.
-Eine aktualisierte Schemadefinition wird beim Start der neuen Anwendungsversion angewandt; für diese Views werden keine zusätzlichen Drizzle-SQL-Migrationsdateien benötigt @PowerSyncSchemaChanges2026.
-Die Drizzle-Migrationen aus Phase 1 bleiben für die separate persönliche Datenbank zuständig.
-
-Für eine additive Erweiterung, etwa eine neue synchronisierte Tabelle, ergibt sich folgender Bereitstellungsablauf:
-
-+ Zunächst wird das Supabase-Schema erweitert.
-  Dazu gehören die erforderlichen Zugriffsregeln und gegebenenfalls Anpassungen der Backend-Operationen.
-+ Anschließend wird die Tabelle in die PostgreSQL-Publication aufgenommen und die Sync-Stream-Konfiguration angepasst.
-  Die Verarbeitung der aktualisierten Konfiguration muss abgeschlossen sein, bevor die neue Funktion freigegeben wird.
-+ Danach wird die Desktop-Version mit dem erweiterten Client-Schema und den zugehörigen Anwendungsfunktionen veröffentlicht.
-
-Diese Reihenfolge entspricht dem von PowerSync beschriebenen Vorgehen für additive Änderungen.
-Umbenennungen, Löschungen oder Typänderungen können andere Übergangsschritte erfordern @PowerSyncSchemaDeployment2026.
-
-Die Abstimmung muss auch ältere Clients berücksichtigen, die ein Update noch nicht installiert haben oder nach einer Offline-Phase ausstehende Änderungen übertragen.
-Bestehende Lese- und Schreibformate sind während des Übergangs kompatibel zu halten.
-PowerSync beschreibt dafür unter anderem versionierte Streams und Datentransformationen; deren konkrete Verwendung hängt von der Schemaänderung ab @PowerSyncSchemaChanges2026.
-Ein vollständiger Ablauf mit unterschiedlichen Anwendungsversionen, Backend-Änderung und anschließender Desktop-Aktualisierung wurde im Demonstrator nicht geprüft.
-Dieser Abschnitt benennt die daraus abgeleitete Anforderung an spätere Updates und erweitert den bisherigen Implementierungsnachweis nicht.
 
 === Grenzen der untersuchten Synchronisierung
 

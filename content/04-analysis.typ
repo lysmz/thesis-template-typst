@@ -16,7 +16,6 @@ Lovable dokumentiert dagegen einen standardmäßig aktivierten verwalteten Cloud
 Alternativ kann ein eigenes Supabase-Projekt angebunden werden.
 Datenbank, Authentifizierung, Dateispeicherung und serverseitige Funktionen werden damit als Backend-Dienste bereitgestellt.
 Diese dokumentierte Dienststruktur wird hier als Backend-as-a-Service eingeordnet.
-###Daraus folgt jedoch nicht, dass jedes Lovable-Projekt dieselbe Architektur aufweist @LovableSupabase2026.###
 
 Für die Migration ergibt sich daraus eine unterschiedliche Ausgangslage.
 Liegt die serverseitige Anwendungslogik als eigener Quellcode vor, kann ihre Übernahme und Anpassung an die lokale Laufzeit untersucht werden.
@@ -53,7 +52,7 @@ Für die Migration werden sämtliche persönlichen Funktionsbereiche sowie Authe
     [Authentifizierung],
     [Registrierung, Anmeldung und Abmeldung sowie die Zuordnung persönlicher Daten zur jeweiligen Identität.],
     [Studiengänge],
-    [Liste an Modulen zugeordnet an die angebotenen Studiengänge]
+    [Liste an Modulen zugeordnet an die angebotenen Studiengänge],
     [Studiengruppen],
     [Anlegen benannter Gruppen und Einladen weiterer Mitglieder; gemeinsame Aufgaben mit Fälligkeit, zuständiger Person und Status „offen“ beziehungsweise „erledigt“. Kommentare, gemeinsame Kalendertermine sowie zusätzliche Gruppeninhalte wie Links und Notizen],
     )
