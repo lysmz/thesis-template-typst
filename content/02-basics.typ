@@ -2,240 +2,124 @@
 = Theoretischer Hintergrund <ch:data>
 //---------------------------------------------------------------------
 
-== KI-gestützte Anwendungsentwicklungplatformen und Softwarequalität <sec:theory-ai-quality>
+== KI-gestützte Anwendungsentwicklungsplattformen und Softwarequalität <sec:theory-ai-quality>
 
-Unter KI-gestützter Anwendungsentwicklungsplatformen [wie Replit und Lovable verstehen wir Platformen die sich darauf spezialisiert haben aus Natürlicher Sprache der Nutzer vollwertige Softwareartefakte (Apps) zu entwickeln] 
-wird hier die Erzeugung und Überarbeitung von Anwendungscode anhand sprachlicher Anforderungen verstanden.
-Das resultierende Ausgangsartefakt umfasst ausführbaren Code, Konfigurationen und Abhängigkeiten.
-Diese Platformen sind Teil eines neuen Programmierparadigma das allgemein teil des Vibe-Coding ist.
-Technisch gesehen funktionieren diese Platformen mit einem KI-Agenten Orchestrator der die Anfragen der Nutzer an Subagenten weiterleitet, die mithilfe von Domain Specific Languages Code schreiben; Repositories anlegen und anbindungen an virtuelle Umgebung samt Debugger haben.
-Für die Arbeit relevant sind dabei die Fakten das die Platformen im Kern mit LLM arbeiten und auch wenn diese mit Hilfe von Speziellen Tools fehler Selbstständig beheben können und sicherheitsvorgaben überprüfen können, so sind diese fundermental nur für die dortige Umgebung ausgelegt.
-Daraus lässt sich auch herausarbeiten das die Platformen die neuen Probleme die bei einer Migration auf eine andere Umgebung erscheinen nicht schon vollumfänglich absehen und dahin gehend lenken können.
-Seine sichtbare Funktionalität und seine technischen Eigenschaften sind getrennt zu betrachten: Ein erfolgreicher Oberflächenablauf zeigt zunächst, dass eine bestimmte Interaktion funktioniert.
-Ob Datenzugriffe angemessen begrenzt sind, Fehler behandelt werden und die Struktur spätere Änderungen ermöglicht, erfordert weitere Prüfungen.
+Unter KI-gestützten Anwendungsentwicklungsplattformen (beispielsweise Replit oder Lovable) wird im Kontext dieser Arbeit die Generierung und iterative Überarbeitung von Anwendungscode auf Basis natürlicher Sprache verstanden.
+Das resultierende Softwareartefakt umfasst typischerweise den ausführbaren Programmcode, zugehörige Konfigurationen sowie notwendige Abhängigkeiten.
+Diese Systeme ordnen sich in ein neuartiges Programmierparadigma ein, das in der Fach- und Praxisdiskussion häufig unter dem Begriff des sogenannten _Vibe Coding_ zusammengefasst wird.
+
+Architektonisch basieren entsprechende Plattformen meist auf einem orchestrierenden KI-Agenten, welcher eingehende Nutzerprompts an spezialisierte Subagenten delegiert.
+Diese Subagenten interagieren mit Repositories, nutzen domänenspezifische Logiken und sind an geschlossene virtuelle Laufzeit- sowie Debugging-Umgebungen angebunden.
+
+Für den weiteren Verlauf dieser Arbeit ist dabei wesentlich, dass die Plattformen im Kern auf Large Language Models (LLMs) aufbauen.
+Zwar verfügen sie über integrierte Werkzeuge zur automatisierten Fehlerkorrektur und zur grundlegenden Sicherheitsanalyse, diese Validierungen beziehen sich jedoch primär auf die plattforminterne Zielumgebung.
+Spezifische Anforderungen oder Folgeprobleme, die sich bei einer Migration der Artefakte in externe Produktionsumgebungen ergeben, werden durch diese internen Prüfmechanismen folglich nur unzureichend antizipiert.
+
+Vor diesem Hintergrund müssen die sichtbare Funktionalität und die inhärente Softwarequalität getrennt voneinander bewertet werden: Ein fehlerfreier Durchlauf auf der Benutzeroberfläche belegt lediglich das Funktionieren einer konkreten Interaktion.
+Ob darüber hinaus Sicherheitsvorgaben (wie das Prinzip der geringsten Rechte bei Datenzugriffen) eingehalten, Ausnahmefälle robust behandelt und architektonische Standards für eine nachhaltige Wartbarkeit erfüllt werden, bedarf einer gesonderten technischen Prüfung.
+
 == API-Verträge, Typisierung und Codegenerierung <sec:theory-contracts>
 
- ist Ein API-Vertragbeschreibt die angebotenen Operationen und die erwarteten Strukturen ihrer Eingaben und Ergebnisse.
-OpenAPI definiert hierfür eine programmiersprachenunabhängige Beschreibung von HTTP-APIs in form einer yml Datei.
-Ein OpenAPI-Dokument kann unter anderem Pfade, Operationen, Parameter, Antwortformen und wiederverwendbare Schemata festlegen.
-Es kann als Grundlage für Dokumentation und die Erzeugung abhängiger Programmteile dienen @OpenApi310.
-Die Definition schafft eine gemeinsame Schnittstellengrundlage für die beteiligten Komponenten.
+Ein API-Vertrag definiert formal die angebotenen Operationen einer Schnittstelle sowie die erwarteten Datenstrukturen für Anfragen und Antworten.
+Einen etablierten Standard stellt hierbei die OpenAPI-Spezifikation dar, welche HTTP-basierte Programmierschnittstellen sprachunabhängig – typischerweise im YAML- oder JSON-Format – abbildet.
+Ein entsprechendes Dokument beschreibt unter anderem Endpunkte, HTTP-Methoden, Parameter, Statuscodes sowie wiederverwendbare Datenschemata.
+Über die reine Dokumentation hinaus dient die formale Schnittstellenbeschreibung als Grundlage für die automatisierte Generierung nachgelagerter Softwareartefakte @OpenApi310 und fungiert somit als einheitliche Integrationsbasis zwischen verteilten Komponenten.
 
-Orval ist ein Programm das aus einer OpenAPI Specifikation code für Frontend und Backend applicationen in mehreren Frameworks und Programmiersprachen erstellen kann.
-Dadurch reduziert sich der Aufwand von Standardcode (Boilerplate) und verhindert bei konsequentem nutzen das riskiko von schnittstellenmissmatchen
+Werkzeuge zur automatisierten Codegenerierung wie Orval übersetzen OpenAPI-Spezifikationen in typsicheren Programmcode für Frontend- und Backend-Architekturen.
+Neben der Reduktion von repetitivem Integrationscode (_Boilerplate Code_) minimiert dieses Vorgehen bei konsistenter Anwendung typische Schnittstellendivergenzen (_Schema Mismatches_), indem Änderungen an der Schnittstellendefinition direkt über das Typsystem in den konsumierenden Anwendungen abgebildet und validiert werden.
 
 == Electron als Desktop-Laufzeit <sec:theory-electron>
 
-Electron ist ein Framework basierent auf Nodejs und Chromium. 
-Electron schreibt keine feste Architektur seines Frameworks vor. 
-Es ist möglich durch Optionen verschiedene Einstellungen den Internen Flow und Kommunikation von den Prozessen zu beeinflussen.
-Eine Strikte Trennung muss vom Entckler selbst eingehalten werden um die sicherheit zu gewährleisten.
-Es ist z.B. möglich mit NodeJS integration true NodeJS Schnittstellen direkt im Chromium Browser zu aktivieren. 
-Die Electron Security Guidelines sind Guidelines die sich damit beschäftigen welche eigenschaften und settings eine app aktiviert und deaktiviert haben sollten um die Sicherheit zu erhöhen.
-\<exemplarische Architektur von zwei möglich Aufbauen von Electron apps. 1. mit strikter Trennung Renderer-IPC-Main 2. "all in one der Renderer kann node js ausführen und nimmt daten und links entgegen"\>
-durch eine mangelhafte Trennung kann es dazu führen das Remote-Code Execution direkt auf das Betriebssystem zugreifen könnten und nicht mehr in der Browser Sandbox gefangen sind.
+Electron ist ein Open-Source-Framework, das Node.js und die Rendering-Engine Chromium kombiniert, um plattformübergreifende Desktop-Anwendungen mit Webtechnologien zu erstellen.
+Das Framework erzwingt architektonisch keine strikten Vorgaben bezüglich des Prozessdesigns oder der internen Kommunikationsflüsse, sodass die Verantwortung für eine sichere Konfiguration und Prozessisolierung primär bei den Entwickelnden liegt.
 
-Die Electron Security Guidelines konkretisieren solche Schutzaufgaben für die Laufzeit.
-Sie behandeln unter anderem die Begrenzung von Node.js-Zugriffen im Renderer, Context Isolation, Sandboxing, Berechtigungen, Inhalts- und Navigationsbeschränkungen sowie die Validierung von IPC-Absendern.
-Die Dokumentation weist ausdrücklich auf die erhöhten Folgen hin, wenn fremder JavaScript-Code Zugriff auf lokale Systemfähigkeiten erhält @ElectronSecurity2026.
-=== Navigation über Hashrouting <sec:hash-routing>
+Grundsätzlich unterscheidet Electron zwischen dem zentralen Hauptprozess (_Main Process_) mit vollem Zugriff auf Betriebssystemressourcen und einem oder mehreren Darstellungsprozessen (_Renderer Processes_), die typischerweise der Benutzeroberfläche dienen.
+Konfigurationsabhängig lässt sich diese Trennung jedoch aufweichen: Durch Optionen wie `nodeIntegration: true` können native Node.js-APIs unmittelbar innerhalb des Renderers ausgeführt werden.
 
-Bei einer Single-Page-Anwendung bestimmt ein clientseitiger Router, welche Ansicht gezeigt wird. 
-Was der normale Webbrowser macht (https://)
-Wenn du im Browser eine SPA (wie z. B. deine Vite-React-App) aufrufst:
+Die daraus resultierenden architektonischen Ansätze lassen sich idealtypisch gegenüberstellen:
+#figure(
+  image("../figures/electron-architecture-comparison.svg", width: 100%),
+  caption: [Idealtypischer Vergleich einer isolierten und einer offenen Electron-Konfiguration. Eigene Darstellung auf Grundlage der Electron-Sicherheitsrichtlinien @ElectronSecurity2026.],
+) <fig:electron-architecture-comparison>
 
-Du surfst auf [https://meine-app.de/settings](https://meine-app.de/settings).
+Besteht keine strikte Prozesstrennung, entfällt die Schutzwirkung der Chromium-Sandbox: Gelingt es Angreifenden, beispielsweise über Cross-Site Scripting (XSS) oder manipulierte externe Inhalte, Schadcode in den Darstellungsprozess einzuschleusen, kann dies unmittelbar zu _Remote Code Execution_ (RCE) auf Ebene des Host-Betriebssystems führen.
 
-Dein Browser schickt eine HTTP-Anfrage an den Webserver: "Gib mir bitte /settings".
+Um diesen Angriffsvektoren zu begegnen, definieren die _Electron Security Guidelines_ @ElectronSecurity2026 verbindliche Best Practices für die Laufzeitumgebung.
+Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Erzwingen von _Context Isolation_ und Sandboxing, restriktive Navigations- und Inhaltsrichtlinien (_Content Security Policy_) sowie eine rigorose Validierung sämtlicher IPC-Nachrichten und deren Absender.
+Die Richtlinien heben insbesondere hervor, dass die Exposition nativer Systemfähigkeiten gegenüber potenziell unsicherem Web-Code das kritischste Sicherheitsrisiko der Plattform darstellt.
 
-Auf dem Webserver (z. B. Nginx, Apache oder Vercel) ist eine Fallback-Regel hinterlegt (Rewriting). Der Server weiß: „Die Datei /settings existiert gar nicht als HTML-Datei, aber das ist eine SPA – ich schicke stattdessen die index.html zurück.“
+=== Navigation über Hash-Routing <sec:hash-routing>
 
-Dein Browser lädt die index.html, führt React aus, und React Router liest den Pfad /settings aus und zeigt die richtige Ansicht.
+In modernen Webanwendungen auf Basis von Single-Page-Architekturen (SPA) erfolgt die Navigation primär clientseitig über dedizierte Routing-Bibliotheken (beispielsweise React Router).
+Der Umgang mit Routen unterscheidet sich jedoch grundlegend zwischen klassischen webbasierten Umgebungen und der lokalen Desktop-Laufzeit von Electron.
 
-Was Electron macht (file://)
-In einem Standard-Electron-Build gibt es keinen zwischengeschalteten Webserver:
+Im regulären Webbetrieb über das Hypertext Transfer Protocol (HTTP/HTTPS) greifen Webserver oder Content Delivery Networks auf serverseitige Rewriting-Mechanismen zurück: Fordert ein Browser einen virtuellen clientseitigen Pfad wie `/settings` an, wird die Anfrage serverseitig auf die zentrale Einstiegsdatei `index.html` umgeleitet (_Fallback-Routing_).
+Das clientseitige Skript übernimmt anschließend die Auswertung des Pfades und stellt die entsprechende Ansicht im DOM dar.
 
-Electron lädt deine UI mit win.loadFile('dist/index.html'). Die Adresse im Chromium-Fenster lautet jetzt intern z. B. file:///Users/deinName/app/dist/index.html.
+In einer Desktop-Umgebung unter Electron werden die Frontend-Ressourcen in Standardkonfigurationen hingegen nicht über einen HTTP-Server bereitgestellt, sondern über das Dateisystem-Protokoll (`file://`) direkt von der Festplatte geladen (etwa via `win.loadFile('dist/index.html')`).
+Während eine rein clientseitige Navigation innerhalb der Anwendung problemlos funktioniert, führt ein Neuladen des Fensters (_Reload_) bei pfadbasiertem Routing (_Path-_ bzw. _Browser-Routing_) zu Laufzeitfehlern:
 
-Du klickst in der App auf einen Link zu /settings. React Router manipuliert die Anzeigezeile zu file:///Users/deinName/app/dist/settings.
+Der zugrunde liegende Chromium-Prozess interpretiert den Pfad `/settings` unter dem `file://`-Schema nicht als virtuellen Zustand, sondern als absolute Dateisystemabfrage.
+Da auf dem Host-System typischerweise keine physische Datei unter dem angeforderten Pfad existiert, schlägt der Ladevorgang fehl (`ERR_FILE_NOT_FOUND`).
 
-Bis hierhin klappt alles, weil React die Seite einfach im Speicher neu zeichnet.
+Um dieses Problem ohne die Latenz und den Overhead eines integrierten lokalen Webservers zu lösen, kommt das sogenannte _Hash-Routing_ zum Einsatz.
+Entsprechend dem Standard für Uniform Resource Identifier (URI) wird der Fragment-Bezeichner (eingeleitet durch ein Raute-Zeichen `#`) auf Protokoll- und Dateisystemebene ignoriert:
 
-Jetzt drückst du F5 (Reload):
+$ "file:///path/to/app/dist/index.html#/settings" $
 
-Chromium fragt nun nicht mehr einen Server mit cleveren Fallback-Regeln, sondern fragt das Betriebssystem-Dateisystem:
+Wird die Anwendung in diesem Zustand neu geladen, fordert Chromium ausschließlich die bis zum Hash spezifizierte Datei `index.html` vom Dateisystem an.
+Nach erfolgreicher Initialisierung liest der clientseitige Hash-Router den verbleibenden Fragment-Bezeichner (`#/settings`) aus dem `window.location`-Objekt aus und rekonstruiert den korrekten Anwendungszustand ohne Verbindungsabbrüche.
 
-„Gibt es auf der Festplatte eine Datei unter /Users/deinName/app/dist/settings?“
+== Drizzle als persistente Datenzugriffsschicht <sec:theory-persistence>
 
-Das Dateisystem antwortet: „Nein, hier liegt nur index.html, sonst nichts.“
+Drizzle (häufig als _Drizzle ORM_ bezeichnet) ist ein leichtgewichtiges, typsicheres Object-Relational-Mapping-Werkzeug (ORM) für das TypeScript-Ökosystem.
+Im Gegensatz zu traditionellen, monolithischen ORM-Systemen verzichtet Drizzle auf umfangreiche Laufzeit-Engines oder externe Binärabhängigkeiten und ist als modulare Werkzeugsuite konzipiert.
+Diese besteht im Wesentlichen aus der Kernbibliothek für den Datenzugriff sowie einem CLI-Werkzeug für das Schema- und Migrationsmanagement:
 
-Ergebnis: 404 / ERR_FILE_NOT_FOUND und ein weißer Bildschirm.
+- *Drizzle ORM (Kernbibliothek):* Die Datenbankschemata werden deklarativ in reinem TypeScript definiert und fungieren als zentrale Referenz (_Single Source of Truth_).
+  Typdefinitionen für Lese- und Schreiboperationen (`inferSelect`, `inferInsert`) leitet das System automatisch über statische Typinferenz ab, ohne dass ein vorgeschalteter Codegenerierungsschritt erforderlich ist.
+  Für Abfragen bietet Drizzle eine SQL-nahe Syntax (z. B. `db.select().from(...).where(...)`), die standardkonforme SQL-Ausdrücke abbildet und eine feingranulare Kontrolle über Joins und Aggregationen ermöglicht.
+- *Drizzle Kit (CLI & Migrationsmanagement):* Ergänzend zur Kernbibliothek dient Drizzle Kit der Synchronisation zwischen Code und Datenbanksystem.
+  Das Werkzeug erlaubt das automatisierte Generieren von SQL-Migrationsdateien auf Basis von Schema-Differenzen (`generate`) sowie das direkte Synchronisieren des Schemas mit Entwicklungsdatenbanken (`push`), was insbesondere iterative Entwicklungszyklen beschleunigt.
 
-Warum das Hash (\#) das Problem löst
-Das Dateisystem interpretiert URLs strikt nach Standards: Alles, was hinter einer Raute \# steht, ist ein Client-seitiger Anker und wird niemals als Dateipfad gewertet.
+Architektonisch fungiert Drizzle nicht als eigenständiger Datenbanktreiber, sondern setzt als Abstraktionsschicht auf bestehenden Treiber-Ökosystemen auf.
+Für den Kontext dieser Arbeit sind insbesondere zwei Datenbankparadigmen relevant:
 
-URL: file:///Users/deinName/app/dist/index.html#/settings
++ *Dateibasierte und eingebettete Systeme (SQLite):* Über Treiber wie `better-sqlite3` oder libSQL-basierte Lösungen (wie Turso) ermöglicht Drizzle einen performanten, lokalen Datenzugriff innerhalb der Node.js-Laufzeitumgebung des Electron-Hauptprozesses.
++ *Client-Server-Datenbanksysteme (PostgreSQL):* Über native Treiber (wie `pg` oder `postgres.js`) bindet Drizzle relationale PostgreSQL-Instanzen an, wobei die identische TypeScript-Schemadefinition beibehalten wird.
 
-Wenn du F5 drückst, fragt Chromium das Dateisystem: „Gib mir /Users/deinName/app/dist/index.html“ (alles ab \# ignoriert Chromium beim Dateizugriff).
+Durch diesen modularen Aufbau und den Verzicht auf schwergewichtige Abstraktionen eignet sich Drizzle besonders für hybride Anwendungsszenarien, bei denen datenbanknahe Performanz und statische Typsicherheit bei minimalem Laufzeit-Overhead gefordert sind.
 
-Die Datei index.html existiert -> sie wird geladen.
+== Local-First-Architekturen und Datensynchronisation <sec:theory-local-first>
 
-Sobald dein JavaScript anspringt, sieht der HashRouter das \#/settings und rendert die Settings-Seite.
-== Lokale Persistenz, Schema und Identität <sec:theory-persistence>
+Das Architekturparadigma _Local-First_ definiert ein Modell für datenintensive Anwendungen, bei dem die primäre Datenhoheit (_Single Source of Truth_) nicht auf einem entfernten Server, sondern lokal auf dem Endgerät des Nutzers verortet ist.
+Im Gegensatz zu traditionellen _Cloud-First_-Architekturen, bei denen der Client als darstellende Schicht fungiert und Zustandsänderungen synchron über das Netzwerk autorisiert werden müssen, operieren Lese- und Schreibzugriffe bei Local-First primär auf einer lokalen Datenbankinstanz.
+Externe Cloud-Dienste dienen hierbei als sekundäre Infrastrukturschicht für Hintergrundsynchronisation, Persistenzsicherung und kollaborative Datenabgleiche.
 
-Drizzle (meist als Drizzle ORM bezeichnet) ist ein modernes, leichtgewichtiges und typsicheres Object-Relational Mapping (ORM).
-Drizzle ist nicht nur eine einzelne Bibliothek, sondern eine modulare Suite von Werkzeugen:
-Drizzle ORM (Der Core)
-Der Kern von Drizzle kümmert sich um die Definition von Schemata und das Ausführen von Abfragen:
+Grundlegend formalisiert wurde das Konzept von Kleppmann et al. @Kleppmann2019.
+Die Autoren beschreiben Local-First als architektonisches Zielbild, das kollaboratives Arbeiten mit lokaler Nutzbarkeit, geringen Latenzen und vollständiger Datenkontrolle vereint.
+Zu den zentralen Eigenschaften zählen:
+- *Autonome Offline-Verfügbarkeit (_Offline-by-Default_):* Die Kernfunktionalität der Software ist unabhängig vom Vorhandensein einer aktiven Netzwerkverbindung stets uneingeschränkt gegeben.
+- *Gleichzeitige Zusammenarbeit (_Multi-User Collaboration_):* Mehrere Clients können parallel Modifikationen an denselben Datenbeständen vornehmen, wobei auftretende Konflikte deterministisch aufgelöst werden.
 
-TypeScript-first & maximale Typsicherheit: Schema-Definitionen in TypeScript dienen direkt als Single Source of Truth. Typen für Insert, Select und Relationen werden automatisch ohne Codegenerierung abgeleitet (inferSelect, inferInsert).
+Im Kontext externer Datenflüsse ist architektonisch zwischen einer unidirektionalen Übernahme und einer vollwertigen Synchronisation zu differenzieren: Bei einer einfachen Datenübernahme werden Referenzdaten einmalig bezogen, validiert und lokal persistiert.
+Eine kollaborative Synchronisation erfordert hingegen das kontinuierliche Erfassen lokaler Mutationen, deren asynchrone Übertragung an den Server sowie die Integration entfernter Transaktionen.
+Lokaler Schreibabschluss (_Local Commit_) und entfernter Konsensabgleich finden dabei zeitlich entkoppelt statt @Kleppmann2019.
 
-Zwei Abfrage-Paradigmen (nur eine relevant):
+=== Replikation über PowerSync
 
-SQL-like API: Sieht fast exakt wie normales SQL aus (db.select().from(users).where(...)). Maximale Kontrolle über Joins, Aggregationen etc.
+Um den komplexen Anforderungen an Konsistenz, Offline-Warteschlangen und Cache-Invalidierung zu begegnen, kommen spezialisierte Synchronisations-Engines zum Einsatz.
+PowerSync stellt eine solche Middleware dar, welche eine lokale SQLite-Datenbank auf dem Endgerät (etwa innerhalb einer Electron-Laufzeit) mit einer relationalen Backend-Datenbank abgleicht.
+@fig:powersync-replication-flow veranschaulicht das Zusammenspiel der beteiligten Komponenten und die Wege lokaler Änderungen zum Backend und zurück zum Client.
 
-Zero Overhead / Serverless-ready: Drizzle ist extrem schlank, hat keine schwere Engine/Rust-Binaries im Hintergrund, startet in wenigen Millisekunden und eignet sich daher hervorragend für Serverless- und Edge-Umgebungen (wie Cloudflare Workers, Vercel Functions, AWS Lambda).
+#figure(
+  image("../figures/powersync-replication-flow.svg", width: 100%),
+  caption: [Zusammenspiel von lokaler Persistenz, Backend und PowerSync Service. Eigene Darstellung nach @PowerSyncWritingChanges2026 und @PowerSyncSupabase2026.],
+) <fig:powersync-replication-flow>
 
+=== Backend-Infrastruktur mit Supabase
 
-2. Drizzle Kit (Migrations- & CLI-Tool)
-Ein Begleit-CLI-Werkzeug für das Schema-Management:
-
-Automatische Migrationen: Vergleicht dein TypeScript-Schema mit dem aktuellen Zustand und generiert SQL-Migrationsdateien (drizzle-kit generate).
-
-Direktes Anwenden (drizzle-kit push): Überträgt Änderungen am Schema direkt in eine Entwicklungs-Datenbank, ohne vorher Migrationsdateien schreiben zu müssen (ideal fürs Prototyping).
-
-Introspektion (drizzle-kit introspect): Liest eine bestehende Datenbank aus und generiert automatisch das passende Drizzle-TypeScript-Schema (Pull).
-
-Unterstützte Datenbanken und Umgebungen
-Drizzle setzt auf bestehende Datenbanktreiber auf und unterstützt:
-
-PostgreSQL: z. B. über node-postgres (pg), postgres.js, Neon Serverless, Vercel Postgres, Supabase.
-
-MySQL: z. B. über mysql2, PlanetScale.
-
-SQLite: z. B. über better-sqlite3, Bun SQLite, Turso (libSQL), Cloudflare D1.
-
-Laufzeitumgebungen: Node.js, Bun, Deno, Cloudflare Workers, Edge-Runtimes.
-== Local-First <sec:theory-local-first>
-
-Local-First ist ein Software-Architekturparadigma für datenintensive Anwendungen.
-Der Grundsatz lautet: Die primäre Quelle der Wahrheit (Single Source of Truth) liegt auf dem lokalen Gerät des Nutzers.
-
-Im traditionellen Cloud-Modell (Cloud-First) besitzt der Server die Daten; der Client ist nur ein Anzeigeinstrument, das bei jedem Klick übers Netzwerk nach Erlaubnis fragt. 
-Bei Local-First liest und schreibt die Anwendung direkt in eine lokale Datenbank auf dem Gerät. 
-Die Cloud bzw. der Server fungiert lediglich als sekundäre Schicht für Synchronisation, Backup und Zusammenarbeit.
-
-Das Konzept wurde maßgeblich 2019 durch das Manifest „Local-first software: You own your data, in spite of the cloud“ der Forschungsinitiative Ink & Switch formuliert.
-
-Für uns sind die zwei Aspekte relevant : 
-Das Netzwerk ist optional (Offline-by-default)
-
-Eine Local-First-App ist nicht bloß „offline-fähig“ über nachträgliche Caches – sie ist von Grund auf offline lauffähig. 
-Alle Kernfunktionen stehen im Flugzeug, im Funkloch oder bei Serverausfällen uneingeschränkt zur Verfügung.
-
-Nahtlose Zusammenarbeit (Collaboration)
-
-Mehrere Personen können gleichzeitig an denselben Dokumenten arbeiten (wie in Google Docs oder Figma). 
-Konflikte bei parallelen Änderungen werden automatisch aufgelöst.
-
-Technische Säulen: Wie wird Local-First umgesetzt?
-Um diese Aspekte in der Praxis zu realisieren, stützt sich Local-First auf moderne mathematische und architektonische Werkzeuge:
-
-CRDTs (Conflict-free Replicated Data Types):
-
-Spezielle Datenstrukturen (z. B. implementiert in Yjs oder Automerge), die es erlauben, dass mehrere Geräte gleichzeitig offline Änderungen vornehmen. Sobald sie sich verbinden, führen sich die Datenstände mathematisch garantiert ohne manuelle Konflikt-Dialoge konsistent zusammen.
-
-Lokale Datenbanken im Client:
-
-Technologien wie SQLite (z. B. via OPFS im Browser oder direkt nativ in Electron/Tauri), IndexedDB oder RxDB.
-
-Synchronisations-Engines:
-
-Frameworks wie ElectricSQL, Replicache, PowerSync, Zero oder Dexie Cloud, die den Abgleich zwischen lokaler SQLite/IndexedDB und einer Server-Datenbank (z. B. Postgres) übernehmen.
-
-Kleppmann et al. beschreiben Local-First als Zielbild, das Zusammenarbeit mit lokaler Nutzbarkeit und Kontrolle über die eigenen Daten verbindet.
-Zu seinen Idealen gehören unter anderem Offline-Nutzung, geräteübergreifender Zugriff, langfristige Verfügbarkeit und Sicherheit beziehungsweise Privatheit.
-Die lokale Kopie nimmt dabei eine zentrale Rolle ein; Server können die Verteilung unterstützen @Kleppmann2019.
-Local-First umfasst damit weitergehende Ziele als die Verwendung einer lokalen Datenbank.
-Welche Eigenschaften eine konkrete Anwendung umsetzt, ist jeweils auszuweisen.
-
-Für externe Datenflüsse ist zwischen Übernahme und Synchronisierung zu unterscheiden.
-Bei einer Übernahme in einer Richtung werden Referenzdaten heruntergeladen, geprüft und lokal gespeichert.
-Eine Zusammenarbeit mit gemeinsamen Daten benötigt zusätzlich die Übermittlung lokaler Änderungen und die Verarbeitung entfernter Ergebnisse.
-Lokaler Schreibabschluss und entfernter Abgleich finden dabei zu unterschiedlichen Zeitpunkten statt.
-
-PowerSync ist eine Sync-Engine für Local-First- und Offline-First-Anwendungen.
-
-Sie ermöglicht es Entwicklern, eine lokale SQLite-Datenbank auf dem Endgerät des Nutzers (Web, Mobile oder Desktop) nahtlos, bidirektional und in Echtzeit mit einer zentralen Backend-Datenbank (wie PostgreSQL, MySQL oder MongoDB) zu synchronisieren.
-
-Das Problem, das PowerSync löst
-Klassische Cloud-Anwendungen leiden oft unter Ladezeiten, Netzwerkunterbrechungen und Offline-Problemen:
-
-Bei schlechter Internetverbindung stockt die UI.
-
-Offline funktioniert die App meist gar nicht.
-
-Das nachträgliche Bauen einer eigenen Synchronisationslogik (Konfliktlösung, Cache-Invalidierung, Offline-Warteschlangen) ist extrem komplex und fehleranfällig.
-
-PowerSync löst dies, indem alle Lese- und Schreibzugriffe der App sofort lokal auf einer echten SQLite-Datenbank ausgeführt werden (0 ms Latenz, volle Offline-Fähigkeit). PowerSync kümmert sich im Hintergrund transparent um den Abgleich mit der Cloud.
-
-Wie PowerSync funktioniert (Architektur)
-Das System besteht im Wesentlichen aus drei Komponenten:
-
-Client-seitige SQLite-Datenbank:
-Auf dem Gerät (z. B. via WebAssembly/OPFS im Browser, native SQLite in Flutter/React Native oder Electron) liegt eine lokale SQLite-Datenbank. Die UI fragt Daten direkt per SQL oder ORM (wie Drizzle) von dort ab.
-
-PowerSync Service (Sync-Schicht):
-Ein eigener Dienst (entweder als Managed Cloud-Service oder Open-Source selbst gehostet), der zwischen deiner Hauptdatenbank und den Clients sitzt.
-
-Er lauscht auf Änderungen deiner Backend-Datenbank über Logical Replication (z. B. PostgreSQL WAL / pgoutput).
-
-Über sogenannte Sync Rules (deklarative SQL-Filterregeln) steuerst du serverseitig, welcher Nutzer welche Datenzeilen auf sein Gerät synchronisiert bekommen darf (Partial Replication / Partitionierung).
-
-Dein bestehendes Backend:
-Du musst deine bestehende Backend-Infrastruktur nicht wegwerfen:
-
-Downloads / Updates: Werden von PowerSync als Daten-Stream (WebSocket/HTTP-Streaming) effizient an den Client gesendet.
-
-Uploads / Mutations: Wenn der Client Daten ändert, schickt er diese in eine lokale Upload-Queue, die an deine regulären REST-/GraphQL-/RPC-Endpunkte gesendet wird. Dein Server validiert die Daten und schreibt sie in die Hauptdatenbank, woraufhin PowerSync den neuen Zustand streamt.
-
-
-Wichtigste Merkmale und Vorteile
-Echtes SQLite auf dem Client: Du kannst relationale Datenstrukturen, komplexe JOINs, Indizes und Volltextsuche direkt auf dem Gerät ausführen.
-
-Partial Replication (Dynamische Synchronisation): Ein Nutzer lädt nicht die gesamte Unternehmensdatenbank herunter, sondern nur die Tabellen und Zeilen, für die er berechtigt ist (z. B. nur Projekte, denen er zugewiesen ist).
-
-Framework- & Plattform-agnostisch:
-
-Frontend: Flutter, React Native, Web (React, Vue etc.), Kotlin Multiplatform, Swift, Node.js / Electron.
-
-Backend-Datenbanken: PostgreSQL, Supabase, Neon, MySQL, MongoDB u. a.
-
-
-
-Supabase ist eine Open-Source-Plattform für Backend-as-a-Service (BaaS) und gilt als die führende Open-Source-Alternative zu Google Firebase.
-Die Kernkomponenten von Supabase
-Supabase bündelt mehrere Open-Source-Tools zu einer integrierten Plattform:
-
-PostgreSQL-Datenbank: Jedes Projekt erhält eine dedizierte Postgres-Instanz. Du kannst Standard-SQL, gespeicherte Prozeduren, Trigger, Indizes und Erweiterungen (wie pgvector für KI/Embeddings oder PostGIS für Geodaten) ohne Einschränkungen nutzen.
-
-Auto-generierte APIs: Supabase erstellt automatisch typsichere REST- und GraphQL-Schnittstellen direkt aus deinem Datenbankschema (über PostgREST).
-
-Zusammenspiel mit dem Local-First- und Drizzle-Stack
-Mit PowerSync: Supabase bietet native Logical Replication (WAL). PowerSync klinkt sich dort ein, um Datenzeilen aus Supabase direkt in lokale SQLite-Datenbanken auf Endgeräten (Mobile, Desktop/Electron, Web) zu replizieren.
-
-== Bestehende Ansätze und Einordnung der Arbeit <sec:theory-positioning>
-
-Es gibt schon arbeiten, aus denen ein Verdacht für sicherheitslücken für KI generierte Apps ableitbar ist. 
-Zum Beispiel : Perry et al. untersuchten in einer Studie mit 47 Teilnehmenden fünf sicherheitsbezogene Programmieraufgaben.
-Teilnehmende mit Zugang zu einem auf `codex-davinci-002` basierenden KI-Assistenten erstellten in vier der fünf Aufgaben häufiger unsichere Lösungen als die Vergleichsgruppe.
-Zugleich schätzten sie ihre Lösungen häufiger als sicher ein @Perry2023.
-Die Ergebnisse betreffen das untersuchte Modell, die Aufgaben und die damaligen Versuchsbedingungen.
-Sie begründen die Relevanz einer eigenständigen Sicherheitsprüfung, erlauben aber keine unmittelbare Qualitätsbewertung heutiger Replit- oder Lovable-Anwendungen.
-
-Es gibt auch arbeiten die sich mit Softwaremigrationen ausernandersetzen, bzw Softwaremigrationen von Web-zu-Desktop oder Desktop-zu-Web oder Offline-zu-Cloud.
-Cloud-zu-Local-First ist noch relativ neu, und durch die besondere Kombi von KI Generierung und Local-First als zu neu herraustellt.
-
-
-
-
+Als zentrale Datenbasis und Replikationsquelle fungiert Supabase, eine quelloffene _Backend-as-a-Service_-Plattform (BaaS).
+Den Kern bildet eine vollwertige PostgreSQL-Instanz.
+Durch die native Unterstützung des PostgreSQL-WAL und des `pgoutput`-Plugins ermöglicht Supabase die direkte Anbindung von Synchronisationsdiensten wie PowerSync.
+Gleichzeitig stellt die Plattform automatisierte Schnittstellen und Authentifizierungsmechanismen bereit, womit sie als standardisiertes Backend für die persistente Datenhaltung und Mandantentrennung dient.

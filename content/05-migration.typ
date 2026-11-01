@@ -107,7 +107,7 @@ table.header(
 )
 },
 caption: [Ausgewählte Abbildungen der PostgreSQL-Schemadefinitionen auf SQLite im Demonstrator.],
-) [tab:postgresql-sqlite-mapping](https://www.google.com/search?q=tab:postgresql-sqlite-mapping)
+) <tab:postgresql-sqlite-mapping>
 
 === Versionierte Schemamigrationen und Datenbankinitialisierung
 
@@ -129,7 +129,7 @@ raw(read("../code/drizzle-config.ts"), lang: "typescript", block: true)
 kind: raw,
 supplement: [Quellcode],
 caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQLite-Migrationen.],
-) [lst:drizzle-config](https://www.google.com/search?q=lst:drizzle-config)
+) <lst:drizzle-config>
 
 Damit die Migrationen auch im Produktivbetrieb ausgeführt werden können, bindet `electron-builder.yml` den Ordner `drizzle` über `extraResources` in das Installationspaket ein (@lst:migration-resources). 
 Die Anwendung greift während der Entwicklung direkt auf das Projektverzeichnis zu, im paketierten Zustand hingegen über `process.resourcesPath` @StudyPlanDatabase2026.
@@ -142,13 +142,13 @@ raw(read("../code/migration-resources.yml"), lang: "yaml", block: true)
 kind: raw,
 supplement: [Quellcode],
 caption: [Auslieferung der Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],
-) [lst:migration-resources](https://www.google.com/search?q=lst:migration-resources)
+) <lst:migration-resources>
 
 Der eigentliche Initialisierungsprozess wird beim Anwendungsstart innerhalb von `app.whenReady()` über `initDatabase()` ausgeführt, bevor Dienste initialisiert oder Fenster geöffnet werden @StudyPlanDatabase2026:
 
-1. **Speicherort auflösen:** In `src/main/db/index.ts` wird der Pfad aus `app.getPath('userData')` und dem Unterordner `data` gebildet (unter Windows beispielsweise `%APPDATA%\studyplan\data\studyplan.db`, im Entwicklungsbetrieb `studyplan-dev.db`). Der Zielordner wird vor dem Öffnen automatisch angelegt.
-2. **Verbindung und Pragmas:** Der libSQL-Client öffnet die Datei über eine lokale `file:`-URL. Zur Laufzeit werden unmittelbar `PRAGMA foreign_keys = ON` (Aktivierung der referenziellen Integritätsprüfung) und `PRAGMA journal_mode = WAL` (Write-Ahead-Logging) gesetzt @SQLitePragma2026.
-3. **Migration und Integritätstest:** Nach Bereitstellung der SQLite-kompatiblen Migrationstabelle `__drizzle_migrations` wendet der Drizzle-Migrator alle noch ausstehenden SQL-Dateien an. Abschließend bestätigt eine einfache Prüfabfrage die Funktionsfähigkeit der Verbindung.
+1. *Speicherort auflösen:* In `src/main/db/index.ts` wird der Pfad aus `app.getPath('userData')` und dem Unterordner `data` gebildet (unter Windows beispielsweise `%APPDATA%\studyplan\data\studyplan.db`, im Entwicklungsbetrieb `studyplan-dev.db`). Der Zielordner wird vor dem Öffnen automatisch angelegt.
+2. *Verbindung und Pragmas:* Der libSQL-Client öffnet die Datei über eine lokale `file:`-URL. Zur Laufzeit werden unmittelbar `PRAGMA foreign_keys = ON` (Aktivierung der referenziellen Integritätsprüfung) und `PRAGMA journal_mode = WAL` (Write-Ahead-Logging) gesetzt @SQLitePragma2026.
+3. *Migration und Integritätstest:* Nach Bereitstellung der SQLite-kompatiblen Migrationstabelle `__drizzle_migrations` wendet der Drizzle-Migrator alle noch ausstehenden SQL-Dateien an. Abschließend bestätigt eine einfache Prüfabfrage die Funktionsfähigkeit der Verbindung.
 
 Scheitert dieser Ablauf an einem beliebigen Punkt, bricht die Anwendung mit einer Fehlermeldung ab. Dadurch wird ausgeschlossen, dass die Benutzeroberfläche mit einer unvollständig vorbereiteten oder inkonsistenten Datenbank startet.
 
@@ -175,7 +175,7 @@ placement: top,
 caption: [Vertragsbasierte Codegenerierung und Aufrufwege im Web-Prototyp und in der lokalen Electron-Kernanwendung.
 Gestrichelte Pfeile zeigen Generierung oder Einbindung, durchgezogene Pfeile Laufzeitkommunikation.
 Spätere Synchronisierungs- und Online-Pfade sind nicht dargestellt.],
-) [fig:api-interface-migration](https://www.google.com/search?q=fig:api-interface-migration)
+) <fig:api-interface-migration>
 
 Die wesentliche Verschiebung liegt in der Realisierung des Transports: Anstelle von HTTP-Requests an einen Express-Server tritt eine typisierte Prozesskommunikation über Preload und IPC. 
 @tab:api-interface-changes fasst diese strukturellen Unterschiede zusammen.
@@ -216,12 +216,12 @@ table.header(
 )
 },
 caption: [Wiederverwendete Vertragsgrundlage und Änderungen an ihrer Umsetzung.],
-) [tab:api-interface-changes](https://www.google.com/search?q=tab:api-interface-changes)
+) <tab:api-interface-changes>
 
 Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt die Toolchain aus der `openapi.yaml` die benötigten Module getrennt nach Zielumgebung @StudyPlanApiMigration2026:
 
-* **Gemeinsame Module (`src/shared/api/generated`):** Typdefinitionen, Zod-Laufzeitschemata, die Zuordnungstabelle `operationContracts` sowie der Basistransport.
-* **Renderer-Module (`src/renderer/src/api/generated`):** React-Query-Hooks für die Benutzeroberfläche und standardisierte Query-Key-Hilfsfunktionen.
+- *Gemeinsame Module (`src/shared/api/generated`):* Typdefinitionen, Zod-Laufzeitschemata, die Zuordnungstabelle `operationContracts` sowie der Basistransport.
+- *Renderer-Module (`src/renderer/src/api/generated`):* React-Query-Hooks für die Benutzeroberfläche und standardisierte Query-Key-Hilfsfunktionen.
 
 Wie diese Artefakte im Detail aus den OpenAPI-Definitionen abgeleitet werden, beschreibt der folgende Abschnitt.
 
@@ -273,9 +273,8 @@ description: z.string().optional()
 },
 kind: raw,
 caption: [Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ @StudyPlanApiMigration2026.],
-) lst:generator-event-example
-
-Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen $ref-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. 
+) <lst:generator-event-example>
+Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. 
 contractSource erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt operationContracts zusammen @StudyPlanApiMigration2026.
 
 Die Abbildung der Vertragsbestandteile auf die generierten Zielbausteine fasst @tab:api-generator-mapping zusammen.
@@ -293,7 +292,7 @@ table.header(
 [Generatorfunktion],
 [Erzeugtes Element],
 ),
-[Array mit $ref auf Event],
+[Array mit `$ref` auf Event],
 [zodSchema],
 [z.array(EventSchema)],
 [Optionaler Query-Parameter month],
@@ -314,8 +313,7 @@ table.header(
 )
 },
 caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module @StudyPlanApiMigration2026.],
-) tab:api-generator-mapping
-
+) <tab:api-generator-mapping>
 Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Query Keys.
 
 Im letzten Schritt formatiert der Generator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser. 
@@ -397,32 +395,31 @@ Wartbarkeit	Vermeidung manueller Synchronisationsfehler zwischen den Prozessen (
 Eine quantitative Aufwandsersparnis gegenüber einer manuellen Anpassung vorhandener Orval-Artefakte konnte im Rahmen der Arbeit nicht empirisch nachgewiesen werden @StudyPlanApiMigration2026. 
 Der Hauptgewinn des gewählten Ansatzes liegt somit nicht zwingend in kürzeren Entwicklungszeiten, sondern primär in der strukturellen Verlässlichkeit: Fehlerhafte Schnittstellenaufrufe und Datenformate werden bereits zur Übersetzungs- bzw. Generierungszeit erkannt, wodurch die strikte Trennung von Schnittstellenvertrag und Fachlogik (A2) architektonisch erzwungen wird.
 
-=== Übernahme der React-Oberfläche in den Renderer sec:frontend-migration
-
+=== Übernahme der React-Oberfläche in den Renderer <sec:frontend-migration>
 Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert. 
 
 Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt. 
 Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf src/renderer/index.html zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, BASE_PATH und Replit-Plugins des Ausgangsprojekts ersatzlos @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
 
-Um bestehende Modulpfade wie @/components/ui/badge ohne Refaktorisierung beizubehalten, wurde der Pfadalias @ in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für @/* hinterlegt @StudyPlanFrontendMigration2026. 
+Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt @StudyPlanFrontendMigration2026. 
 Der synchrone Eintrag in beiden Dateien stellt sicher, dass Vite die Pfade beim Bündeln auflöst und TypeScript sie bei der Typprüfung korrekt zuordnet @TypeScriptPaths2026.
 
 Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein. 
-@tailwindcss/vite über tailwindcss() neben react() registriert und die Vite-Typreferenz in src/renderer/src/env.d.ts hinterlegt @TailwindVite2026 @StudyPlanFrontendMigration2026. 
+`@tailwindcss/vite` über tailwindcss() neben react() registriert und die Vite-Typreferenz in src/renderer/src/env.d.ts hinterlegt @TailwindVite2026 @StudyPlanFrontendMigration2026. 
 Die Vorlagenstile assets/main.css und assets/base.css wurden samt Beispielkomponenten gelöscht.
 
 Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt. 
 
 === Anbindung der Seiten und Navigation
 
-Die bisherigen API-Aufrufe über @workspace/api-client-react wurden in den Seiten und im Layout durch @/api ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026. 
+Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026. 
 Da der Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt.
 
 Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt. 
 
 Für die Navigation nutzt die Anwendung weiterhin wouter. 
-Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) bindet den Router über useHashLocation aus wouter/use-hash-location ein (<WouterRouter hook="{useHashLocation}">) @StudyPlanFrontendMigration2026. 
-Wie in @sec:hash-routing ausgeführt, steuert das Adressfragment (z. B. #/kalender) den internen Seitenwechsel, ohne den Dateipfad der geladenen Renderer-Ressource im Electron-Kontext zu verändern.
+Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) bindet den Router über useHashLocation aus wouter/use-hash-location ein (`<WouterRouter hook="{useHashLocation}">`) @StudyPlanFrontendMigration2026. 
+Wie in @sec:hash-routing ausgeführt, steuert das Adressfragment (z. B. `#/kalender`) den internen Seitenwechsel, ohne den Dateipfad der geladenen Renderer-Ressource im Electron-Kontext zu verändern.
 
 === Lokale Authentifizierung als erster vollständiger Verarbeitungspfad
 
@@ -528,7 +525,7 @@ Geprüft werden Sitzung, persönliche Datenzuordnung, Änderungen, Aktivitäten 
 Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.
 Der Test prüft damit die Fachlogik samt Datenzugriff.
 
-=== Lokaler Dateiimport am Beispiel iCal sec:file-import-migration
+=== Lokaler Dateiimport am Beispiel iCal <sec:file-import-migration>
 Das Importmuster wird am iCal-Import beschrieben.
 Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als FormData mit fetch an /api/events/import-ical.@lst:ical-web-upload zeigt die Dateiannahme und den Parseraufruf aus artifacts/api-server/src/routes/events.ts des Web-Prototyps.
 Der Ausschnitt verdeutlicht die Bindung an HTTP: Die Datei stammt aus req.file, die Benutzerkennung aus der Sitzung und Fehler werden unmittelbar als HTTP-Antwort ausgegeben.
@@ -541,8 +538,7 @@ raw(read("../code/ical-web-upload.ts"), lang: "typescript", block: true)
 kind: raw,
 supplement: [Quellcode],
 caption: [Dateiannahme und iCal-Parseraufruf im Web-Prototyp; gekürzter und für die Darstellung umgebrochener Ausschnitt aus der ursprünglichen Express-Route @StudienplanerSource2026.],
-) lst:ical-web-upload
-
+) <lst:ical-web-upload>
 Die fachliche Grundlage des Imports stammt somit aus dem Ausgangsartefakt @StudienplanerSource2026 @StudyPlanIcalMigration2026.
 In der Desktop-Anwendung wurde dieser HTTP-Upload in eine lokale Importoperation überführt.
 Aus Sicherheitsgründen – insbesondere zur Wahrung des Prinzips der geringsten Rechte und zur Vermeidung von Path-Traversal-Schwachstellen – darf der Renderer keine absoluten Dateipfade anfordern oder übergeben.
@@ -556,7 +552,9 @@ Der native Dateidialog liefert dabei zunächst den ausgewählten Pfad oder einen
 #figure(
 image("../figures/local-file-import-flow.svg", width: 100%),
 caption: [Lokaler Dateiimport am Beispiel iCal. Der Renderer löst den Import über IPC aus; der Main-Prozess öffnet den nativen Dateidialog und verarbeitet die ausgewählte Datei. Ein Abbruch überspringt die Verarbeitung und Speicherung.],
-) fig:local-file-import-flowDie Dateiauswahl steuert NativeIcalFilePicker im Main-Prozess.
+) <fig:local-file-import-flow>
+
+Die Dateiauswahl steuert NativeIcalFilePicker im Main-Prozess.
 Er ruft dialog.showOpenDialog mit einem Filter für ICS-Dateien auf und bindet den Dialog modal an das anfragende Anwendungsfenster @ElectronDialog2026 @StudyPlanIcalMigration2026.
 Bricht der Benutzer den Vorgang ab, endet die Verarbeitung unmittelbar mit status: cancelled und beiden Zählwerten auf 0, ohne den Datenbestand zu verändern.
 Wird eine Datei gewählt, verbleibt der absolute Pfad innerhalb des Main-Prozesses.
@@ -564,38 +562,41 @@ Die Implementierung prüft die Endung .ics, den regulären Dateityp sowie die au
 Die semantische Interpretation der Kalenderdaten kapselt src/main/services/events-ical.parser.ts.
 Das Modul nutzt weiterhin die Bibliothek node-ical und übernimmt die bestehenden fachlichen Abbildungen, trennt die Formatprüfung jedoch strikt von Sitzungskontext und Datenbankzugriff.
 Gegenüber dem Prototyp wurden Prüfungen der grundlegenden Kalenderstruktur, der Validität von Zeitangaben sowie der Ausschluss invertierter Zeitspannen (Enddatum vor Startdatum) ergänzt.
-Übersprungene Einträge werden nun separat erfasst @StudyPlanIcalMigration2026.EventsService.importEventsIcal verarbeitet die validierte Parserausgabe fachlich.
+Übersprungene Einträge werden nun separat erfasst @StudyPlanIcalMigration2026.
+
+EventsService.importEventsIcal verarbeitet die validierte Parserausgabe fachlich.
 Der Dienst reichert die Termine mit der Benutzerkennung an, übergibt sie gesammelt an EventsRepository.createManyEvents und legt den zugehörigen Aktivitätseintrag an.
 Über die Schnittstelle IcalFilePicker wird der konkrete Picker als Abhängigkeit an createEventsHandlers übergeben.
-Dateiauswahl, Parsing, fachliche Koordination und Datenpersistenz sind dadurch in klar voneinander getrennte Schichten unterteilt @StudyPlanIcalMigration2026.Das Ergebnis der Operation wird über den Dispatcher typisiert an das Frontend zurückgegeben:
+Dateiauswahl, Parsing, fachliche Koordination und Datenpersistenz sind dadurch in klar voneinander getrennte Schichten unterteilt @StudyPlanIcalMigration2026.
+
+Das Ergebnis der Operation wird über den Dispatcher typisiert an das Frontend zurückgegeben:
 Bei erfolgreicher Verarbeitung liefert der Handler status: imported zusammen mit importedCount und skippedCount; fehlerhafte Kalenderstrukturen werden in VALIDATION_ERROR überführt.
 In der Kalenderseite stößt der generierte Mutation-Hook useImportEventsIcal den Ablauf an, deaktiviert während der Laufzeit die Bedienelemente (isPending) und invalidiert bei Erfolg die Termin-Caches zur Aktualisierung der Ansicht @StudyPlanIcalMigration2026. 
-Dasselbe Architekturmuster (nativer Picker $\rightarrow$ Format-Parser $\rightarrow$ Service $\rightarrow$ Repository) wurde analog für den CSV-Notenimport (importGradesCsv) adaptiert.
+Dasselbe Architekturmuster (nativer Picker → Format-Parser → Service → Repository) wurde analog für den CSV-Notenimport (importGradesCsv) adaptiert.
 Anstelle einer externen Bibliothek kommt dort ein maßgeschneiderter Parser (grades-csv.parser.ts) zum Einsatz.
 Dies zeigt, dass das vorgestellte Entwurfsmuster für lokale Dateiimporte sowohl Standardbibliotheken als auch spezialisierte Eigenimplementierungen gleichermaßen aufnehmen kann @StudyPlanCsvMigration2026.
+
 === Abschluss der Offline-Kernanwendung und Übergang zu Phase 2
 
-Mit der lokalen Datenhaltung, der übernommenen Oberfläche, den generierten Aufrufhilfen und den implementierten Verarbeitungspfaden ist die erste Migrationsphase abgeschlossen.
-Die persönlichen Kernfunktionen werden innerhalb der Desktop-Anwendung ausgeführt: Lokale Anmeldung, Dashboard, Kalender, Noten und Stundenplan greifen über registrierte Handler, Services und Repositories auf SQLite zu; Dateiimporte werden im Main-Prozess verarbeitet.
-Die für Studiengänge und Stundenplanvorlagen benötigten Ausgangsdaten werden mit den Migrationen bereitgestellt.
-Für diese Abläufe wird kein Web-Backend benötigt @StudyPlanLocalCore2026.
+Mit der Realisierung der lokalen Datenhaltung, der Portierung der Oberfläche sowie der IPC-gestützten Schnittstellen- und Importarchitektur ist die erste Migrationsphase abgeschlossen. 
+Die zentralen Domänen – Authentifizierung, Dashboard, Kalender, Notenverwaltung und Stundenplan – operieren nun vollständig autark innerhalb der Desktop-Anwendung. 
+Durch die Bereitstellung von Referenzdaten über initiale Migrationen und die lokale Ausführung von Dateiimporten im Main-Prozess agiert das System ohne Rückgriff auf ein entferntes Web-Backend @StudyPlanLocalCore2026.
 
-Der Kontrollpunkt umfasst den Start der gebauten Anwendung ohne Netzwerk, die Kernabläufe und die Persistenz nach einem Neustart (A1 und A5).
-Schichtentrennung (A2) und lokale Kommunikation (A4) werden anhand ihrer Umsetzung geprüft.
-Die Fachlogiktests ergänzen diesen Nachweis; Laufzeit und Persistenz sind in @ch:experiments gesondert zu bewerten.
-Wiederverwendung und Erweiterungsmuster unterstützen die Bewertung von A3 und A8.
+Dieser Zwischenstand markiert einen wesentlichen Meilenstein für die Erfüllung der Architekturziele:
 
-Phase 2 baut auf dieser lokalen Kernanwendung auf.
-Sie ergänzt die Synchronisierung gemeinsamer Aufgaben sowie den Abruf externer Katalogdaten.
-Damit werden zusätzliche Kommunikationspfade eingeführt, während die persönlichen Daten und ihre Verarbeitung lokal bleiben.
+Autarkie und Persistenz (A1, A5): Der fehlerfreie Start ohne Netzwerkverbindung und die Beständigkeit des Datenbestands über Anwendungsneustarts hinweg belegen die Funktionsfähigkeit der Offline-Kernanwendung.
+
+Architektur und Kommunikation (A2, A4): Die strikte Trennung in Handler, Services und Repositories sowie der typisierte IPC-Dispatcher gewährleisten eine saubere Kapselung der Prozesswelten.
+
+Wiederverwendung und Erweiterbarkeit (A3, A8): Die Beibehaltung der vertragsbasierten Schemata und das einheitliche Entwurfsmuster für Importe bilden das Fundament für künftige Funktionserweiterungen.
+
+Während die tiefergehende messtechnische Validierung von Laufzeiten und Persistenzverhalten Gegenstand der Evaluation in @ch:experiments ist, bildet die lokale Kernanwendung die geschlossene Basis für Phase 2. 
+Diese erweitert das System gezielt um synchrone Kommunikationspfade: Neben dem selektiven Abruf externer Katalogdaten wird eine Synchronisierung für gemeinsame Aufgaben ergänzt, wobei die Hoheit über persönliche Daten und deren lokale Verarbeitung uneingeschränkt erhalten bleibt.
 
 == Phase 2: Netzwerkanbindungen und Local-First-Synchronisierung
 
 Die zweite Phase ergänzt gezielt Funktionen, die eine Verbindung zu entfernten Diensten benötigen.
 Die lokale Kernanwendung bleibt dabei die Grundlage.
-Local-First bedeutet für den hier untersuchten Aufgabenbereich, dass eine Änderung zunächst lokal verarbeitet werden kann und ihre Übermittlung als nachgelagerter Vorgang erfolgt.
-Die Phase verfolgt keinen Anspruch auf vollständige Umsetzung sämtlicher Local-First-Eigenschaften.
-
 === Auswahlkriterien und betrachtete Synchronisierungslösungen <sec:sync-tool-selection>
 
 Die Toolauswahl knüpfte an A3 an: Die in Phase 1 eingerichtete Schichtentrennung, TypeScript und Drizzle sollten möglichst weitgehend weiterverwendet werden.
@@ -645,7 +646,7 @@ Für den Demonstrator wurde eine Architektur mit entferntem Backend gewählt, da
 Ein Peer-to-Peer-Ansatz wäre grundsätzlich eine andere Entwurfsrichtung; er wurde in dieser Arbeit nicht weiterverfolgt.
 Auch für das Backend sollten vorhandene Dienste verwendet werden, um die Infrastrukturentwicklung innerhalb des festgelegten Untersuchungsumfangs zu halten.
 
-Die Wahl fiel auf Supabase, das eine PostgreSQL-Datenbank sowie Authentifizierung mit SDKs und API-Endpunkten bereitstellt @SupabaseDatabase2026 @SupabaseAuth2026.
+Die Wahl fiel auf Supabase weil es eine PostgreSQL-Datenbank sowie Authentifizierung mit SDKs und API-Endpunkten bereitstellt @SupabaseDatabase2026 @SupabaseAuth2026.
 Ausschlaggebend war seine dokumentierte Integration mit PowerSync: Ausgewählte PostgreSQL-Daten werden in lokale SQLite-Datenbanken übertragen; lokale Änderungen werden gespeichert, in eine Upload-Warteschlange aufgenommen und bei verfügbarer Verbindung über einen Connector an das Backend übermittelt.
 Sync Streams legen fest, welche Daten an die jeweiligen Clients übertragen werden @PowerSyncSupabase2026.
 
