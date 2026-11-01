@@ -18,13 +18,6 @@ Genau an dieser Stelle setzt die vorliegende Arbeit an.
 
 == Problemstellung
 
-Von technischen Laien instruierte generative KI-Modelle fokussieren sich nahezu ausschließlich auf die Umsetzung der gewünschten Funktionen.
-Fundamentale Qualitätsmerkmale des Software Engineerings nach ISO/IEC 25010 — Wartbarkeit, Trennung der Belange, Interoperabilität und Sicherheit — bleiben dabei regelmäßig unberücksichtigt.
-Auch die Produktdarstellung von Lovable betont die schnelle Umsetzung beschriebener Ideen und deren unmittelbare Bereitstellung.
-Zwar bewirbt die Plattform zugleich Sicherheitsfunktionen; aus der sichtbaren Funktionalität und den Produktversprechen allein lässt sich jedoch nicht ableiten, ob der erzeugte Code die Qualitätsanforderungen eines konkreten Einsatzszenarios erfüllt @Lovable2026.
-Der entstehende Code ist häufig unstrukturiert und stark gekoppelt, was spätere Wartung und Erweiterung erschwert.
-Da die Erstellenden nur die Funktionen, nicht aber den Code beurteilen, bleibt diese Diskrepanz für sie unsichtbar: Die Anwendung wirkt einsatzbereit, obwohl sie es nicht ist.
-
 Besonders kritisch wird diese Diskrepanz, sobald eine solche Webanwendung in eine lokale Desktop-Umgebung überführt werden soll.
 Die Zielumgebung stellt völlig andere Anforderungen als die isolierte Sandbox des KI-Werkzeugs, und die vom Werkzeug getroffenen Architekturentscheidungen lassen sich nicht unverändert übernehmen.
 Technisch wäre es mit vergleichsweise geringem Aufwand möglich, eine Webanwendung nur oberflächlich zu verpacken, etwa indem im Main-Prozess einer Electron-Anwendung eine lokale Web-API betrieben und das Frontend unverändert im Renderer ausgeliefert wird.
@@ -38,25 +31,21 @@ Für genau diese Klasse von Anwendungen fehlt bislang ein systematisches Vorgehe
 Um diese Lücke zu schließen, entwickelt die vorliegende Arbeit einen methodischen Migrationspfad für die Überführung KI-generierter Webanwendungen in sichere Local-First-Desktop-Anwendungen.
 Validierungsobjekt ist eine konkrete Fallstudie: der Studienplaner, eine deutschsprachige Studienverwaltungsanwendung, die als Replit-Webprototyp vorliegt und in eine Electron-Anwendung überführt wird.
 Entscheidend ist dabei, wie dieser Prototyp entstanden ist: Er wurde bewusst so in Auftrag gegeben, wie es eine Person ohne technischen Hintergrund tun würde.
-Die beiden ursprünglichen Prompts beschreiben in überwiegend alltagssprachlicher Form gewünschte Funktionen und Nutzungsszenarien, etwa einen persönlichen Stundenplan und die Zusammenarbeit in Studiengruppen (@app:prompt-initial und @app:prompt-groups).
+Die beiden ursprünglichen Prompts beschreiben in überwiegend alltagssprachlicher Form gewünschte Funktionen und Nutzungsszenarien, etwa einen persönlichen Stundenplan und die Zusammenarbeit in Studiengruppen.
 Sie enthalten auch Anforderungen an Anmeldung und Zugriffsschutz, machen jedoch keine Vorgaben zur Wahl eines UI-Frameworks oder einer konkreten Backend- oder Datenbanktechnologie.
 Der Studienplaner ist damit keine von einem erfahrenen Entwickler gestaltete Anwendung, sondern eine authentisch laienhaft erzeugte, und repräsentiert so genau die Klasse von Artefakten, auf die der Migrationspfad abzielt.
 
 Die Wahl des Local-First-Paradigmas als Zielarchitektur ist dabei nicht beliebig.
+Damit soll veranschaulicht werden, dass die Migration in eine Desktop-Umgebung nicht auf den Umbau zu einer ausschließlich offline nutzbaren Anwendung beschränkt ist.
 Local-First bündelt mehrere für die Migration KI-generierter Software zentrale Eigenschaften: Offline-Fähigkeit, Datensouveränität und eine vom Netzwerk entkoppelte, dauerhaft verfügbare Nutzung.
 Die Arbeit untersucht jedoch nicht sämtliche Aspekte dieses Paradigmas, sondern setzt einen besonderen Schwerpunkt auf die Synchronisierung lokal gespeicherter Daten.
-Damit soll veranschaulicht werden, dass die Migration in eine Desktop-Umgebung nicht auf den Umbau zu einer ausschließlich offline nutzbaren Anwendung beschränkt ist.
 Online-Funktionen können erhalten bleiben und mit lokaler Datenhaltung sowie einer auch ohne Netzwerk verfügbaren Kernfunktionalität verbunden werden.
-
-== Forschungsfrage
-
-*FF1:* Wie können KI-generierte Webarchitekturen mithilfe eines framework-agnostischen Ansatzes systematisch in sichere Local-First-Desktop-Anwendungen überführt werden?
 
 == Aufbau der Arbeit
 
 Der weitere Aufbau der Arbeit orientiert sich am Prozess des Design Science Research (DSR) und gliedert sich in sieben aufeinander aufbauende Kapitel:
 
-- *Kapitel 2* legt das theoretische Fundament, indem es KI-gestützte Entwicklungswerkzeuge, Web-zu-Desktop-Architekturen, das Local-First-Paradigma sowie sicherheitsrelevante Grundlagen einordnet und die Forschungslücke definiert.
+- *Kapitel 2* legt das theoretische Fundament der Arbeit: Es führt in KI-gestützte Entwicklungsplattformen sowie API-Verträge ein, analysiert Electron als Web-zu-Desktop-Laufzeitumgebung unter Sicherheitsgesichtspunkten, behandelt Persistenz- und Local-First-Architekturen
 - *Kapitel 3* etabliert den methodischen Rahmen, begründet die Wahl des DSR-Ansatzes und operationalisiert den konkreten Forschungsprozess.
 - *Kapitel 4* widmet sich der Problem- und Kontextanalyse: Es analysiert bestehende cloudbasierte Entwicklungswerkzeuge (u. a. Replit, Lovable) und leitet die Anforderungen an das Artefakt ab.
 - *Kapitel 5* dokumentiert Entwurf und Entwicklung des Artefakts, fokussiert auf die konzeptionelle Architektur und die Umsetzung der Electron-Anwendung.
