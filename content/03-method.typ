@@ -25,17 +25,13 @@ Ausgangspunkt war der auf Replit erzeugte Studienplaner.
 Wie in @ch:intro erläutert, erfolgte dessen Erstellung anhand funktionaler Beschreibungen ohne verbindliche Vorgaben zur technischen Architektur.
 Untersucht wurde damit ein KI-generiertes Ausgangsartefakt, dessen Komponenten für eine lokale Desktop-Laufzeit neu eingeordnet werden mussten.
 
-Die beiden ursprünglichen Erstellungs-Prompts sind in @app:prompt-initial und @app:prompt-groups vollständig dokumentiert.
-Sie beschreiben in überwiegend alltagssprachlicher Form zunächst die persönliche Studienorganisation und anschließend die Zusammenarbeit in Studiengruppen.
-Neben funktionalen Wünschen nennen sie Anforderungen an Anmeldung und Zugriffsschutz, legen jedoch weder ein UI-Framework noch eine konkrete Backend- oder Datenbanktechnologie fest.
-
 Die Untersuchung erfolgte anhand des Quellcodes, der Projektkonfiguration und der vorhandenen technischen Dokumentation.
 Dabei wurden Oberfläche, Schnittstellen, Geschäftslogik, Datenhaltung und externe Abhängigkeiten erfasst.
 Für die Migration war insbesondere zu klären, welche Funktionen unmittelbar von einem Backend oder einer Netzwerkverbindung abhingen, welche Bestandteile lokal weiterverwendet werden konnten und an welchen Stellen eine Anpassung der Verantwortlichkeiten erforderlich war.
 
 Ergänzend wurde die offizielle Plattformdokumentation herangezogen, um die Wahl des Untersuchungsgegenstands einzuordnen.
 Replit und Lovable wurden hierzu beispielhaft hinsichtlich ihrer dokumentierten Backend-Ansätze betrachtet.
-Diese Betrachtung dient der Begründung des Untersuchungsumfangs; sie ist keine empirische Vergleichsstudie der Plattformen.
+Diese Betrachtung dient der Begründung des Untersuchungsumfangs.
 Die Ergebnisse und der daraus abgeleitete Anforderungskatalog werden in @ch:analysis dargestellt.
 
 == Vorversuch und Konsequenzen für das Migrationsvorgehen <sec:migration-preliminary>
@@ -76,7 +72,7 @@ Ziel dieser Phase war die Entwicklung einer Electron-Anwendung, deren lokale Ker
 Die Verantwortlichkeiten und Schnittstellen wurden so gestaltet, dass Synchronisierung und weitere externe Dienste später integriert werden können, ohne die lokale Kernarchitektur erneut grundlegend umzustrukturieren.
 Damit verbindet diese Phase die Herstellung lokaler Nutzbarkeit mit der Vorbereitung einer schrittweise erweiterbaren Anwendung.
 
-=== Phase 2: Ergänzung um Synchronisierung [Collaboration] und weitere Online-Anbindungen
+=== Phase 2: Ergänzung um Synchronisierung und weitere Online-Anbindungen
 
 Aufbauend auf der lokal ausführbaren Kernanwendung wurden in der zweiten Phase die netzwerkabhängigen Funktionen betrachtet.
 Diese waren bei der Herstellung der Offline-Kernanwendung zunächst ausgeklammert worden.

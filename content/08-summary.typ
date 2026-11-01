@@ -18,7 +18,7 @@ Die Umsetzung zeigt, auf welchen Ebenen Wiederverwendung möglich ist.
 React-Oberfläche, fachliche Regeln, Drizzle und der OpenAPI-Vertrag konnten als Grundlagen erhalten bleiben.
 Notwendige Änderungen betrafen insbesondere Datenbankdialekt und Schemaverwaltung, Identitätszuordnung sowie den Wechsel von HTTP-Aufrufen zu Preload und IPC.
 Die Trennung in Handler, Services und Repositories machte diese Eingriffe nachvollziehbar und schuf eine Grundlage für fachliche Tests.
-Dateiimporte und Katalogabruf ergänzten das CRUD-Muster um begrenzte Datei- und Netzwerkoperationen.
+Dateiimporte und der Datenabruf im Feature Studiengänge ergänzten das CRUD-Muster um begrenzte Datei- und Netzwerkoperationen.
 Die Kollaboration erforderte zusätzlich eine eigenständige Behandlung lokaler Änderungen, ihrer entfernten Annahme und möglicher Ablehnungen oder Wiederholungen.
 
 Das zentrale Ergebnis ist der in @sec:migration-recommendations formulierte Leitfaden.
@@ -41,7 +41,7 @@ Die Erfahrung aus dem Vorversuch unterstreicht dabei die Bedeutung, unbeabsichti
 
 Als nächster Schritt ist der fehlende Nachweis der Offline-Kernfunktionen am festgelegten Windows-Paketstand zu vervollständigen.
 Dazu gehören die Anmeldung und persönliche Datenzuordnung, die ausgewählten Bearbeitungs- und Importabläufe bei unterbrochener Verbindung sowie das erneute Lesen gespeicherter Änderungen nach einem Neustart.
-Für katalogabhängige Abläufe ist der vorausgesetzte lokale Datenbestand festzuhalten.
+Für Abläufe im Feature Studiengänge ist der vorausgesetzte lokale Datenbestand festzuhalten.
 Die Prüfungen sollten die gebaute Anwendung, ihre Datenbankinitialisierung und die nativen Dateidialoge gemeinsam erfassen, damit die vorhandenen Service-Tests durch Beobachtungen des vollständigen Verarbeitungspfads ergänzt werden.
 
 Ergänzend sollte das Verhalten ausgewählter Abläufe zwischen Ausgangs- und Zielanwendung systematisch verglichen werden.

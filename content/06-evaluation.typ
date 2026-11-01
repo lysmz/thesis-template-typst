@@ -149,7 +149,7 @@ Sie behauptet keine separat geprüfte Übereinstimmung jedes visuellen Details d
         [Gruppenerstellung, Einladungslink und gemeinsame Aufgaben.],
         [Neue personenbezogene Einladung und lokaler Aufgabenbestand mit Synchronisierung.
           Gruppenverwaltung benötigt eine Verbindung; Kommentare und weitere gemeinsame Inhalte sind nicht Untersuchungsgegenstand.],
-        [Katalog],
+        [Studiengänge],
         [Bereitgestellter Referenzdatenbestand.],
         [Ergänzender Download mit Schemaprüfung und transaktionaler lokaler Übernahme.
           Acht Katalogtests im Nachbesserungsbericht; keine Rückübertragung lokaler Änderungen.],
@@ -185,7 +185,7 @@ Der dokumentierte Replikatabgleich übertrug denselben Datensatz an eine weitere
 Die geprüfte Schemaerweiterung ergänzt eine Client-View; sie ist kein vollständiger koordinierter Versionsrollout von Backend, Datenverteilung und Anwendung.
 Die Übernahme bestehender persönlicher Termine einschließlich ihrer Referenzen wurde ebenfalls nicht demonstriert @StudyPlanSyncSpikes2026.
 
-Für den Gruppenbereich dokumentiert die Upload-Nachprüfung vom 26. September neun erfolgreiche Prüfungen mit Electron, PowerSync und SQLite sowie zwölf erfolgreiche Cloud-Prüfpunkte.
+Für das Feature Studiengruppen dokumentiert die Upload-Nachprüfung vom 26. September neun erfolgreiche Prüfungen mit Electron, PowerSync und SQLite sowie zwölf erfolgreiche Cloud-Prüfpunkte.
 Zu den Cloud-Fällen gehören Benutzersuche und Einladungszustellung, Annahme mit synchronisierter Mitgliedschaft, Offline-Aufgabenänderung und anschließender Abgleich zwischen Mitgliedern.
 Die zwölf Prüfpunkte umfassen auch die Bereinigung der erzeugten Testdaten.
 Diese Ergebnisse beziehen sich auf getrennte Testreplikate und den damaligen Dienststand, nicht auf einen vollständig geprüften Kontolebenszyklus oder eine produktive Mehrgeräteanwendung @StudyPlanUploadChecks2026.
@@ -214,7 +214,7 @@ Unmittelbare Online-Voraussetzungen und der lokale Abschluss bleiben dabei getre
 Die konsolidierte Matrix bewertet alle 20 Electron-Empfehlungen.
 Sie weist 17 auf der jeweils dokumentierten Nachweisebene als erfüllt aus.
 Zwei Empfehlungen zu Webviews sind wegen deren fehlender Nutzung begründet nicht anwendbar.
-Punkt 1 wird innerhalb des ausdrücklich begrenzten Prüfumfangs als erfüllt bewertet: HTTPS-Konfiguration und Redirect-Abweisung sind für Katalog und Supabase belegt, die SDK-interne PowerSync-Redirectbehandlung ist dagegen nicht praktisch nachgewiesen.
+Punkt 1 wird innerhalb des ausdrücklich begrenzten Prüfumfangs als erfüllt bewertet: HTTPS-Konfiguration und Redirect-Abweisung sind für das Feature Studiengänge und die Supabase-Anbindung belegt, die SDK-interne PowerSync-Redirectbehandlung ist dagegen nicht praktisch nachgewiesen.
 Diese Grenze bleibt Teil der Bewertung von A7 @StudyPlanSecurity2026.
 
 Für Renderer-Isolation, Sandbox, Berechtigungen und bestimmte Standardwerte stützt sich die Bewertung überwiegend auf Code- und versionsbezogene Konfigurationsprüfung.
