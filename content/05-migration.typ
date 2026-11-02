@@ -2,12 +2,9 @@
 = Entwurf, Migration und Migrationsleitfaden <ch:migration>
 //---------------------------------------------------------------------
 
-Dieses Kapitel dokumentiert den durchgeführten Migrationsprozess und die dabei getroffenen Entscheidungen.
-Auf dieser Grundlage werden die Handlungsempfehlungen des Migrationsleitfadens abgeleitet.
-
 == Struktur des Migrationsleitfadens
 
-Innerhalb dieser Phasen werden zusammengehörige Änderungen nach ihrer Aufgabe erläutert, etwa Datenhaltung, Schnittstellen, CRUD-Oberflächeninteraktionen, Dateiimporte und Netzwerkanbindungen.
+Innerhalb dieser Phasen werden zusammengehörige Änderungen nach den Bereichen Datenhaltung, Schnittstellen, CRUD-Verarbeitung, Dateiimporte und Online-Anbindungen gegliedert.
 Die Darstellung bündelt die tatsächlich vorgenommenen Anpassungen und erklärt exemplarisch ihre Entscheidungen und Prinzipien.
 Sie beschreibt daher nicht jede migrierte Funktion einzeln.
 Die Analyse aus @ch:analysis liefert den architektonischen Ausgangspunkt und die Kriterien zur Bewertung des erreichten Zustands.
@@ -153,7 +150,7 @@ Der eigentliche Initialisierungsprozess wird beim Anwendungsstart innerhalb von 
 Scheitert dieser Ablauf an einem beliebigen Punkt, bricht die Anwendung mit einer Fehlermeldung ab. Dadurch wird ausgeschlossen, dass die Benutzeroberfläche mit einer unvollständig vorbereiteten oder inkonsistenten Datenbank startet.
 
 Für Funktionen mit Referenzdaten stellen die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen bereit. 
-Sie werden während des Migrationsschritts lokal eingefügt und garantieren die Offline-Fähigkeit der Anwendung, da lokale IPC-Handler bereits vor einem externen Katalogabruf auf einen konsistenten Datenbestand zugreifen können @StudyPlanDatabase2026.
+Sie werden während des Migrationsschritts lokal eingefügt und garantieren die Offline-Fähigkeit der Anwendung, da lokale IPC-Handler bereits vor einem externen Datenabruf im Feature Studiengänge auf einen konsistenten Datenbestand zugreifen können @StudyPlanDatabase2026.
 
 === Übernahme des API-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>
 
@@ -595,51 +592,47 @@ Diese erweitert das System gezielt um synchrone Kommunikationspfade: Neben dem s
 
 == Phase 2: Netzwerkanbindungen und Local-First-Synchronisierung
 
-Die zweite Phase ergänzt gezielt Funktionen, die eine Verbindung zu entfernten Diensten benötigen.
-Die lokale Kernanwendung bleibt dabei die Grundlage.
+Die zweite Phase ergänzt gezielt Funktionen, die eine Verbindung zu entfernten Diensten voraussetzen, während die lokale Offline-Fähigkeit als architektonische Basis erhalten bleibt.
+
 === Auswahlkriterien und betrachtete Synchronisierungslösungen <sec:sync-tool-selection>
 
-Die Toolauswahl knüpfte an A3 an: Die in Phase 1 eingerichtete Schichtentrennung, TypeScript und Drizzle sollten möglichst weitgehend weiterverwendet werden.
-Zugleich verlangte A6 die Synchronisierung gemeinsamer Aufgaben nach lokaler Verarbeitung.
-Eine Eigenentwicklung hätte zusätzlich Verfahren für ausstehende Änderungen, Wiederholungen nach Verbindungsunterbrechungen, den Abgleich der Datenbestände und Konfliktbehandlung erfordert.
-Um den Umfang der Arbeit auf die Migration und ihre Muster zu begrenzen, wurde deshalb nach einer vorhandenen Synchronisierungslösung gesucht.
+Die Auswahl einer Synchronisierungskomponente orientiert sich primär an zwei zentralen Vorgaben:
+Einerseits verlangt Anforderung A3 die Beibehaltung der in Phase 1 etablierten Schichtentrennung auf Basis von TypeScript und dem ORM Drizzle.
+Andererseits fordert Anforderung A6 den automatischen Datenabgleich nach lokaler Verarbeitung.
+Um den Entwicklungsaufwand zu begrenzen und den Fokus auf Migrationsmuster zu legen, wurde eine bestehende Lösung statt einer fehleranfälligen Eigenentwicklung für Konfliktbehandlung, Offline-Queues und Verbindungsunterbrechungen evaluiert.
 
-Für die Vorauswahl waren insbesondere lokale SQLite-Verarbeitung, eine Drizzle-Anbindung, die Ausführung im Electron-Main-Prozess und die Anbindung eines entfernten Backends relevant.
-In die engere Auswahl kamen PowerSync und Turso.
-PowerSync stellt mit `@powersync/drizzle-driver` eine Anbindung für typisierte Drizzle-Abfragen bereit @PowerSyncDrizzleDriver2026.
-Für Turso besteht eine Drizzle-Anbindung über den bereits verwendeten libSQL-Treiber @DrizzleTurso2026.
-Beide Ansätze boten damit Anknüpfungspunkte an die lokale Datenhaltung aus Phase 1.
-
-Die Kandidaten übernehmen unterschiedliche Aufgaben.
-PowerSync bildet eine Synchronisierungsschicht zwischen einer Backend-Datenbank und lokalem SQLite; für die Node.js-Laufzeit steht ein eigenes SDK bereit @PowerSyncNode2026.
-Turso verbindet eine SQLite-kompatible Datenbank mit einem Cloud-Dienst und Replikationsmöglichkeiten.
-Die dokumentierten Embedded Replicas unterstützen lokale Datenhaltung und einen Abgleich mit Turso Cloud @TursoEmbeddedReplicas2026.
-@tab:sync-tool-options fasst die für die Vorauswahl relevanten Anknüpfungspunkte zusammen.
+Als Kernkriterien für die Vorauswahl galten die Ausführbarkeit im Electron-Main-Prozess, eine direkte SQLite- und Drizzle-Kompatibilität sowie die Anbindungsmöglichkeit an externe Datenbank-Backends.
+In die engere Betrachtung kamen zwei grundsätzlich verschiedene Architekturansätze:
+PowerSync als dedizierte Synchronisationsschicht (@PowerSyncNode2026) und Turso als verteilte Datenbankinfrastruktur auf libSQL-Basis (@TursoEmbeddedReplicas2026).
+@tab:sync-tool-options stellt die architektonischen Profile beider Optionen gegenüber.
 
 #figure(
   {
     set par(justify: false)
     table(
-      columns: (1fr, 2fr, 2fr),
+      columns: (1.2fr, 2fr, 2fr),
       inset: 6pt,
       align: left,
-      table.header([*Aspekt*],
-      [*PowerSync*],
-      [*Turso/libSQL*]),
-      [Rolle],
-      [Synchronisierungsschicht vor einer Backend-Datenbank.],
-      [Datenbank und Cloud-Dienst mit lokalen Replikaten.],
-      [Drizzle-Anbindung],
-      [Wrapper und Ableitung des lokalen Schemas über `@powersync/drizzle-driver`.],
-      [Datenzugriff über `drizzle-orm/libsql` und den libSQL-Client.],
+      table.header(
+        [*Kriterium*],
+        [*PowerSync*],
+        [*Turso (libSQL)*]
+      ),
+      [Architekturrolle],
+      [Synchronisations-Middleware vor relationaler Backend-Datenbank],
+      [Verwaltete Cloud-Datenbank mit integrierten lokalen Replikaten (Embedded Replicas)],
+
+      [Drizzle-Integration],
+      [Schema-Ableitung und Abfrage-Wrapper via `@powersync/drizzle-driver` @PowerSyncDrizzleDriver2026],
+      [Nativer Datenzugriff via `drizzle-orm/libsql` über den libSQL-Client @DrizzleTurso2026],
+
       [Entfernte Datenhaltung],
-      [Anbindung von Supabase/PostgreSQL im gewählten Entwurf.],
-      [Abgleich mit der Datenbank in Turso Cloud.],
+      [Flexibel anbindbare PostgreSQL-Instanzen (z. B. Supabase) @PowerSyncSupabase2026],
+      [Zentral verwaltete Datenbankinstanz in der Turso Cloud @TursoEmbeddedReplicas2026],
     )
   },
-  caption: [Dokumentationsbasierte Gegenüberstellung der für die Vorauswahl betrachteten Integrationsansätze @PowerSyncDrizzleDriver2026 @PowerSyncSupabase2026 @DrizzleTurso2026 @TursoEmbeddedReplicas2026.],
+  caption: [Vergleich der Integrationsansätze für die Local-First-Synchronisation.],
 ) <tab:sync-tool-options>
-
 === Entscheidung für PowerSync und Supabase
 
 Für den Demonstrator wurde eine Architektur mit entferntem Backend gewählt, das den gemeinsamen Datenbestand der Gruppen hält.
@@ -650,7 +643,7 @@ Die Wahl fiel auf Supabase weil es eine PostgreSQL-Datenbank sowie Authentifizie
 Ausschlaggebend war seine dokumentierte Integration mit PowerSync: Ausgewählte PostgreSQL-Daten werden in lokale SQLite-Datenbanken übertragen; lokale Änderungen werden gespeichert, in eine Upload-Warteschlange aufgenommen und bei verfügbarer Verbindung über einen Connector an das Backend übermittelt.
 Sync Streams legen fest, welche Daten an die jeweiligen Clients übertragen werden @PowerSyncSupabase2026.
 
-Diese Kombination passte zum ausgewählten Gruppenfeature: Unterschiedliche Benutzer sollen auf gemeinsame Aufgaben zugreifen und Änderungen zunächst lokal ausführen können.
+Diese Kombination passte zum Feature Studiengruppen: Unterschiedliche Benutzer sollen auf gemeinsame Aufgaben zugreifen und Änderungen zunächst lokal ausführen können.
 PowerSync verband dafür die lokale SQLite-Verarbeitung und die Drizzle-Anbindung mit Supabase als entferntem Backend.
 Die Anwendung musste weiterhin ihre Datenschemata, den Upload-Connector und die fachlichen Zugriffsregeln implementieren.
 Der Einsatz der Dienste begrenzte damit die zusätzlich zu entwickelnde Synchronisierungsinfrastruktur.
@@ -662,99 +655,88 @@ Die Auswahl begründet daher die verwendete Kombination, ohne eine allgemeine Ü
 
 === Vorprüfung der Integration und Grenzen der Wiederverwendung
 
-Die praktische Integrationsprüfung ist für PowerSync in zwei begrenzten Prototypen dokumentiert.
-Der erste prüfte die Node-SDK-Ausführung im Electron-Main-Prozess, lokale Persistenz samt Upload-Warteschlange, Schemaerweiterung, Geräteabgleich und Paketierung.
-Der zweite ergänzte den Drizzle-Wrapper und prüfte typisierte CRUD-Abfragen sowie die Abbildung von Datentypen.
-Die Projektberichte dokumentieren erfolgreiche lokale Prüfungen und einen Abgleich über Supabase und PowerSync.
-Sie stützten die Entscheidung, zunächst einen ausgewählten Kollaborationsbereich zu integrieren.
-Diese Vorprüfung untersucht die gewählte Kombination; sie ist kein praktisch durchgeführter Vergleich beider Kandidaten @StudyPlanSyncSpikes2026.
+Die praktische Integrationsfähigkeit von PowerSync wurde im Vorfeld anhand zweier fokussierter Prototypen evaluiert @StudyPlanSyncSpikes2026:
+- *Erster Prototyp:* Prüfung der Ausführung des Node-SDKs innerhalb des Electron-Main-Prozesses, der lokalen Datenpersistenz samt Upload-Warteschlange (_Upload Queue_), der Schemaerweiterung, des geräteübergreifenden Abgleichs sowie der Paketierung.
+- *Zweiter Prototyp:* Ergänzung des Drizzle-Wrappers zur Evaluierung typisierter CRUD-Abfragen und der korrekten Abbildung relationaler Datentypen.
 
-Die Drizzle-Anbindung ermöglicht Wiederverwendung auf der Ebene der Typdefinitionen, Abfragen und Repository-Muster.
-Im Prototyp wird das lokale PowerSync-Schema mit `DrizzleAppSchema` aus geeigneten Drizzle-Definitionen abgeleitet; `wrapPowerSyncWithDrizzle` stellt den typisierten Datenzugriff bereit @StudyPlanSyncSpikes2026.
+Die daraus resultierenden Berichte bestätigten sowohl die lokale Funktionsfähigkeit als auch den erfolgreichen Abgleich über Supabase und PowerSync. Diese Ergebnisse stützten die Entscheidung, die Synchronisierung schrittweise und zunächst beschränkt auf einen isolierten Kollaborationsbereich einzuführen. Zu beachten ist, dass sich diese Vorprüfung ausschließlich auf die Machbarkeit des gewählten Technologiestacks konzentrierte; ein empirischer Vergleich mit alternativen Synchronisierungslösungen fand im Rahmen dieses Prototypings nicht statt @StudyPlanSyncSpikes2026.
 
-Für synchronisierte Tabellen übernimmt PowerSync die Verwaltung der lokalen Datenbankstruktur.
-Drizzle Kit bleibt für die persönliche Datenbank aus Phase 1 zuständig; serverseitige PostgreSQL-Migrationen und die Sync-Stream-Konfiguration werden gesondert gepflegt @StudyPlanSyncSpikes2026.
-Damit konnte Drizzle als typisierte Datenzugriffsschicht erhalten bleiben, während die Verwaltung des synchronisierten Datenbestands und seiner Identitäten gezielt angepasst wurde.
-Dieser Unterschied bestimmt die nachfolgende Umsetzung der Gruppenfunktionen.
+Hinsichtlich der Wiederverwendbarkeit bestehender Softwarekomponenten ermöglichte die Anbindung von Drizzle eine weitgehende Übernahme von Typdefinitionen, Abfragelogiken und Repository-Mustern:
+- Über das Konstrukt `DrizzleAppSchema` wird das lokale Schema für PowerSync direkt aus den bestehenden Drizzle-Tabellendefinitionen abgeleitet.
+- Die Hilfsfunktion `wrapPowerSyncWithDrizzle` stellt den gewohnten typisierten Datenzugriff auf den synchronisierten Datenbestand bereit @StudyPlanSyncSpikes2026.
+
+Die Datenhaltung erfordert jedoch eine organisatorische Trennung der Schemaverantwortung:
+- *Synchronisierter Datenbestand:* PowerSync übernimmt die autonome Verwaltung und Migration der lokalen Tabellenstruktur.
+- *Persönlicher Datenbestand:* Für die rein lokale Datenbank aus Phase 1 verbleibt die Migrationsverwaltung bei Drizzle Kit.
+- *Backend & Synchronisationsregeln:* Serverseitige PostgreSQL-Migrationen sowie die Konfiguration der _Sync Streams_ werden separat gepflegt @StudyPlanSyncSpikes2026.
+
+Durch diesen Aufbau bleibt Drizzle als Abstraktionsschicht für den typisierten Datenzugriff erhalten, während die strukturelle Verwaltung synchronisierter Daten und Identitäten strikt an die Vorgaben des Synchronisationsdienstes delegiert wird.
 
 === Architektur mit zwei lokalen Datenhaltungsbereichen <sec:sync-architecture>
 
-Mit PowerSync und Supabase erweitert sich die lokale Architektur um entfernte Dienste.
-Der Renderer verwendet weiterhin die begrenzte Preload-/IPC-Schnittstelle; Datenzugriff und Dienstanbindung werden im Main-Prozess koordiniert.
-Persönliche Funktionen und ursprüngliche lokale Gruppen verbleiben in der SQLite-Datenbank aus Phase 1.
-Der neue Kollaborationsbereich verwendet eine weitere lokale SQLite-Datenbank, deren Struktur und Synchronisierung PowerSync verwaltet.
-Für jede entfernte Benutzeridentität wird eine eigene Datei geöffnet.
-Es bestehen damit zwei lokale Datenhaltungsbereiche; hinzu kommt der gemeinsame PostgreSQL-Datenbestand bei Supabase @StudyPlanSyncArchitecture2026.
+Durch die Einbindung von PowerSync und Supabase erweitert sich das vormals rein lokale System um externe Cloud-Dienste. 
+Die Prozessgrenzen innerhalb der Desktop-Anwendung bleiben dabei gewahrt: Der Electron-Renderer kommuniziert weiterhin ausschließlich über die restriktive Preload-/IPC-Schnittstelle, während der Main-Prozess den Datenzugriff und die Netzwerkanbindung zentral koordiniert.
 
-@fig:local-first-architecture zeigt die getrennten Kommunikationswege.
-Aufgabenänderungen werden zunächst lokal gespeichert und über den Upload-Connector an die Supabase-API übermittelt.
-PowerSync überträgt die anhand der Sync Streams ausgewählten Backend-Daten zurück in den lokalen Kollaborationsbestand.
-Der Upload führt somit über die Anwendungs-API, während der Download durch den PowerSync-Dienst erfolgt @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.
+Auf Persistenzebene führt diese Erweiterung zu einem *Dual-Database-Ansatz* auf dem Client @StudyPlanSyncArchitecture2026:
+1. *Persönlicher Bereich:* Die SQLite-Datenbank aus Phase 1 verwaltet weiterhin persönliche Daten sowie lokale, nicht synchronisierte Gruppen.
+2. *Kollaborationsbereich:* Für das synchronisierte Feature Studiengruppen wird eine separate SQLite-Datenbank instanziiert.
+PowerSync übernimmt hierbei sowohl die Strukturverwaltung als auch den Datentransport. 
+Zur strikten Datentrennung wird pro entfernter Benutzeridentität eine eigenständige Datenbankdatei angelegt.
+
+Serverseitig fungiert eine PostgreSQL-Instanz bei Supabase als gemeinsame Datengrundlage.
 
 #figure(
   image("../figures/local-first-architecture.svg", width: 100%),
-  caption: [Architektur nach Ergänzung des synchronisierten Gruppenbereichs.
+  caption: [Architektur nach Ergänzung der Synchronisierung im Feature Studiengruppen.
     Dargestellt sind die beiden lokalen Datenhaltungsbereiche sowie direkte Online-Aufrufe, Upload und Download.
-    Der separate Katalogabruf ist hier nicht dargestellt.
+    Der separate Datenabruf im Feature Studiengänge ist hier nicht dargestellt.
     Eigene Darstellung nach @StudyPlanSyncArchitecture2026 und @PowerSyncSupabase2026.],
 ) <fig:local-first-architecture>
 
-Gruppenanlage, Profilsuche und Einladungen verwenden unmittelbare Online-Aufrufe.
-Die entfernte Sitzung wird im Demonstrator nur im Arbeitsspeicher gehalten; nach einem Neustart ist eine erneute Anmeldung erforderlich.
-Die lokale Speicherung von Aufgaben bedeutet deshalb keine uneingeschränkte Offline-Verfügbarkeit aller Gruppenoperationen @StudyPlanSyncArchitecture2026.
+Wie in @fig:local-first-architecture dargestellt, erfolgt die Kommunikation über getrennte Pfade:
+- *Upload-Pfad (Schreibzugriffe):* Lokale Änderungen (z. B. an kollaborativen Aufgaben) werden zunächst in der lokalen Kollaborationsdatenbank persistiert und über eine Upload-Warteschlange (_Upload Connector_) an die Supabase-REST-API übertragen.
+- *Download-Pfad (Replikation):* Der PowerSync-Dienst transformiert serverseitige PostgreSQL-Änderungen anhand definierter _Sync Streams_ und repliziert diese automatisch in den lokalen Datenbestand des Clients @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.
 
+*Grenzen der Offline-Fähigkeit:*
+Nicht alle Gruppenoperationen folgen diesem asynchronen Replikationsmuster. 
+Administrative Funktionen wie das Anlegen neuer Gruppen, die Profilsuche sowie der Einladungsversand setzen eine aktive Netzwerkverbindung voraus und werden über synchrone Online-Aufrufe abgewickelt. 
+Zudem verbleibt das Authentifizierungs-Token im aktuellen Demonstrator rein flüchtig im Arbeitsspeicher, womit ein Anwendungsneustart stets eine erneute Authentifizierung erfordert. 
+Die lokale Speicherung synchronisierter Aufgaben bedeutet daher keine uneingeschränkte Offline-Verfügbarkeit aller Gruppenfunktionen @StudyPlanSyncArchitecture2026.
 === Verantwortung für Schemaänderungen und Updates <sec:sync-schema-updates>
 
-Die Einführung der Synchronisierung verändert auch die Verantwortung für spätere Schemaänderungen.
-In Phase 1 verwaltet die Desktop-Anwendung ihre Datenbank durch mitgelieferte Drizzle-Migrationen.
-Für synchronisierte Funktionen sind nun das entfernte PostgreSQL-Schema, die PowerSync-Datenverteilung und das lokale Anwendungsschema aufeinander abzustimmen.
-Die Supabase-Datenbank erhält eigene versionierte SQL-Migrationen @SupabaseSchemaMigrations2026.
-Das Desktop-Update ist damit Bestandteil einer koordinierten Bereitstellung über mehrere Komponenten.
+Die Einführung der Synchronisierung verändert das Vorgehen bei Schemaänderungen grundlegend: Verwaltete die Desktop-Anwendung in Phase 1 ihre lokale Datenbank noch autonom über mitgelieferte Drizzle-Migrationen, erfordern synchronisierte Funktionen nun eine koordinierte Bereitstellung über drei Entitäten hinweg:
++ das relationale PostgreSQL-Schema im Supabase-Backend,
++ die Verteilungs- und Filterregeln im PowerSync-Replikationsdienst sowie
++ das lokale Anwendungsschema auf dem Client.
 
-Auf Clientseite wird das mit `DrizzleAppSchema` abgeleitete Schema beim Öffnen der PowerSync-Datenbank an das SDK übergeben @StudyPlanSyncIntegration2026.
-Im verwendeten Standardmodell speichert PowerSync Daten als JSON und stellt sie über SQLite-Views entsprechend dem lokalen Schema bereit.
-Eine aktualisierte Schemadefinition wird beim Start der neuen Anwendungsversion angewandt; für diese Views werden keine zusätzlichen Drizzle-SQL-Migrationsdateien benötigt @PowerSyncSchemaChanges2026.
-Die Drizzle-Migrationen aus Phase 1 bleiben für die separate persönliche Datenbank zuständig.
+Während das Backend über versionierte SQL-Migrationen aktualisiert wird @SupabaseSchemaMigrations2026, erfolgt die Schemaverwaltung auf dem Client deklarativ: Das mittels `DrizzleAppSchema` abgeleitete Schema wird beim Initialisieren an das PowerSync-SDK übergeben @StudyPlanSyncIntegration2026. Das Standardmodell von PowerSync speichert replizierte Datensätze lokal als Rohdaten (JSON) und projiziert diese dynamisch über SQLite-Views in das Zielformat. Schemaanpassungen werden somit beim Start einer neuen Anwendungsversion unmittelbar durch die Neudefinition dieser Views wirksam, ohne dass separate clientseitige Migrationsskripte erforderlich sind @PowerSyncSchemaChanges2026. Die Drizzle-Migrationen verbleiben daher exklusiv bei der lokalen Datenbank der Kernanwendung.
 
-Für eine additive Erweiterung, etwa eine neue synchronisierte Tabelle, ergibt sich folgender Bereitstellungsablauf:
+Für additive Anpassungen – beispielsweise das Einfügen einer synchronisierten Tabelle – ergibt sich hieraus ein deterministischer Bereitstellungsablauf @PowerSyncSchemaDeployment2026:
 
-+ Zunächst wird das Supabase-Schema erweitert.
-  Dazu gehören die erforderlichen Zugriffsregeln und gegebenenfalls Anpassungen der Backend-Operationen.
-+ Anschließend wird die Tabelle in die PostgreSQL-Publication aufgenommen und die Sync-Stream-Konfiguration angepasst.
-  Die Verarbeitung der aktualisierten Konfiguration muss abgeschlossen sein, bevor die neue Funktion freigegeben wird.
-+ Danach wird die Desktop-Version mit dem erweiterten Client-Schema und den zugehörigen Anwendungsfunktionen veröffentlicht.
++ *Backend-Erweiterung:* Zunächst wird das Schema in Supabase aktualisiert. Dies umfasst Tabellenstrukturen, Zugriffsregeln (Row-Level Security) sowie etwaige Anpassungen backendseitiger RPC-Funktionen.
++ *Synchronisationskonfiguration:* Die neue Tabelle wird in die PostgreSQL-Publication aufgenommen und in die Dienstkonfiguration von PowerSync (`sync-streams.yaml`) eingebunden. Die Bereitstellung der aktualisierten Konfiguration muss serverseitig abgeschlossen sein, bevor abhängige Client-Funktionen freigegeben werden.
++ *Client-Rollout:* Abschließend wird die neue Desktop-Version verteilt, die das erweiterte Drizzle-/PowerSync-Schema enthält und die neuen Datenstrukturen konsumiert.
 
-Diese Reihenfolge entspricht dem von PowerSync beschriebenen Vorgehen für additive Änderungen.
-Umbenennungen, Löschungen oder Typänderungen können andere Übergangsschritte erfordern @PowerSyncSchemaDeployment2026.
+Nicht-additive Änderungen wie Umbenennungen, Typumwandlungen oder das Löschen von Attributen bedürfen zusätzlicher Übergangsphasen @PowerSyncSchemaChanges2026. Da Clients nach längeren Offline-Phasen noch ungesendete Schreiboperationen im alten Format übertragen können oder Anwendungsupdates verzögert installiert werden, müssen Lese- und Schreibformate rückwärtskompatibel gehalten werden (beispielsweise über versionierte Streams oder serverseitige Transformationen).
 
-Die Abstimmung muss auch ältere Clients berücksichtigen, die ein Update noch nicht installiert haben oder nach einer Offline-Phase ausstehende Änderungen übertragen.
-Bestehende Lese- und Schreibformate sind während des Übergangs kompatibel zu halten.
-PowerSync beschreibt dafür unter anderem versionierte Streams und Datentransformationen; deren konkrete Verwendung hängt von der Schemaänderung ab @PowerSyncSchemaChanges2026.
-Ein vollständiger Ablauf mit unterschiedlichen Anwendungsversionen, Backend-Änderung und anschließender Desktop-Aktualisierung wurde im Demonstrator nicht geprüft.
-Dieser Abschnitt benennt die daraus abgeleitete Anforderung an spätere Updates und erweitert den bisherigen Implementierungsnachweis nicht.
+Ein vollständiger Migrationszyklus über mehrere divergierende Anwendungs- und Backend-Versionen hinweg wurde im Rahmen des Demonstrators nicht praktisch durchlaufen; die beschriebenen Anforderungen definieren den architektonischen Rahmen für den späteren Produktivbetrieb.
 
 === Technische Integration der Kollaborationsmodule <sec:sync-implementation>
 
-Die Integration begann mit der Abstimmung des Datenmodells zwischen Supabase und lokalem PowerSync.
-In Supabase wurden die fünf Tabellen des Gruppenbereichs durch versionierte SQL-Migrationen angelegt.
-Datensatz- und Benutzerkennungen werden dort als UUIDs geführt; das lokale Drizzle-Schema bildet sie als Textfelder ab.
-Neue Aufgaben erhalten ihre UUID bereits beim lokalen Einfügen.
-Zeitangaben werden lokal als ISO-Strings und boolesche Werte als SQLite-Integer repräsentiert.
-`schema.ts` definiert diesen lokalen Tabellenbestand und leitet daraus mit `DrizzleAppSchema` das PowerSync-Schema ab.
-Die neuen Kennungen unterscheiden sich damit von den numerischen Kennungen des Ausgangsmodells @StudyPlanSyncIntegration2026.
+==== Datenmodell und Typabbildung
 
-Anschließend wurden die Tabellen in die PostgreSQL-Publication `powersync` aufgenommen und für deren Replikationsrolle lesbar gemacht.
-Die Verbindung des PowerSync-Dienstes zu Supabase umfasst die Datenbankanbindung und die Anerkennung der Supabase-Anmeldetoken @PowerSyncSupabase2026.
-Die Datenverteilung wurde in `sync-streams-v4.yaml` beschrieben und als Dienstkonfiguration bereitgestellt.
-Die Abfragen berücksichtigen Gruppenmitgliedschaften sowie Absender und Empfänger von Einladungen.
-Diese Datei steuert den Download; die für Schreibzugriffe geltenden Berechtigungen sind zusätzlich im Backend definiert @StudyPlanSyncIntegration2026.
-Die entfernten SQL-Migrationen und Sync Streams ergänzen damit das lokale Anwendungsschema und werden getrennt von der Desktop-Paketierung gepflegt.
+Die technische Umsetzung begann mit der Synchronisation des Datenmodells zwischen PostgreSQL und dem lokalen PowerSync-Bestand:
+- *Identifikatoren:* Die fünf Tabellen des Features Studiengruppen wurden in Supabase über versionierte SQL-Migrationen auf Basis von UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab. Neue Datensätze generieren ihre UUIDs bereits vorab auf dem Client, um optimistische lokale Schreibvorgänge zu ermöglichen. Damit weicht das Kollaborationsmodell gezielt von den inkrementellen numerischen Schlüsseln der Kernanwendung ab @StudyPlanSyncIntegration2026.
+- *Datentypen:* Datums- und Zeitwerte werden lokal als ISO-8601-Zeichenketten abgebildet; boolesche Attribute werden über den nativen SQLite-Ganzzahltyp (`0` bzw. `1`) repräsentiert.
+- *Schemaableitung:* Die zentrale Datei `schema.ts` definiert diesen lokalen Tabellenbestand und generiert mittels `DrizzleAppSchema` die für das PowerSync-SDK erforderliche Konfigurationsstruktur.
 
-Der Ausschnitt in @lst:collaboration-stream zeigt die Auswahl gemeinsamer Aufgaben.
-`auth.user_id()` bezeichnet die gegenüber PowerSync authentifizierte Supabase-Identität.
-Die Unterabfrage `user_groups` bestimmt ihre Gruppenmitgliedschaften; die anschließende Abfrage beschränkt die Aufgaben auf diese Gruppen.
-Weitere Abfragen desselben Streams verteilen Gruppen, Mitglieder und zugehörige Profile.
-Ein eigener Stream behandelt Einladungen anhand von Absender und Empfänger @StudyPlanSyncIntegration2026.
+==== Backend-Publikation und Replikationsregeln
+
+Um Änderungen an verbundene Clients zu verteilen, wurden die Tabellen der PostgreSQL-Publication `powersync` zugewiesen und für die Replikationsrolle freigegeben. Die Autorisierung des Replikationsdienstes gegenüber Supabase stützt sich auf die Validierung der ausgestellten Anmeldetoken @PowerSyncSupabase2026.
+
+Die deklarative Datenverteilung erfolgt über die Dienstkonfiguration `sync-streams-v4.yaml`. Diese definiert auf Basis von SQL-Abfragen, welche Teilmengen an die jeweiligen Clients repliziert werden. Schreib- und Lesepfade sind hierbei asymmetrisch getrennt: Die Streams regeln ausschließlich den nachgelagerten Download, während Autorisierungsprüfungen für Schreibzugriffe im Backend greifen @StudyPlanSyncIntegration2026.
+
+@lst:collaboration-stream illustriert die Definition des Aufgaben-Streams: Die Pseudofunktion `auth.user_id()` liefert die Identität des authentifizierten Clients. Über eine Unterabfrage (`user_groups`) werden dessen aktive Gruppenmitgliedschaften ermittelt, woraufhin die Replikation auf Aufgaben dieser Gruppen beschränkt wird. Ähnliche Selektionsregeln steuern die Verteilung von Gruppenmetadaten, Profilen und Einladungen.
 
 #figure(
   block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
@@ -763,16 +745,14 @@ Ein eigener Stream behandelt Einladungen anhand von Absender und Empfänger @Stu
   }),
   kind: raw,
   supplement: [Quellcode],
-  caption: [Auswahl gemeinsamer Aufgaben in `sync-streams-v4.yaml`; die übrigen Abfragen wurden weggelassen.],
+  caption: [Auswahl gemeinsamer Aufgaben in `sync-streams-v4.yaml` (Auszug) @StudyPlanSyncIntegration2026.],
 ) <lst:collaboration-stream>
 
-Die YAML-Datei wird im PowerSync-Dienst ausgewertet.
-Dieser übernimmt Änderungen aus der angebundenen Supabase-Datenbank und verteilt die durch den Stream ausgewählten Daten an die zugehörigen Clients.
-`auto_subscribe: true` aktiviert den Stream beim Verbinden automatisch.
-Das lokale SDK speichert die empfangenen Daten in SQLite; die Repositories lesen sie über Drizzle @PowerSyncStreams2026.
-Der Renderer führt die Stream-Abfragen somit nicht selbst aus.
-In Gegenrichtung übermittelt der Connector lokale Aufgabenänderungen über die Supabase-API.
-Die Streams ersetzen weder diesen Upload noch die dortigen Berechtigungsprüfungen @StudyPlanSyncIntegration2026.
+Der PowerSync-Dienst überwacht das PostgreSQL-Write-Ahead-Log (WAL) und repliziert passende Änderungen kontinuierlich. Durch `auto_subscribe: true` wird der Stream beim Verbindungsaufbau automatisch abonniert. Das Client-SDK übernimmt die Datenübertragung und persistiert die Datensätze lokal, wo sie durch Anwendungs-Repositories via Drizzle abgefragt werden @PowerSyncStreams2026. 
+
+==== Laufzeitabhängigkeiten und native Bindungen
+
+Die Integration des Replikationsmoduls erforderte Anpassungen des Node- und Electron-Laufzeitumfelds. @tab:sync-integration-packages fasst die ergänzten Pakete zusammen.
 
 #figure(
   {
@@ -784,36 +764,30 @@ Die Streams ersetzen weder diesen Upload noch die dortigen Berechtigungsprüfung
       table.header([*Ergänztes Paket*],
       [*Aufgabe im Demonstrator*]),
       [`@powersync/node`],
-      [Lokale PowerSync-Datenbank, Warteschlange und Synchronisierungsverbindung.],
+      [Lokale PowerSync-Datenbank, Replikationsverbindung und Upload-Warteschlange.],
       [`@powersync/drizzle-driver`],
-      [Ableitung des Client-Schemas und typisierter Drizzle-Zugriff.],
+      [Ableitung des Client-Schemas und Bereitstellung der typisierten Drizzle-Abstraktion.],
       [`@supabase/supabase-js`],
-      [Anmeldung, direkte RPC-Aufrufe und Upload an die Supabase-API.],
+      [Authentifizierung, synchrone RPC-Aufrufe und Upload lokaler Daten an die Backend-API.],
       [`better-sqlite3`],
-      [Nativer SQLite-Treiber für die gewählte PowerSync-Implementierung.],
+      [Nativer SQLite-Treiber für die PowerSync-Verbindung.],
     )
   },
-  caption: [Für den Kollaborationsbereich ergänzte Laufzeitabhängigkeiten und ihre Aufgaben @StudyPlanSyncIntegration2026.],
+  caption: [Für den Kollaborationsbereich ergänzte Laufzeitabhängigkeiten @StudyPlanSyncIntegration2026.],
 ) <tab:sync-integration-packages>
 
-Für die neue Datenbank wurde `better-sqlite3` gewählt, während die Datenbank aus Phase 1 weiterhin über libSQL angebunden bleibt.
-Das PowerSync-Node-SDK unterstützt verschiedene SQLite-Treiber; der Wechsel beschreibt somit die konkrete Implementierung des Demonstrators @PowerSyncNode2026.
-`database.ts` öffnet die PowerSync-Datenbank und stellt mit `wrapPowerSyncWithDrizzle` den Zugriff für die Repositories bereit.
-Die Ausführung verwendet einen eigenen Worker, der über `powersync.worker?nodeWorker` in den Electron-Build eingebunden wird @StudyPlanSyncIntegration2026.
+Im Gegensatz zur Kernanwendung, die libSQL verwendet, nutzt das PowerSync-Node-SDK den Treiber `better-sqlite3` @PowerSyncNode2026. Zur Vermeidung von Blockaden des Haupt-Threads wird die Datenbankinstanz über einen dedizierten Node-Worker (`powersync.worker?nodeWorker`) ausgeführt @StudyPlanSyncIntegration2026. 
 
-Auch die Paketierung wurde angepasst: In `electron-builder.yml` werden `node_modules/@powersync/node/**` und `node_modules/better-sqlite3/**` unter `asarUnpack` aufgeführt.
-Der Worker ermittelt die native PowerSync-Erweiterung im Verzeichnis `app.asar.unpacked`.
-Diese Anpassung adressiert das im Prototyp beobachtete Laden der SQLite-Erweiterung unter Windows.
-Das vorhandene `postinstall`-Skript mit `electron-builder install-app-deps` dient dem Aufbau nativer Abhängigkeiten für die Electron-Laufzeit @StudyPlanSyncIntegration2026 @StudyPlanSyncSpikes2026.
-Die Electron-Dokumentation beschreibt die erforderliche Entpackung bei APIs, die reale Dateipfade für native Module benötigen @ElectronAsar2026.
+Da Electron native Binärmodule standardmäßig in einem virtuellen ASAR-Archiv bündelt, native C-Erweiterungen für den Dateizugriff unter Betriebssystemen wie Windows jedoch reale Pfade im Dateisystem voraussetzen, wurde die Paketierungskonfiguration (`electron-builder.yml`) angepasst @ElectronAsar2026:
+- Die Pakete `@powersync/node` und `better-sqlite3` werden über die Direktive `asarUnpack` explizit unkomprimiert im Verzeichnis `app.asar.unpacked` abgelegt.
+- Das Skript `electron-builder install-app-deps` kompiliert die nativen Bindungen im `postinstall`-Schritt gegen die ABI der Ziel-Electron-Version @StudyPlanSyncIntegration2026 @StudyPlanSyncSpikes2026.
 
-Die Anwendungsmodule erhielten getrennte Zuständigkeiten.
-`CollaborationRuntime` koordiniert Sitzung, Lebenszyklus und fachliche Operationen.
-Bei der Anmeldung öffnet sie eine zur entfernten Benutzerkennung gehörende Datenbank und verbindet diese mit dem Connector.
-Der gekürzte Auszug in @lst:collaboration-connect zeigt diesen Schritt.
-Die Repositories lesen den lokalen Gruppenbestand und schreiben Aufgabenänderungen.
-`online-gateway.ts` führt die unmittelbar netzwerkabhängigen Gruppen- und Einladungsoperationen aus.
-Der Connector liefert über `fetchCredentials` das Anmeldetoken für PowerSync und übermittelt mit `uploadData` die ausstehenden Aufgabenänderungen an Supabase @StudyPlanSyncIntegration2026.
+==== Anwendungsarchitektur und IPC-Verträge
+
+Die Steuerung des synchronisierten Bereichs obliegt dem Modul `CollaborationRuntime`. Es kapselt den Sitzungszustand, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff:
+1. *Verbindungsaufbau:* Nach erfolgreicher Authentifizierung öffnet die Laufzeitumgebung eine benutzerbezogene SQLite-Datenbank (`collaboration-${userId}.db`) und initialisiert den PowerSync-Connector (@lst:collaboration-connect).
+2. *Connector-Aufgaben:* Der Connector delegiert Authentifizierungsanfragen über `fetchCredentials` an Supabase und wickelt über `uploadData` das Leeren der lokalen Upload-Warteschlange via API ab.
+3. *Netzwerkgateway:* Funktionen, die eine zwingende Online-Verbindung voraussetzen (Gruppenerstellung, Nutzersuche, Einladungsversand), werden außerhalb des asynchronen Replikationspfads direkt über `online-gateway.ts` via Supabase-RPC abgewickelt @StudyPlanSyncIntegration2026.
 
 #figure(
   ```ts
@@ -825,25 +799,21 @@ Der Connector liefert über `fetchCredentials` das Anmeldetoken für PowerSync u
   )
   await database.powerSync.connect(connection.connector)
   ```,
-  caption: [Öffnen und Verbinden der benutzerbezogenen PowerSync-Datenbank; gekürzter Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],
+  caption: [Initialisierung und Verbindung der benutzerspezifischen Kollaborationsdatenbank; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],
 ) <lst:collaboration-connect>
 
-Die Preload-Ebene stellt nun zwei begrenzte Aufrufwege bereit.
-Über `window.apiTransport.invoke` verwendet die Kernanwendung weiterhin den Kanal `api:invoke`.
-Für die Kollaboration wurde `window.collaborationTransport.invoke` mit dem Kanal `collaboration:invoke` ergänzt.
-Der neue Modulvertrag liegt in `src/shared/collaboration/ipc.ts` und wird im betrachteten Stand eigenständig typisiert, statt durch den OpenAPI-Generator erzeugt zu werden.
-Der zugehörige Main-Handler prüft Absender, Operation und Eingaben mit Zod und berücksichtigt die lokale Sitzung @StudyPlanSyncIntegration2026.
-Die beiden IPC-Pfade bilden die getrennte Integration der Funktionsbereiche ab.
-Zwei Datenbanktreiber erzwingen diese Aufteilung nicht: Die Schnittstellen bieten fachliche Operationen an, deren Datenzugriff hinter den Repositories liegt.
-Eine Zusammenführung der Datenbanken würde daher nicht automatisch die IPC-Verträge vereinheitlichen.
+Die IPC-Schicht zwischen Renderer- und Main-Prozess spiegelt diese Trennung wider:
+- *Kernanwendung:* Verwendet weiterhin den etablierten Kanal `api:invoke` über `window.apiTransport`.
+- *Kollaboration:* Verwendet den dedizierten Kanal `collaboration:invoke` über `window.collaborationTransport`.
 
-@fig:collaboration-modules zeigt die Module und ihre Verbindungen.
-Sie ergänzt das Architekturbild aus @fig:local-first-architecture um die konkrete Aufteilung der Verarbeitung und die beiden IPC-Pfade.
+Der Vertrag für die Kollaborationsschnittstelle ist in `src/shared/collaboration/ipc.ts` hinterlegt. Im Gegensatz zu den generierten OpenAPI-Verträgen der Kernanwendung wird dieser Vertrag projektintern manuell typisiert und im Main-Prozess über Zod-Validierungsschemata gegen fehlerhafte oder unberechtigte Aufrufe abgesichert @StudyPlanSyncIntegration2026. Diese Separierung auf Transportebene resultiert primär aus den unterschiedlichen Lebenszyklen und Modulverträgen der beiden Funktionsbereiche; eine spätere Vereinheitlichung der Datenhaltung würde diese fachliche Schnittstellentrennung daher nicht zwangsläufig aufheben.
+
+@fig:collaboration-modules stellt die resultierende Modulverteilung und die jeweiligen Kommunikationspfade zusammenfassend dar.
 
 #figure(
   image("../figures/collaboration-modules.svg", width: 100%),
   caption: [Modulaufteilung der Kollaborationsintegration neben der lokalen Kernanwendung.
-    Blaue Pfeile zeigen lokale Aufruf- und Datenzugriffswege, violette Pfeile Dienstkommunikation; der gestrichelte Pfeil zeigt die Schemaeinbindung.
+    Blaue Pfeile: Lokale Aufrufe und Datenzugriffe; violette Pfeile: Externe Dienstkommunikation; gestrichelter Pfeil: Deklarative Schemaeinbindung.
     Eigene Darstellung nach @StudyPlanSyncIntegration2026.],
 ) <fig:collaboration-modules>
 
@@ -859,7 +829,7 @@ Die statische Prüfung zeigt allerdings eine Lücke im Übergang zur Anmeldung: 
 Damit ist keine automatische Rückkehr zur Einladung umgesetzt @StudienplanerInviteReview2026.
 Eine Laufzeitprüfung der ursprünglichen Replit-Bereitstellung wurde nicht durchgeführt; aus diesem Befund folgt kein Nachweis, dass der gesamte Einladungsablauf dort grundsätzlich unbrauchbar war.
 
-Für den synchronisierten Gruppenbereich wurde ein anderer Einladungsablauf implementiert.
+Für das synchronisierte Feature Studiengruppen wurde ein anderer Einladungsablauf implementiert.
 Supabase Auth verwaltet die entfernten Benutzerkonten; die anwendungsbezogenen Namen und Kennungen liegen in einer zugeordneten `profiles`-Tabelle.
 Die Trennung zwischen Auth-Daten und über die Anwendungs-API zugänglichen Profilen entspricht dem von Supabase dokumentierten Ansatz @SupabaseUserManagement2026.
 Neu entwickelt wurde eine Suche nach Benutzer- oder Anzeigenamen.
@@ -894,7 +864,7 @@ Die Fallstudie bewertet damit die Migration unter dieser Voraussetzung und weist
 
 Die parallele Datenhaltung ermöglicht eine Migration nach Funktionsbereichen: Ein vorhandener Bereich bleibt zunächst bestehen, während ein ausgewählter Bereich mit dem neuen Datenzugriff umgesetzt wird.
 Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns, bestehende Funktionen schrittweise durch neue Implementierungen abzulösen @FowlerStranglerFig2024.
-Im Demonstrator bleibt der in Phase 1 lokal übernommene Gruppenbereich unter `/gruppen` bestehen.
+Im Demonstrator bleibt das in Phase 1 lokal übernommene Feature Studiengruppen unter `/gruppen` bestehen.
 Der in Phase 2 ergänzte Bereich unter `/gruppen-sync` verwendet die neue Kollaborationsdatenbank.
 Die Oberfläche unterscheidet beide als „Gruppen“ und „Gruppen (Sync)“.
 Die Koexistenz ist ein Übergangsstand der Umsetzung; bestehende lokale Gruppendaten werden nicht automatisch in den synchronisierten Bereich übertragen @StudyPlanGroupTransition2026.
@@ -962,9 +932,9 @@ Die Begrenzung betrifft erweiterte Konfliktstrategien.
 Warteschlange, Wiederholungen und der Umgang mit abgelehnten Änderungen bleiben für die Migration relevant.
 PowerSync verwendet ein serverautoritatives Modell; aus einem lokalen Schreibabschluss folgt noch keine Bestätigung durch das Backend @PowerSyncWritingChanges2026.
 
-=== Online-Abruf des Studienkatalogs <sec:study-catalog-download>
+=== Online-Datenabruf im Feature Studiengänge <sec:study-catalog-download>
 
-Der Studienkatalog ergänzt die Synchronisierung um einen einfacheren Netzwerkablauf: Fachliche Referenzdaten werden online bereitgestellt, in die lokale Datenbank übernommen und anschließend offline gelesen.
+Das Feature Studiengänge ergänzt die Synchronisierung um einen einfacheren Netzwerkablauf: Fachliche Referenzdaten werden online bereitgestellt, in die lokale Datenbank übernommen und anschließend offline gelesen.
 Damit können Kataloginhalte unabhängig von einer neuen Anwendungsversion aktualisiert werden.
 Der Demonstrator ergänzt hierzu den in Phase 1 ausgelieferten Seed-Bestand um online abrufbare Beispieldaten; der vorhandene Grundbestand bleibt erhalten @StudyPlanCatalog2026.
 
@@ -974,7 +944,7 @@ Dieser Endpunkt benötigt weder ein Benutzerkonto noch einen Zugriff auf die ent
 Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Lehrveranstaltungen erweitert.
 Daraus wurden die IPC-Vertragsbestandteile und der React-Query-Hook erneut generiert @StudyPlanCatalog2026.
 
-Beim Öffnen der Studienseite liest die Oberfläche zunächst den lokalen Bestand und löst zusätzlich die Aktualisierung aus.
+Beim Öffnen des Features Studiengänge liest die Oberfläche zunächst den lokalen Bestand und löst zusätzlich die Aktualisierung aus.
 Der Main-Prozess lädt die JSON-Daten, validiert sie anhand der vorhandenen Feldschemata und übernimmt beide Datenbereiche gemeinsam in einer Transaktion.
 Anhand stabiler Kennungen werden neue Einträge eingefügt und vorhandene aktualisiert, sodass wiederholte Abrufe keine Duplikate erzeugen.
 In der Antwort fehlende Einträge werden nicht gelöscht.
@@ -1037,8 +1007,8 @@ Die Einzelbewertungen verbleiben in der Projektmatrix @StudyPlanSecurity2026.
         [*Prüfstelle und Umsetzung*],
         [*Prüfverfahren und Nachweisgrenze*]),
         [Nr. 1; A6, A8],
-        [*Netzwerkanbindung im Main:* HTTPS-Adressen ohne eingebettete Zugangsdaten für Katalog, Supabase und PowerSync prüfen.
-          Katalog- und Supabase-Abrufe lehnen Weiterleitungen ab.],
+        [*Netzwerkanbindung im Main:* HTTPS-Adressen ohne eingebettete Zugangsdaten für das Feature Studiengänge, Supabase und PowerSync prüfen.
+          Abrufe im Feature Studiengänge und Supabase-Abrufe lehnen Weiterleitungen ab.],
         [Code- und Konfigurationstests; Redirectversuch mit tatsächlichem Node-Fetch.
           Die SDK-interne PowerSync-Redirectbehandlung ist nicht praktisch nachgewiesen.],
         [Nr. 2–4],
@@ -1124,7 +1094,7 @@ Im Main werden bekannte Operationen und ihre Zod-Eingabeschemata vor der fachlic
 
 Für externe Anbindungen wurde ein gemeinsamer HTTPS-Prüfer eingeführt.
 Er weist ungeeignete Protokolle und eingebettete Zugangsdaten zurück, ohne den Konfigurationswert in Fehlermeldungen auszugeben.
-Katalog und Supabase verwenden zusätzlich `redirect: 'error'`.
+Der Datenabruf im Feature Studiengänge und die Supabase-Anbindung verwenden zusätzlich `redirect: 'error'`.
 Der Prüfer erhält die Schreibweise einer gültigen Adresse: Eine zwischenzeitliche Normalisierung ergänzte am PowerSync-Endpunkt einen Slash und verhinderte die Verbindung.
 Die Korrektur und ein Regressionstest sichern dieses Detail ab.
 PowerSync verwendet weiterhin seinen eigenen Transport; dessen interne Weiterleitungen sind von dieser Absicherung nicht vollständig erfasst @StudyPlanSecurityRemediation2026.
@@ -1271,7 +1241,7 @@ Stabile Kennungen und ein festgelegtes Aktualisierungsverhalten müssen verhinde
 
 Die Oberfläche soll den vorhandenen lokalen Bestand weiterhin lesen können, auch wenn die zusätzliche Aktualisierung scheitert.
 Erst ein erfolgreich übernommener Bestand steht für spätere Offline-Aufrufe zur Verfügung; ein leerer lokaler Datenbestand lässt sich durch Fehlerbehandlung allein nicht ersetzen.
-Der Katalogabruf aus @sec:study-catalog-download veranschaulicht dieses Muster mit Schemaprüfung, Transaktion und erneutem Ladeversuch.
+Der Datenabruf im Feature Studiengänge aus @sec:study-catalog-download veranschaulicht dieses Muster mit Schemaprüfung, Transaktion und erneutem Ladeversuch.
 Eine solche Datenübernahme ist von der Synchronisierung lokaler Änderungen zu unterscheiden @StudyPlanCatalog2026.
 
 *M7: Synchronisierung an einem ausgewählten Funktionsbereich integrieren.*
@@ -1283,7 +1253,7 @@ Die Integrationsprototypen des Demonstrators bilden hierfür die Grundlage @Stud
 Anschließend sind die Verantwortung für lokale Änderungen, Upload und Download sowie unmittelbar netzwerkabhängige Operationen festzulegen.
 Clientseitig erzeugbare Kennungen und eine nachvollziehbare Zuordnung lokaler und entfernter Identitäten müssen Datensätze und Beziehungen konsistent halten.
 Der lokale Schreibabschluss ist von der Annahme durch das Backend zu unterscheiden; ausstehende, fehlgeschlagene und abgewiesene Änderungen benötigen ein festgelegtes Verhalten.
-Im betrachteten Gruppenfeature bleiben Aufgabenänderungen lokal ausführbar, während Gruppenerstellung und Einladungen unmittelbare Online-Operationen sind.
+Im Feature Studiengruppen bleiben Aufgabenänderungen lokal ausführbar, während Gruppenerstellung und Einladungen unmittelbare Online-Operationen sind.
 Vorausgesetzte entfernte Konten und Änderungen des ursprünglichen Einladungsablaufs sind als Voraussetzungen beziehungsweise fachliche Anpassungen auszuweisen @StudyPlanSyncIntegration2026 @StudyPlanSyncArchitecture2026.
 
 Eine zeitweise parallele Datenhaltung kann die Überführung nach Funktionsbereichen begrenzen.
