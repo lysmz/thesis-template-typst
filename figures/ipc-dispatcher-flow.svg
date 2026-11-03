@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="850" viewBox="0 0 1100 850" role="img" aria-labelledby="title description">
+  <title id="title">IPC-Aufrufweg und Verarbeitung im API-Dispatcher</title>
+  <desc id="description">React Query ruft den API-Client im Renderer auf. Die Preload-Bridge ergänzt eine Request-ID und übergibt die Operation über den festen Kanal api:invoke an ipcMain.handle. Der Dispatcher prüft Absender und Nachrichtenformat, löst den Operationsvertrag auf, validiert die Eingabe, ruft den registrierten Handler auf und prüft Rückgabe oder Fehler. Das ApiResult gelangt über dieselben Schnittstellen zurück zum Client, der Nutzdaten oder einen ApiClientError an React Query weitergibt.</desc>
+  <defs>
+    <marker id="request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
+    <marker id="response" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#68737b"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; font-size: 25px; fill: #17242c; text-anchor: middle; }
+      .heading { font-size: 28px; font-weight: 700; }
+      .note { font-size: 23px; fill: #475761; }
+      .box { fill: #fff; stroke: #6d7f8b; stroke-width: 2; }
+      .call { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#request); }
+      .return { fill: none; stroke: #68737b; stroke-width: 2.5; stroke-dasharray: 8 6; marker-end: url(#response); }
+    </style>
+  </defs>
+
+  <rect x="20" y="20" width="440" height="335" rx="10" fill="#f3f7fa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="240" y="62" class="heading">Renderer</text>
+  <rect x="50" y="85" width="380" height="80" rx="8" class="box"/>
+  <text x="240" y="118" class="heading">React Query</text>
+  <text x="240" y="149" class="note">api.events.listEvents(...)</text>
+  <path d="M155 165 V210" class="call"/>
+  <path d="M325 210 V165" class="return"/>
+  <rect x="50" y="210" width="380" height="120" rx="8" class="box"/>
+  <text x="240" y="244" class="heading">API-Client / ApiTransport</text>
+  <text x="240" y="277" class="note">operationId + { path, query, body }</text>
+  <text x="240" y="309" class="note">Nutzdaten oder ApiClientError</text>
+
+  <path d="M70 330 V430" class="call"/>
+  <text x="240" y="386" class="note">window.apiTransport.invoke(...)</text>
+  <rect x="20" y="430" width="440" height="160" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="240" y="470" class="heading">Preload-Bridge</text>
+  <text x="240" y="505" class="note">requestId ergänzen</text>
+  <text x="240" y="538" class="note">ipcRenderer.invoke('api:invoke', …)</text>
+  <text x="240" y="571" class="note">Fester Kanal zum Main-Prozess</text>
+
+  <rect x="570" y="20" width="510" height="720" rx="10" fill="#f3f7fa" stroke="#9ba5ac" stroke-width="2"/>
+  <text x="825" y="62" class="heading">Main-Prozess</text>
+  <rect x="600" y="85" width="450" height="70" rx="8" class="box"/>
+  <text x="825" y="128" class="heading">ipcMain.handle('api:invoke', …)</text>
+  <path d="M460 480 H510 V120 H600" class="call"/>
+  <text x="490" y="330" class="note" transform="rotate(-90 490 330)">IPC-Grenze</text>
+  <path d="M825 155 V205" class="call"/>
+
+  <rect x="600" y="205" width="450" height="505" rx="8" class="box"/>
+  <text x="825" y="243" class="heading">API-Dispatcher</text>
+  <text x="825" y="284">1. Absender und Format prüfen</text>
+  <text x="825" y="313" class="note">Anfragender Frame, Nachrichtenstruktur</text>
+  <path d="M825 326 V347" class="call"/>
+  <text x="825" y="377">2. Operation auflösen</text>
+  <text x="825" y="406" class="note">operationId → operationContracts</text>
+  <path d="M825 419 V440" class="call"/>
+  <text x="825" y="470">3. Eingabe validieren</text>
+  <text x="825" y="499" class="note">Generiertes Zod-Eingabeschema</text>
+  <path d="M825 512 V533" class="call"/>
+  <text x="825" y="563">4. Registrierten Handler aufrufen</text>
+  <text x="825" y="592" class="note">Fachliche Verarbeitung</text>
+  <path d="M825 605 V626" class="call"/>
+  <text x="825" y="656">5. Rückgabe / Fehler validieren</text>
+  <text x="825" y="688" class="note">ApiResult mit requestId</text>
+
+  <path d="M600 680 H545 V790 H5 V270 H50" class="return"/>
+  <text x="280" y="654" class="heading">ApiResult</text>
+  <text x="280" y="687" class="note">Erfolg: { ok: true, data, requestId }</text>
+  <text x="280" y="720" class="note">Fehler: { ok: false, error, requestId }</text>
+  <text x="280" y="760" class="note">Rückweg über IPC und Preload</text>
+
+  <path d="M240 830 H300" class="call"/>
+  <text x="365" y="838" class="note">Anfrage</text>
+  <path d="M620 830 H680" class="return"/>
+  <text x="765" y="838" class="note">Rückgabe</text>
+</svg>
