@@ -465,11 +465,10 @@ Geprüft werden Sitzung, persönliche Datenzuordnung, Änderungen, Aktivitäten 
 Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.
 
 === Lokaler Dateiimport am Beispiel iCal <sec:file-import-migration>
-Das Importmuster wird am iCal-Import beschrieben.
-Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als FormData mit fetch an /api/events/import-ical.
-@lst:ical-web-upload zeigt die Dateiannahme und den Parseraufruf aus artifacts/api-server/src/routes/events.ts des Web-Prototyps.
-Der Ausschnitt verdeutlicht die Bindung an HTTP: Die Datei stammt aus req.file, die Benutzerkennung aus der Sitzung und Fehler werden unmittelbar als HTTP-Antwort ausgegeben.
-Die anschließende fachliche Abbildung und Speicherung lagen im selben Route-Handler und sind hier ausgelassen.
+
+Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`.
+Der zugehörige Express-Route-Handler verband die HTTP-Dateiannahme mit dem Parsen, der fachlichen Zuordnung und der Speicherung der Termine.
+@lst:ical-web-upload zeigt den bisherigen Einstieg in diese Verarbeitung @StudienplanerSource2026.
 #figure(
 block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
 set text(size: 8.5pt)
@@ -477,60 +476,44 @@ raw(read("../code/ical-web-upload.ts"), lang: "typescript", block: true)
 }),
 kind: raw,
 supplement: [Quellcode],
-caption: [Dateiannahme und iCal-Parseraufruf im Web-Prototyp; gekürzter und für die Darstellung umgebrochener Ausschnitt aus der ursprünglichen Express-Route @StudienplanerSource2026.],
+caption: [Dateiannahme und Parseraufruf der ursprünglichen Express-Route (gekürzter Ausschnitt) @StudienplanerSource2026.],
 ) <lst:ical-web-upload>
-In der Desktop-Anwendung wurde dieser HTTP-Upload in eine lokale Importoperation überführt.
-Die Oberfläche löst die Operation aus; Dateiauswahl und Einlesen verbleiben im Main-Prozess, sodass der Renderer keine frei gewählten Dateipfade übergeben kann @ElectronContextBridge2026.
-Hierfür wurde der OpenAPI-Vertrag um die parameterlose Operation importEventsIcal sowie das Ergebnisschema EventIcalImportResult erweitert.
-Die bereits etablierte Generierungs- und Validierungspipeline greift dadurch unmittelbar @StudyPlanIcalMigration2026.
-@fig:local-file-import-flow fasst den Ablauf zusammen.
+
+In der Desktop-Anwendung ersetzt eine native Dateiauswahl den HTTP-Upload.
+Die neue Vertragsoperation `importEventsIcal` ist parameterlos: Der Renderer übergibt weder Dateipfad noch Dateiinhalt und erhält damit keinen frei wählbaren Dateisystemzugriff @ElectronContextBridge2026 @StudyPlanIcalMigration2026.
+Den lokalen Importablauf zeigt @fig:local-file-import-flow.
 #figure(
 image("../figures/local-file-import-flow.svg", width: 100%),
-caption: [Lokaler Dateiimport am Beispiel iCal. Der Renderer löst den Import über IPC aus; der Main-Prozess öffnet den nativen Dateidialog und verarbeitet die ausgewählte Datei. Ein Abbruch überspringt die Verarbeitung und Speicherung.],
+caption: [Lokaler iCal-Import mit nativer Dateiauswahl und getrenntem Abbruchpfad.],
 ) <fig:local-file-import-flow>
 
-Die Dateiauswahl steuert NativeIcalFilePicker im Main-Prozess.
-Er ruft dialog.showOpenDialog mit einem Filter für ICS-Dateien auf und bindet den Dialog modal an das anfragende Anwendungsfenster @ElectronDialog2026 @StudyPlanIcalMigration2026.
-Bricht der Benutzer den Vorgang ab, endet die Verarbeitung unmittelbar mit status: cancelled und beiden Zählwerten auf 0, ohne den Datenbestand zu verändern.
-Wird eine Datei gewählt, verbleibt der absolute Pfad innerhalb des Main-Prozesses.
-Die Implementierung prüft die Endung .ics, den regulären Dateityp sowie die aus der ursprünglichen Multer-Konfiguration übernommene Größenobergrenze von 10 MiB vor und nach dem Einlesen, bevor der Inhalt als UTF-8-Text bereitgestellt wird @StudienplanerSource2026 @StudyPlanIcalMigration2026.
-Die semantische Interpretation der Kalenderdaten kapselt src/main/services/events-ical.parser.ts.
-Das Modul nutzt weiterhin die Bibliothek node-ical und übernimmt die bestehenden fachlichen Abbildungen, trennt die Formatprüfung jedoch strikt von Sitzungskontext und Datenbankzugriff.
-Gegenüber dem Prototyp wurden Prüfungen der grundlegenden Kalenderstruktur, der Validität von Zeitangaben sowie der Ausschluss invertierter Zeitspannen (Enddatum vor Startdatum) ergänzt.
-Übersprungene Einträge werden nun separat erfasst @StudyPlanIcalMigration2026.
+Für die Dateiauswahl wurde `NativeIcalFilePicker` ergänzt, der `dialog.showOpenDialog` mit einem ICS-Filter modal an das anfragende Fenster bindet @ElectronDialog2026 @StudyPlanIcalMigration2026.
+Da die Dateiannahme über Multer entfällt, übernimmt die lokale Implementierung auch die bisherige Größenobergrenze von 10 MiB.
+Sie prüft die Endung `.ics`, den regulären Dateityp und die Größe vor und nach dem Einlesen; anschließend wird der Inhalt als UTF-8-Text verarbeitet @StudienplanerSource2026 @StudyPlanIcalMigration2026.
 
-EventsService.importEventsIcal verarbeitet die validierte Parserausgabe fachlich.
-Der Dienst reichert die Termine mit der Benutzerkennung an, übergibt sie gesammelt an EventsRepository.createManyEvents und legt den zugehörigen Aktivitätseintrag an.
-Über die Schnittstelle IcalFilePicker wird der konkrete Picker als Abhängigkeit an createEventsHandlers übergeben.
-Dateiauswahl, Parsing, fachliche Koordination und Datenpersistenz sind dadurch in klar voneinander getrennte Schichten unterteilt @StudyPlanIcalMigration2026.
+Die Bibliothek `node-ical` und die vorhandenen fachlichen Feldzuordnungen wurden beibehalten und in `events-ical.parser.ts` ausgelagert.
+Ergänzt wurden Prüfungen der grundlegenden Kalenderstruktur und gültiger Zeitangaben sowie der Ausschluss von Zeitspannen, deren Ende vor dem Beginn liegt.
+Übersprungene Einträge werden separat gezählt.
+Die übernommenen Termine erhalten die Benutzerkennung, werden gesammelt gespeichert und durch einen Aktivitätseintrag protokolliert @StudyPlanIcalMigration2026.
 
-Das Ergebnis der Operation wird über den Dispatcher typisiert an das Frontend zurückgegeben:
-Bei erfolgreicher Verarbeitung liefert der Handler status: imported zusammen mit importedCount und skippedCount; fehlerhafte Kalenderstrukturen werden in VALIDATION_ERROR überführt.
-In der Kalenderseite stößt der generierte Mutation-Hook useImportEventsIcal den Ablauf an, deaktiviert während der Laufzeit die Bedienelemente (isPending) und invalidiert bei Erfolg die Termin-Caches zur Aktualisierung der Ansicht @StudyPlanIcalMigration2026. 
-Dasselbe Architekturmuster (nativer Picker → Format-Parser → Service → Repository) wurde analog für den CSV-Notenimport (importGradesCsv) adaptiert.
-Anstelle einer externen Bibliothek kommt dort ein maßgeschneiderter Parser (grades-csv.parser.ts) zum Einsatz @StudyPlanCsvMigration2026.
+Das neue Ergebnisschema `EventIcalImportResult` unterscheidet den Abbruch (`status: cancelled`, beide Zählwerte 0) vom erfolgreichen Import (`status: imported` mit `importedCount` und `skippedCount`).
+Ein Abbruch verändert den Datenbestand nicht; fehlerhafte Kalenderstrukturen werden als `VALIDATION_ERROR` gemeldet.
+Während der Verarbeitung sind die Importbedienelemente deaktiviert @StudyPlanIcalMigration2026.
 
-=== Abschluss der Offline-Kernanwendung und Übergang zu Phase 2
+Der CSV-Notenimport (`importGradesCsv`) verwendet dasselbe Importmuster mit einem eigenen Parser in `grades-csv.parser.ts` @StudyPlanCsvMigration2026.
 
-Am Ende der ersten Phase stehen Authentifizierung, Dashboard, Kalender, Notenverwaltung und Stundenplan mit lokaler Datenhaltung und lokalen Importen zur Verfügung @StudyPlanLocalCore2026.
-Der Kontrollpunkt besteht darin, die Kernabläufe ohne Netzwerk auszuführen und gespeicherte Änderungen nach einem Neustart erneut zu lesen (A1, A5).
-Auf diesem Stand baut die Erweiterung um entfernte Dienste in Phase 2 auf.
+Damit ist die lokale Kernanwendung einschließlich der Dateiimporte umgesetzt @StudyPlanLocalCore2026.
+Als Kontrollpunkt sind die Kernabläufe ohne Netzwerk auszuführen und gespeicherte Änderungen nach einem Neustart erneut zu lesen (A1, A5).
 
 == Phase 2: Netzwerkanbindungen und Local-First-Synchronisierung
 
-Die zweite Phase ergänzt gezielt Funktionen, die eine Verbindung zu entfernten Diensten voraussetzen, während die lokale Offline-Fähigkeit als architektonische Basis erhalten bleibt.
+Die zweite Phase ergänzt die Synchronisierung gemeinsamer Aufgaben im Feature Studiengruppen sowie den Online-Abruf von Studiengangsdaten.
 
 === Auswahlkriterien und betrachtete Synchronisierungslösungen <sec:sync-tool-selection>
 
-Die Auswahl einer Synchronisierungskomponente orientiert sich primär an zwei zentralen Vorgaben:
-Einerseits verlangt Anforderung A3 die Beibehaltung der in Phase 1 etablierten Schichtentrennung auf Basis von TypeScript und dem ORM Drizzle.
-Andererseits fordert Anforderung A6 den automatischen Datenabgleich nach lokaler Verarbeitung.
-Für Warteschlangen und den Umgang mit Verbindungsunterbrechungen sollte eine bestehende Synchronisierungslösung eingesetzt werden.
-
-Als Kernkriterien für die Vorauswahl galten die Ausführbarkeit im Electron-Main-Prozess, eine direkte SQLite- und Drizzle-Kompatibilität sowie die Anbindungsmöglichkeit an externe Datenbank-Backends.
-In die engere Betrachtung kamen zwei grundsätzlich verschiedene Architekturansätze:
-PowerSync als dedizierte Synchronisationsschicht (@PowerSyncNode2026) und Turso als verteilte Datenbankinfrastruktur auf libSQL-Basis (@TursoEmbeddedReplicas2026).
-@tab:sync-tool-options stellt die architektonischen Profile beider Optionen gegenüber.
+Für die Synchronisierung sollte eine bestehende Lösung eingesetzt werden, die Aufgabenänderungen lokal speichert und bei verfügbarer Verbindung abgleicht (A6).
+Um den vorhandenen Datenzugriff möglichst weiterzuverwenden (A3), waren die Ausführbarkeit im Electron-Main-Prozess, die SQLite- und Drizzle-Anbindung sowie die unterstützte entfernte Datenhaltung maßgeblich.
+Betrachtet wurden PowerSync und Turso; @tab:sync-tool-options stellt ihre Integrationsansätze gegenüber.
 
 #figure(
   {
@@ -561,43 +544,42 @@ PowerSync als dedizierte Synchronisationsschicht (@PowerSyncNode2026) und Turso 
 ) <tab:sync-tool-options>
 === Entscheidung für PowerSync und Supabase
 
-Für den Demonstrator wurde eine Architektur mit entferntem Backend gewählt, das den gemeinsamen Datenbestand der Gruppen hält.
+Für den Demonstrator wurde die Kombination aus Supabase und PowerSync gewählt.
+Supabase stellt die PostgreSQL-Datenbank für den gemeinsamen Gruppenbestand sowie die Authentifizierung der beteiligten Benutzer bereit @SupabaseDatabase2026 @SupabaseAuth2026.
+PowerSync übernimmt den Abgleich mit den lokalen SQLite-Datenbanken.
+Ausschlaggebend war die dokumentierte Integration beider Dienste, die Authentifizierung, Backend-Datenhaltung und gezielte Datenverteilung miteinander verbindet @PowerSyncSupabase2026.
 
-Die Wahl fiel auf Supabase, weil es eine PostgreSQL-Datenbank sowie Authentifizierung mit SDKs und API-Endpunkten bereitstellt @SupabaseDatabase2026 @SupabaseAuth2026.
-Ausschlaggebend war seine dokumentierte Integration mit PowerSync für den Abgleich ausgewählter PostgreSQL-Daten mit lokalen SQLite-Datenbanken @PowerSyncSupabase2026.
-
-Diese Kombination passte zum Feature Studiengruppen: Unterschiedliche Benutzer sollen auf gemeinsame Aufgaben zugreifen und Änderungen zunächst lokal ausführen können.
-Die Anwendung musste weiterhin ihre Datenschemata, den Upload-Connector und die fachlichen Zugriffsregeln implementieren.
-Der Einsatz der Dienste begrenzte damit die zusätzlich zu entwickelnde Synchronisierungsinfrastruktur.
-
-Die Entscheidung gegen Turso beruht auf dieser projektbezogenen Passung.
-Auch Turso ermöglicht Synchronisierung und Offline-Schreibzugriffe; die Turso-Sync-Dokumentation beschreibt hierfür lokale Änderungen mit späterem `push()` und den Empfang entfernter Änderungen über `pull()` @TursoSync2026.
-Für den gewählten Supabase-Entwurf bot PowerSync eine unmittelbar dokumentierte Verbindung von Authentifizierung, Backend-Datenbank und gezielter Datenverteilung @PowerSyncSupabase2026.
+Auch Turso unterstützt Synchronisierung und Offline-Schreibzugriffe @TursoSync2026.
+Für die gewählte Kombination sprach die vorhandene Anbindung an Supabase, durch die diese Infrastrukturaufgaben mit bestehenden Diensten umgesetzt werden konnten.
 
 === Vorprüfung der Integration und Drizzle-Anbindung
 
-Die praktische Integrationsfähigkeit von PowerSync wurde im Vorfeld anhand zweier fokussierter Prototypen evaluiert @StudyPlanSyncSpikes2026:
-- *Erster Prototyp:* Prüfung der Ausführung des Node-SDKs innerhalb des Electron-Main-Prozesses, der lokalen Datenpersistenz samt Upload-Warteschlange (_Upload Queue_), der Schemaerweiterung, des geräteübergreifenden Abgleichs sowie der Paketierung.
-- *Zweiter Prototyp:* Ergänzung des Drizzle-Wrappers zur Evaluierung typisierter CRUD-Abfragen und der korrekten Abbildung relationaler Datentypen.
+Vor der Integration in die Anwendung wurde die gewählte Kombination anhand zweier Prototypen erprobt.
+Zunächst wurde das PowerSync-Node-SDK im Electron-Main-Prozess eingebunden.
+Dabei wurden die lokale Speicherung einschließlich ausstehender Uploads, Schemaerweiterungen, der Abgleich zwischen Geräten und die Paketierung geprüft @StudyPlanSyncSpikes2026.
 
-Die Berichte dokumentierten lokale Speicherung und den Abgleich über Supabase und PowerSync.
-Auf dieser Grundlage wurde die Integration zunächst auf einen eigenen Kollaborationsbereich begrenzt @StudyPlanSyncSpikes2026.
+Anschließend wurde die Drizzle-Anbindung ergänzt, um typisierte CRUD-Abfragen und die Abbildung der verwendeten Datentypen zu erproben.
+Dabei ließen sich die vorhandenen Abfragemuster auf den synchronisierten Datenzugriff übertragen.
+Die lokale Speicherung und der geräteübergreifende Abgleich funktionierten auch mit dieser Anbindung @StudyPlanSyncSpikes2026.
 
-Hinsichtlich der Wiederverwendbarkeit bestehender Softwarekomponenten ermöglichte die Anbindung von Drizzle eine weitgehende Übernahme von Typdefinitionen, Abfragelogiken und Repository-Mustern:
-- Über das Konstrukt `DrizzleAppSchema` wird das lokale Schema für PowerSync direkt aus den bestehenden Drizzle-Tabellendefinitionen abgeleitet.
-- Die Hilfsfunktion `wrapPowerSyncWithDrizzle` stellt den gewohnten typisierten Datenzugriff auf den synchronisierten Datenbestand bereit @StudyPlanSyncSpikes2026.
+Die Weiterverwendung von Drizzle erforderte jedoch Anpassungen des Schemas an PowerSync.
+Clientseitig setzt PowerSync eine Primärschlüsselspalte `id` vom Typ Text voraus; für lokal erzeugte Datensätze wurden im Demonstrator UUIDs verwendet @PowerSyncClientId2026 @StudyPlanSyncSpikes2026.
+Damit änderten sich gegenüber den automatisch erzeugten Integer-Kennungen der Kernanwendung auch die zugehörigen Referenzen.
+
+Für die weitere Migration standen deshalb zwei Vorgehensweisen zur Auswahl: die vollständige Umstellung der bestehenden Schemata und Datenzugriffe auf den PowerSync-Bestand oder die schrittweise Überführung einzelner Funktionsbereiche.
+Gewählt wurde die zweite Variante, um die Offline-Kernanwendung weiterzuverwenden und zunächst nur den Kollaborationsbereich anzupassen.
+Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns: Bestehende Funktionen bleiben nutzbar, während ihre neuen Implementierungen schrittweise hinzukommen @FowlerStranglerFig2024.
 
 === Architektur mit zwei lokalen Datenhaltungsbereichen <sec:sync-architecture>
 
-Der Main-Prozess koordiniert neben dem lokalen Datenzugriff nun auch die Verbindungen zu PowerSync und Supabase.
-
-Auf Persistenzebene führt diese Erweiterung zu einem *Dual-Database-Ansatz* auf dem Client @StudyPlanSyncArchitecture2026:
+Aus der schrittweisen Überführung ergeben sich zwei parallel genutzte lokale Datenhaltungsbereiche @StudyPlanSyncArchitecture2026:
 1. *Persönlicher Bereich:* Die SQLite-Datenbank aus Phase 1 verwaltet weiterhin persönliche Daten sowie lokale, nicht synchronisierte Gruppen.
 2. *Kollaborationsbereich:* Für das synchronisierte Feature Studiengruppen wird eine separate SQLite-Datenbank instanziiert.
 PowerSync übernimmt hierbei sowohl die Strukturverwaltung als auch den Datentransport. 
 Zur strikten Datentrennung wird pro entfernter Benutzeridentität eine eigenständige Datenbankdatei angelegt.
 
 Serverseitig fungiert eine PostgreSQL-Instanz bei Supabase als gemeinsame Datengrundlage.
+Der Main-Prozess koordiniert die Zugriffe auf beide lokalen Datenbanken sowie die Verbindungen zu PowerSync und Supabase.
 
 #figure(
   image("../figures/local-first-architecture.svg", width: 100%),
@@ -761,8 +743,6 @@ Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung für entfernte Kon
 
 === Schrittweise Überführung weiterer Funktionen
 
-Die parallele Datenhaltung ermöglicht eine Migration nach Funktionsbereichen: Ein vorhandener Bereich bleibt zunächst bestehen, während ein ausgewählter Bereich mit dem neuen Datenzugriff umgesetzt wird.
-Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns, bestehende Funktionen schrittweise durch neue Implementierungen abzulösen @FowlerStranglerFig2024.
 Im Demonstrator bleibt das in Phase 1 lokal übernommene Feature Studiengruppen unter `/gruppen` bestehen.
 Der in Phase 2 ergänzte Bereich unter `/gruppen-sync` verwendet die neue Kollaborationsdatenbank.
 Die Oberfläche unterscheidet beide als „Gruppen“ und „Gruppen (Sync)“.
