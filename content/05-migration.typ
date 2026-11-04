@@ -572,14 +572,13 @@ Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns: Bestehende F
 
 === Architektur mit zwei lokalen Datenhaltungsbereichen <sec:sync-architecture>
 
-Aus der schrittweisen Überführung ergeben sich zwei parallel genutzte lokale Datenhaltungsbereiche @StudyPlanSyncArchitecture2026:
-1. *Persönlicher Bereich:* Die SQLite-Datenbank aus Phase 1 verwaltet weiterhin persönliche Daten sowie lokale, nicht synchronisierte Gruppen.
-2. *Kollaborationsbereich:* Für das synchronisierte Feature Studiengruppen wird eine separate SQLite-Datenbank instanziiert.
-PowerSync übernimmt hierbei sowohl die Strukturverwaltung als auch den Datentransport. 
-Zur strikten Datentrennung wird pro entfernter Benutzeridentität eine eigenständige Datenbankdatei angelegt.
+Während der schrittweisen Migration bleibt die SQLite-Datenbank aus Phase 1 für persönliche Funktionen und bestehende lokale Gruppen erhalten.
+Der synchronisierte Kollaborationsbereich erhält einen eigenen lokalen Datenbestand.
+Beide Bereiche werden vom Main-Prozess angesprochen; die Oberfläche verwendet weiterhin die begrenzten Preload-/IPC-Schnittstellen.
+@fig:local-first-architecture zeigt die Aufteilung und die Anbindung der entfernten Dienste @StudyPlanSyncArchitecture2026.
 
-Serverseitig fungiert eine PostgreSQL-Instanz bei Supabase als gemeinsame Datengrundlage.
-Der Main-Prozess koordiniert die Zugriffe auf beide lokalen Datenbanken sowie die Verbindungen zu PowerSync und Supabase.
+Die Oberfläche führt die bestehenden lokalen Gruppen unter `/gruppen` als „Gruppen“ und den ergänzten Kollaborationsbereich unter `/gruppen-sync` als „Gruppen (Sync)“.
+Beide Implementierungen bestehen während der Überführung nebeneinander; vorhandene lokale Gruppendaten werden nicht automatisch in den synchronisierten Bereich übertragen @StudyPlanGroupTransition2026.
 
 #figure(
   image("../figures/local-first-architecture.svg", width: 100%),
@@ -589,41 +588,45 @@ Der Main-Prozess koordiniert die Zugriffe auf beide lokalen Datenbanken sowie di
     Eigene Darstellung nach @StudyPlanSyncArchitecture2026 und @PowerSyncSupabase2026.],
 ) <fig:local-first-architecture>
 
-Wie in @fig:local-first-architecture dargestellt, erfolgt die Kommunikation über getrennte Pfade:
-- *Upload-Pfad (Schreibzugriffe):* Lokale Änderungen (z. B. an kollaborativen Aufgaben) werden zunächst in der lokalen Kollaborationsdatenbank persistiert und über eine Upload-Warteschlange (_Upload Connector_) an die Supabase-REST-API übertragen.
-- *Download-Pfad (Replikation):* Der PowerSync-Dienst transformiert serverseitige PostgreSQL-Änderungen anhand definierter _Sync Streams_ und repliziert diese automatisch in den lokalen Datenbestand des Clients @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.
+Aufgabenänderungen werden zunächst lokal gespeichert und anschließend an Supabase übermittelt.
+Der Empfang entfernter Änderungen erfolgt über den PowerSync-Dienst.
+Davon getrennt bleiben administrative Gruppenfunktionen, die Supabase unmittelbar aufrufen und deshalb eine Netzwerkverbindung benötigen @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.
 
-Administrative Gruppenfunktionen verwenden einen dritten Pfad: direkte Online-Aufrufe an Supabase.
-Die technische Zuordnung dieser Aufrufe beschreibt @sec:sync-implementation; die Nutzungsvoraussetzungen sind unter den Grenzen der Synchronisierung zusammengefasst.
-=== Verantwortung für Schemaänderungen und Updates <sec:sync-schema-updates>
+=== Konten und Einladungsablauf im Kollaborationsbereich <sec:collaboration-invitations>
 
-Die Einführung der Synchronisierung verändert das Vorgehen bei Schemaänderungen grundlegend: Verwaltete die Desktop-Anwendung in Phase 1 ihre lokale Datenbank noch autonom über mitgelieferte Drizzle-Migrationen, erfordern synchronisierte Funktionen nun eine koordinierte Bereitstellung über drei Entitäten hinweg:
-+ das relationale PostgreSQL-Schema im Supabase-Backend,
-+ die Verteilungs- und Filterregeln im PowerSync-Replikationsdienst sowie
-+ das lokale Anwendungsschema auf dem Client.
+Für den Kollaborationsbereich werden entfernte Benutzerkonten verwendet, die von der lokalen Kontoverwaltung aus Phase 1 getrennt sind.
+Supabase Auth verwaltet diese Konten; anwendungsbezogene Namen und Kennungen liegen in einer zugeordneten `profiles`-Tabelle @SupabaseUserManagement2026.
+Für die Fallstudie wurden die benötigten Testkonten vorab über das Supabase-Dashboard angelegt.
+Die Desktop-Anwendung bietet die Anmeldung mit den vorhandenen E-Mail-Adressen und Passwörtern; Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung sind in ihrer Oberfläche nicht enthalten @StudyPlanSyncArchitecture2026.
 
-Während das Backend über versionierte SQL-Migrationen aktualisiert wird @SupabaseSchemaMigrations2026, erfolgt die Schemaverwaltung auf dem Client deklarativ: Das mittels `DrizzleAppSchema` abgeleitete Schema wird beim Initialisieren an das PowerSync-SDK übergeben @StudyPlanSyncIntegration2026. Das Standardmodell von PowerSync speichert replizierte Datensätze lokal als Rohdaten (JSON) und projiziert diese dynamisch über SQLite-Views in das Zielformat. Schemaanpassungen werden somit beim Start einer neuen Anwendungsversion unmittelbar durch die Neudefinition dieser Views wirksam, ohne dass separate clientseitige Migrationsskripte erforderlich sind @PowerSyncSchemaChanges2026. Die Drizzle-Migrationen verbleiben daher exklusiv bei der lokalen Datenbank der Kernanwendung.
+Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail.
+Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken.
+Die Oberfläche bildete daraus eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.
+Die Seite `/einladung/:token` ermöglichte das Anzeigen und Annehmen der Einladung @StudienplanerInviteReview2026.
 
-Für additive Anpassungen – beispielsweise das Einfügen einer synchronisierten Tabelle – ergibt sich hieraus ein deterministischer Bereitstellungsablauf @PowerSyncSchemaDeployment2026:
+Für den synchronisierten Bereich wurde die Auswahl der einzuladenden Personen in die Anwendung verlagert.
+Zur Vereinfachung der Auswahl können Gruppeneigentümer nach Benutzer- oder Anzeigenamen der als auffindbar markierten Profile suchen.
+Die Suche liefert bis zu 20 Treffer mit Kennung, Benutzername und Anzeigename; die eigene Identität, vorhandene Mitglieder und bereits eingeladene Personen werden ausgeschlossen @StudyPlanSyncArchitecture2026.
 
-+ *Backend-Erweiterung:* Zunächst wird das Schema in Supabase aktualisiert. Dies umfasst Tabellenstrukturen, Zugriffsregeln (Row-Level Security) sowie etwaige Anpassungen backendseitiger RPC-Funktionen.
-+ *Synchronisationskonfiguration:* Die neue Tabelle wird in die PostgreSQL-Publication aufgenommen und in die Dienstkonfiguration von PowerSync (`sync-streams.yaml`) eingebunden. Die Bereitstellung der aktualisierten Konfiguration muss serverseitig abgeschlossen sein, bevor abhängige Client-Funktionen freigegeben werden.
-+ *Client-Rollout:* Abschließend wird die neue Desktop-Version verteilt, die das erweiterte Drizzle-/PowerSync-Schema enthält und die neuen Datenstrukturen konsumiert.
-
-Nicht-additive Änderungen wie Umbenennungen, Typumwandlungen oder das Löschen von Attributen bedürfen zusätzlicher Übergangsphasen @PowerSyncSchemaChanges2026. Da Clients nach längeren Offline-Phasen noch ungesendete Schreiboperationen im alten Format übertragen können oder Anwendungsupdates verzögert installiert werden, müssen Lese- und Schreibformate rückwärtskompatibel gehalten werden (beispielsweise über versionierte Streams oder serverseitige Transformationen).
+Die Auswahl eines Profils erzeugt eine personenbezogene Einladung.
+Die eingeladene Person erhält diese durch PowerSync und kann sie annehmen oder ablehnen.
+Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden @StudyPlanSyncArchitecture2026.
 
 === Technische Integration der Kollaborationsmodule <sec:sync-implementation>
 
 ==== Datenmodell und Typabbildung
 
-Die technische Umsetzung begann mit der Synchronisation des Datenmodells zwischen PostgreSQL und dem lokalen PowerSync-Bestand:
-- *Identifikatoren:* Die fünf Tabellen des Features Studiengruppen wurden in Supabase über versionierte SQL-Migrationen auf Basis von UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab. Neue Datensätze generieren ihre UUIDs bereits vorab auf dem Client, um optimistische lokale Schreibvorgänge zu ermöglichen. Damit weicht das Kollaborationsmodell gezielt von den inkrementellen numerischen Schlüsseln der Kernanwendung ab @StudyPlanSyncIntegration2026.
+Die technische Umsetzung begann mit der Anpassung des Datenmodells für PostgreSQL und den lokalen PowerSync-Bestand:
+- *Identifikatoren:* Die fünf Tabellen des Features Studiengruppen wurden in Supabase über versionierte SQL-Migrationen mit UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab @StudyPlanSyncIntegration2026.
 - *Datentypen:* Datums- und Zeitwerte werden lokal als ISO-8601-Zeichenketten abgebildet; boolesche Attribute werden über den nativen SQLite-Ganzzahltyp (`0` bzw. `1`) repräsentiert.
 - *Schemaableitung:* Die zentrale Datei `schema.ts` definiert diesen lokalen Tabellenbestand und generiert mittels `DrizzleAppSchema` die für das PowerSync-SDK erforderliche Konfigurationsstruktur.
 
-==== Backend-Publikation und Replikationsregeln
+==== Backend-Anbindung und Replikationsregeln
 
-Um Änderungen an verbundene Clients zu verteilen, wurden die Tabellen der PostgreSQL-Publication `powersync` zugewiesen und für die Replikationsrolle freigegeben. Die Autorisierung des Replikationsdienstes gegenüber Supabase stützt sich auf die Validierung der ausgestellten Anmeldetoken @PowerSyncSupabase2026.
+Für die zuvor beschriebene Benutzerführung wurden die Backend-Funktionen `search_invitable_profiles`, `send_group_invitation` und `respond_group_invitation` angebunden.
+Sie setzen Profilsuche, Einladungsversand und Annahme beziehungsweise Ablehnung um @StudyPlanSyncArchitecture2026.
+
+Für die Replikation aus dem Backend wurden die Tabellen der PostgreSQL-Publication `powersync` zugewiesen und für die Replikationsrolle freigegeben @PowerSyncSupabase2026.
 
 Die deklarative Datenverteilung erfolgt über die Dienstkonfiguration `sync-streams-v4.yaml`. Diese definiert auf Basis von SQL-Abfragen, welche Teilmengen an die jeweiligen Clients repliziert werden. Schreib- und Lesepfade sind hierbei asymmetrisch getrennt: Die Streams regeln ausschließlich den nachgelagerten Download, während Autorisierungsprüfungen für Schreibzugriffe im Backend greifen @StudyPlanSyncIntegration2026.
 
@@ -639,9 +642,46 @@ Die deklarative Datenverteilung erfolgt über die Dienstkonfiguration `sync-stre
   caption: [Auswahl gemeinsamer Aufgaben in `sync-streams-v4.yaml` (Auszug) @StudyPlanSyncIntegration2026.],
 ) <lst:collaboration-stream>
 
-Der PowerSync-Dienst überwacht das PostgreSQL-Write-Ahead-Log (WAL) und repliziert passende Änderungen kontinuierlich. Durch `auto_subscribe: true` wird der Stream beim Verbindungsaufbau automatisch abonniert. Das Client-SDK übernimmt die Datenübertragung und persistiert die Datensätze lokal, wo sie durch Anwendungs-Repositories via Drizzle abgefragt werden @PowerSyncStreams2026. 
+Der PowerSync-Dienst überwacht das PostgreSQL-Write-Ahead-Log (WAL).
+Durch `auto_subscribe: true` wird der Stream beim Verbindungsaufbau automatisch abonniert @PowerSyncStreams2026.
 
-==== Laufzeitabhängigkeiten und native Bindungen
+==== Kollaborationslaufzeit und IPC-Verträge
+
+Die Steuerung des synchronisierten Bereichs übernimmt das Modul `CollaborationRuntime`.
+Es kapselt den Sitzungszustand, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff.
+Für die Anmeldung ruft der Connector im Main-Prozess `signInWithPassword` mit den eingegebenen Zugangsdaten auf und authentifiziert damit die zuvor eingerichteten Konten @StudyPlanSyncArchitecture2026 @SupabasePasswordSignIn2026.
+Nach erfolgreicher Anmeldung öffnet die Laufzeit eine benutzerbezogene SQLite-Datenbank und verbindet sie mit PowerSync (@lst:collaboration-connect).
+
+#figure(
+  ```ts
+  const userId = await connection.connector.getUserId()
+  const directory = join(this.userDataDirectory, 'collaboration')
+  database = await openCollaborationDatabase(
+    directory,
+    `collaboration-${userId}.db`
+  )
+  await database.powerSync.connect(connection.connector)
+  ```,
+  caption: [Initialisierung und Verbindung der benutzerspezifischen Kollaborationsdatenbank; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],
+) <lst:collaboration-connect>
+
+Der Connector stellt über `fetchCredentials` die Anmeldedaten für die PowerSync-Verbindung bereit und übermittelt über `uploadData` die ausstehenden lokalen Änderungen an die Backend-API.
+Das Modul `online-gateway.ts` bündelt dagegen die unmittelbaren Supabase-RPC-Aufrufe für Gruppenerstellung, Profilsuche und Einladungsversand @StudyPlanSyncIntegration2026.
+
+Der Vertrag für die Kollaborationsschnittstelle ist in `src/shared/collaboration/ipc.ts` hinterlegt.
+Er wird manuell typisiert; Zod-Schemata prüfen die Eingaben im Main-Prozess @StudyPlanSyncIntegration2026.
+Der eigene Kollaborationskanal bildet den getrennten Sitzungs- und Verbindungslebenszyklus dieses Bereichs ab.
+
+@fig:collaboration-modules stellt die resultierende Modulverteilung und die jeweiligen Kommunikationspfade zusammenfassend dar.
+
+#figure(
+  image("../figures/collaboration-modules.svg", width: 100%),
+  caption: [Modulaufteilung der Kollaborationsintegration neben der lokalen Kernanwendung.
+    Blaue Pfeile: Lokale Aufrufe und Datenzugriffe; violette Pfeile: Externe Dienstkommunikation; gestrichelter Pfeil: Deklarative Schemaeinbindung.
+    Eigene Darstellung nach @StudyPlanSyncIntegration2026.],
+) <fig:collaboration-modules>
+
+==== Native Abhängigkeiten und Paketierung
 
 Die Integration des Replikationsmoduls erforderte Anpassungen des Node- und Electron-Laufzeitumfelds. @tab:sync-integration-packages fasst die ergänzten Pakete zusammen.
 
@@ -667,93 +707,36 @@ Die Integration des Replikationsmoduls erforderte Anpassungen des Node- und Elec
   caption: [Für den Kollaborationsbereich ergänzte Laufzeitabhängigkeiten @StudyPlanSyncIntegration2026.],
 ) <tab:sync-integration-packages>
 
-Im Gegensatz zur Kernanwendung, die libSQL verwendet, nutzt das PowerSync-Node-SDK den Treiber `better-sqlite3` @PowerSyncNode2026. Zur Vermeidung von Blockaden des Haupt-Threads wird die Datenbankinstanz über einen dedizierten Node-Worker (`powersync.worker?nodeWorker`) ausgeführt @StudyPlanSyncIntegration2026. 
+Im Gegensatz zur Kernanwendung, die libSQL verwendet, nutzt das PowerSync-Node-SDK den Treiber `better-sqlite3` @PowerSyncNode2026. Zur Vermeidung von Blockaden des Haupt-Threads wird die Datenbankinstanz über einen dedizierten Node-Worker (`powersync.worker?nodeWorker`) ausgeführt @StudyPlanSyncIntegration2026.
 
 Da Electron native Binärmodule standardmäßig in einem virtuellen ASAR-Archiv bündelt, native C-Erweiterungen für den Dateizugriff unter Betriebssystemen wie Windows jedoch reale Pfade im Dateisystem voraussetzen, wurde die Paketierungskonfiguration (`electron-builder.yml`) angepasst @ElectronAsar2026:
 - Die Pakete `@powersync/node` und `better-sqlite3` werden über die Direktive `asarUnpack` explizit unkomprimiert im Verzeichnis `app.asar.unpacked` abgelegt.
 - Das Skript `electron-builder install-app-deps` kompiliert die nativen Bindungen im `postinstall`-Schritt gegen die ABI der Ziel-Electron-Version @StudyPlanSyncIntegration2026 @StudyPlanSyncSpikes2026.
 
-==== Anwendungsarchitektur und IPC-Verträge
+=== Schemaänderungen und Erweiterung weiterer Funktionen <sec:sync-schema-updates>
 
-Die Steuerung des synchronisierten Bereichs obliegt dem Modul `CollaborationRuntime`. Es kapselt den Sitzungszustand, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff:
-1. *Verbindungsaufbau:* Nach erfolgreicher Authentifizierung öffnet die Laufzeitumgebung eine benutzerbezogene SQLite-Datenbank (`collaboration-${userId}.db`) und initialisiert den PowerSync-Connector (@lst:collaboration-connect).
-2. *Connector-Aufgaben:* Der Connector delegiert Authentifizierungsanfragen über `fetchCredentials` an Supabase und wickelt über `uploadData` das Leeren der lokalen Upload-Warteschlange via API ab.
-3. *Netzwerkgateway:* Funktionen, die eine zwingende Online-Verbindung voraussetzen (Gruppenerstellung, Nutzersuche, Einladungsversand), werden außerhalb des asynchronen Replikationspfads direkt über `online-gateway.ts` via Supabase-RPC abgewickelt @StudyPlanSyncIntegration2026.
+Auf die Integration eines Funktionsbereichs folgen zwei Aufgaben für die Weiterentwicklung: Änderungen seines Schemas müssen mit Backend und Datenverteilung abgestimmt werden; weitere Bereiche benötigen eine Überführung ihrer Datenmodelle und Zugriffe.
 
-#figure(
-  ```ts
-  const userId = await connection.connector.getUserId()
-  const directory = join(this.userDataDirectory, 'collaboration')
-  database = await openCollaborationDatabase(
-    directory,
-    `collaboration-${userId}.db`
-  )
-  await database.powerSync.connect(connection.connector)
-  ```,
-  caption: [Initialisierung und Verbindung der benutzerspezifischen Kollaborationsdatenbank; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],
-) <lst:collaboration-connect>
+==== Verantwortung für Schemaänderungen und Updates
 
-Die IPC-Schicht zwischen Renderer- und Main-Prozess spiegelt diese Trennung wider:
-- *Kernanwendung:* Verwendet weiterhin den etablierten Kanal `api:invoke` über `window.apiTransport`.
-- *Kollaboration:* Verwendet den dedizierten Kanal `collaboration:invoke` über `window.collaborationTransport`.
-
-Der Vertrag für die Kollaborationsschnittstelle ist in `src/shared/collaboration/ipc.ts` hinterlegt.
-Er wird manuell typisiert; Zod-Schemata prüfen die Eingaben im Main-Prozess @StudyPlanSyncIntegration2026.
-Der eigene Kanal bildet den getrennten Sitzungs- und Verbindungslebenszyklus des Kollaborationsbereichs ab.
-
-@fig:collaboration-modules stellt die resultierende Modulverteilung und die jeweiligen Kommunikationspfade zusammenfassend dar.
+Mit dem synchronisierten Datenbestand verteilt sich die Schemaverwaltung auf Backend, PowerSync-Dienst und Desktop-Anwendung.
+Die persönliche Datenbank wird weiterhin über die mitgelieferten Drizzle-Migrationen aktualisiert.
+Für den synchronisierten Bereich werden dagegen das PostgreSQL-Schema und die Datenverteilung serverseitig gepflegt; das lokale Schema wird dem PowerSync-SDK deklarativ vorgegeben @SupabaseSchemaMigrations2026 @PowerSyncSchemaChanges2026.
+@fig:sync-schema-deployment zeigt die Bereitstellungsreihenfolge für eine kompatible, additive Schemaerweiterung.
 
 #figure(
-  image("../figures/collaboration-modules.svg", width: 100%),
-  caption: [Modulaufteilung der Kollaborationsintegration neben der lokalen Kernanwendung.
-    Blaue Pfeile: Lokale Aufrufe und Datenzugriffe; violette Pfeile: Externe Dienstkommunikation; gestrichelter Pfeil: Deklarative Schemaeinbindung.
-    Eigene Darstellung nach @StudyPlanSyncIntegration2026.],
-) <fig:collaboration-modules>
+  image("../figures/sync-schema-deployment.svg", width: 100%),
+  caption: [Bereitstellung einer kompatiblen, additiven Schemaerweiterung über Backend, Synchronisierungsdienst und Client. Eigene Darstellung nach @PowerSyncSchemaDeployment2026.],
+) <fig:sync-schema-deployment>
 
-=== Anpassung des Einladungsablaufs und vorausgesetzte Konten <sec:collaboration-invitations>
+Bei Umbenennungen, Typänderungen oder dem Entfernen von Feldern sind zusätzliche Übergangsschritte erforderlich: Ältere Clients können weiterhin aktiv sein oder nach einer Offline-Phase ausstehende Änderungen im bisherigen Format übertragen @PowerSyncSchemaChanges2026.
 
-Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail.
-Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken.
-Die Oberfläche bildete daraus eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.
-Bereits vorhanden waren außerdem die Seite `/einladung/:token` zum Anzeigen und Annehmen der Einladung sowie Backend-Routen zum Lesen des Tokens und zum Gruppenbeitritt @StudienplanerInviteReview2026.
+==== Schemaübertragung am Terminbeispiel
 
-Für das synchronisierte Feature Studiengruppen wurde ein anderer Einladungsablauf implementiert.
-Supabase Auth verwaltet die entfernten Benutzerkonten; die anwendungsbezogenen Namen und Kennungen liegen in einer zugeordneten `profiles`-Tabelle.
-Die Trennung zwischen Auth-Daten und über die Anwendungs-API zugänglichen Profilen entspricht dem von Supabase dokumentierten Ansatz @SupabaseUserManagement2026.
-Neu entwickelt wurde eine Suche nach Benutzer- oder Anzeigenamen.
-Die Funktion `search_invitable_profiles` steht dem angemeldeten Gruppeneigentümer zur Verfügung und liefert bis zu 20 passende, als auffindbar markierte Profile.
-Eigene Identität, vorhandene Mitglieder und Personen mit bereits ausstehender Einladung werden ausgeschlossen.
-Als Ergebnis werden Kennung, Benutzername und Anzeigename übermittelt @StudyPlanSyncArchitecture2026.
-
-Die Auffindbarkeit gibt Gruppeneigentümern die Suche nach den angegebenen Profilnamen frei. [Zur vereinfachung]
-
-Die Auswahl eines Profils führt zu einer personenbezogenen Einladung über `send_group_invitation`.
-Die eingeladene Person erhält den Eintrag durch PowerSync und kann ihn mit `respond_group_invitation` annehmen oder ablehnen.
-Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden @StudyPlanSyncArchitecture2026.
-Die profilbezogene Auswahl ersetzt damit die externe Linkweitergabe und den Wiedereinstieg über eine Einladungs-URL.
-Diese Änderung der Benutzerführung wurde für den Demonstrator gewählt.
-
-Für die Fallstudie wurden die benötigten entfernten Testkonten vorab über das Supabase-Dashboard angelegt.
-Ihre E-Mail-Adressen und Passwörter mussten somit bereits vorliegen.
-Die Desktop-Anwendung enthält eine Anmeldung für diese Konten: Im Main-Prozess ruft der Connector `signInWithPassword` mit den eingegebenen Zugangsdaten auf @StudyPlanSyncArchitecture2026.
-Die Methode authentifiziert bestehende Konten und übernimmt keine Registrierung @SupabasePasswordSignIn2026.
-Die lokale Kontoverwaltung aus Phase 1 bleibt davon getrennt.
-
-Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung für entfernte Konten sind in der Desktop-Oberfläche nicht enthalten.
-
-=== Schrittweise Überführung weiterer Funktionen
-
-Im Demonstrator bleibt das in Phase 1 lokal übernommene Feature Studiengruppen unter `/gruppen` bestehen.
-Der in Phase 2 ergänzte Bereich unter `/gruppen-sync` verwendet die neue Kollaborationsdatenbank.
-Die Oberfläche unterscheidet beide als „Gruppen“ und „Gruppen (Sync)“.
-Die Koexistenz ist ein Übergangsstand der Umsetzung; bestehende lokale Gruppendaten werden nicht automatisch in den synchronisierten Bereich übertragen @StudyPlanGroupTransition2026.
-
-Das Terminbeispiel aus der Vorprüfung konkretisiert die erforderlichen Anpassungen.
-Geprüft wurden typisierte CRUD-Zugriffe, Persistenz ausstehender Änderungen und der Abgleich zwischen Replikaten.
-Die separate Tabelle `spike_events` wurde dafür mit Testdaten befüllt @StudyPlanSyncSpikes2026.
+Das Terminbeispiel aus der Vorprüfung zeigt die Schemaanpassungen für einen weiteren Datenbereich.
+Als Ausgangspunkt diente das lokale SQLite-Terminschema aus Phase 1; für PowerSync wurde die separate Prototyptabelle `spike_events` mit Testdaten angelegt @StudyPlanSyncSpikes2026.
 
 @lst:events-local-sqlite und @lst:events-powersync zeigen ausgewählte Felder vor und nach dieser Anpassung.
-Der Vergleich beginnt beim bereits auf SQLite übertragenen Schema aus Phase 1.
 Im Prototyp ersetzt eine Textkennung den automatisch erzeugten Integer; `ownerId` verweist auf die entfernte Supabase-Identität.
 Datumswerte werden als Text gespeichert: Das Repository erzeugt beim Schreiben ISO-Strings und wandelt sie beim Lesen wieder in `Date`-Werte um.
 Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet @StudyPlanSchemaReview2026.
@@ -778,27 +761,15 @@ Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet @
   caption: [Entsprechende Felder der separaten PowerSync-Prototyptabelle und Schemaableitung; weitere Felder und Indizes weggelassen.],
 ) <lst:events-powersync>
 
-=== Grenzen der untersuchten Synchronisierung
-
-Gemeinsame Aufgaben lassen sich bei bestehender Kollaborationssitzung lokal bearbeiten und später abgleichen.
-Gruppenerstellung, Profilsuche und Einladungsversand benötigen eine Netzwerkverbindung.
-Da das Authentifizierungs-Token im Arbeitsspeicher gehalten wird, erfordert ein Anwendungsneustart eine erneute entfernte Anmeldung @StudyPlanSyncArchitecture2026.
-
-Für Aufgabenänderungen verwendet PowerSync ein serverautoritatives Modell: Der lokale Schreibabschluss und die Annahme durch das Backend sind getrennte Zustände @PowerSyncWritingChanges2026.
-Der Demonstrator ergänzt keine eigene fachliche Zusammenführung konkurrierender Bearbeitungen oder Löschkonflikte.
-Wiederholungen und abgelehnte Uploads werden in @sec:collaboration-evaluation untersucht.
-
 === Online-Datenabruf im Feature Studiengänge <sec:study-catalog-download>
 
-Das Feature Studiengänge ergänzt die Synchronisierung um einen einfacheren Netzwerkablauf: Fachliche Referenzdaten werden online bereitgestellt, in die lokale Datenbank übernommen und anschließend offline gelesen.
-Damit können Kataloginhalte unabhängig von einer neuen Anwendungsversion aktualisiert werden.
+Das Feature Studiengänge verwendet einen einseitigen Datenabruf: Fachliche Referenzdaten werden online bereitgestellt, in die lokale Datenbank übernommen und anschließend offline gelesen.
 Der Demonstrator ergänzt hierzu den in Phase 1 ausgelieferten Seed-Bestand um online abrufbare Beispieldaten; der vorhandene Grundbestand bleibt erhalten @StudyPlanCatalog2026.
 
 Dafür wurde eine Supabase Edge Function ergänzt, die Studiengänge und zugehörige Lehrveranstaltungen aus einer JSON-Datei über einen öffentlichen HTTP-Endpunkt bereitstellt.
 Dieser Endpunkt benötigt weder ein Benutzerkonto noch einen Zugriff auf die entfernte Datenbank.
 Änderungen am angebotenen Katalog erfordern eine erneute Bereitstellung dieser Datei mit der Funktion, jedoch keine neue Version der Desktop-Anwendung.
-Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Lehrveranstaltungen erweitert.
-Daraus wurden die IPC-Vertragsbestandteile und der React-Query-Hook erneut generiert @StudyPlanCatalog2026.
+Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Lehrveranstaltungen erweitert @StudyPlanCatalog2026.
 
 Beim Öffnen des Features Studiengänge liest die Oberfläche zunächst den lokalen Bestand und löst zusätzlich die Aktualisierung aus.
 Der Main-Prozess lädt die JSON-Daten, validiert sie anhand der vorhandenen Feldschemata und übernimmt beide Datenbereiche gemeinsam in einer Transaktion.
@@ -811,36 +782,38 @@ Die Oberfläche zeigt den Fehler an und bietet einen erneuten Versuch an.
 Bereits übernommene Katalogdaten bleiben auch nach einem Neustart lokal verfügbar.
 Der untersuchte Stand ruft den Katalog bei jedem Seitenaufruf erneut ab; eine Versionsprüfung zur Erkennung neuer Katalogstände wurde nicht implementiert @StudyPlanCatalog2026.
 
-Der Kontrollpunkt dieser Phase betrifft insbesondere A6 und A8.
-Für Aufgaben sind der lokale Abschluss einer Änderung und ihre spätere Übernahme im Kollaborationsablauf getrennt zu beobachten.
-Bei unmittelbar netzwerkabhängigen Operationen sind Fehlermeldung und Verhalten ohne Verbindung auszuweisen.
-Bereits lokal verfügbare Funktionen dürfen durch den Ausfall einer zusätzlichen Online-Anbindung nicht unnötig blockiert werden.
+=== Funktionsumfang, Grenzen und Abschluss der Phase
+
+Die zweite Phase ergänzt die lokale Kernanwendung um synchronisierte Gruppenaufgaben und aktualisierbare Studiengangsdaten.
+Aufgaben können während einer bestehenden Kollaborationssitzung ohne Verbindung bearbeitet werden; nach einem Anwendungsneustart ist jedoch eine erneute entfernte Anmeldung erforderlich @StudyPlanSyncArchitecture2026.
+Eine eigene fachliche Zusammenführung konkurrierender Bearbeitungen oder Löschkonflikte wurde nicht ergänzt.
+
+Als Kontrollpunkt sind die lokale Speicherung einer Aufgabenänderung, ihre anschließende Übermittlung und die Übernahme entfernter Änderungen getrennt zu prüfen (A6).
+Beim Katalogabruf muss der vorhandene lokale Bestand auch nach einem Verbindungsfehler nutzbar bleiben; unmittelbar netzwerkabhängige Gruppenaktionen müssen den Fehler verständlich anzeigen (A8).
 
 == Phase 3: Prüfung und Härtung der vervollständigten Anwendung <sec:app-hardening>
 
 === Prüfrahmen und Sicherheitsmatrix
 
-Nach der funktionalen Umsetzung werden die Sicherheitsgrenzen der entstandenen Anwendung zusammenhängend geprüft.
-Aus den Befunden werden Härtungsmaßnahmen abgeleitet, die unnötige Befugnisse einschränken und festgestellte Abweichungen beheben.
+Nach der funktionalen Umsetzung wurden die Sicherheitsgrenzen der Desktop-Anwendung zusammenhängend geprüft und daraus notwendige Nachbesserungen abgeleitet.
+Grundlage war die Electron-Sicherheitscheckliste, deren Empfehlungen gemäß A7 auf die Anwendung zu übertragen sind @ElectronSecurity2026.
+Ergänzend wurden die in @sec:requirements festgelegte Eingabevalidierung, die anwendungsinterne Zugriffskontrolle und die Verarbeitung externer Daten einbezogen.
 
-Den Bezugsrahmen bildet A7: Sämtliche Empfehlungen der Electron-Sicherheitscheckliste sind auf Anwendbarkeit, Umsetzung und Nachweistiefe zu prüfen @ElectronSecurity2026.
-Hinzu kommen die in @sec:requirements und der Abgrenzung festgelegte Eingabevalidierung, anwendungsinterne Zugriffskontrolle und Verarbeitung externer Daten.
-A2 und A4 bestimmen die Verantwortlichkeiten entlang des Aufrufwegs; A5, A6 und A8 legen die betrachteten lokalen Funktionen, Kollaborationsabläufe und Interaktionsformen fest.
-
-Für den Abgleich wurden ein Prüfplan, eine Ergebnismatrix sowie Protokolle der gezielten Prüfungen erstellt.
-Jede Empfehlung erhält eine begründete Anwendbarkeitsentscheidung, einen Verweis auf die betroffenen Dateien, eine Bewertung und die verwendete Nachweisebene.
-*Nicht anwendbar* ist ein Punkt nur, wenn der betreffende Mechanismus im Demonstrator fehlt.
-Eine fehlende Prüfung oder eine noch ausstehende Umsetzung wird gesondert ausgewiesen.
-Die konsolidierte Matrix verbindet die Einzelbewertungen mit den Quellcode-, Test-, Paket- und Laufzeitbelegen @StudyPlanSecurityChecks2026 @StudyPlanSecurity2026.
+Für jede Empfehlung wurde in einer Sicherheitsmatrix festgehalten, ob sie anwendbar ist, welche Anwendungsstellen sie betrifft, wie sie umgesetzt ist und worauf ihre Bewertung beruht.
+Bei nicht genutzten Mechanismen wurde die fehlende Anwendbarkeit begründet; offene Umsetzungen und ausstehende Prüfungen wurden gesondert erfasst.
+Die Matrix wurde während der Prüfung und Nachbesserung fortgeschrieben und mit den zugehörigen Prüfprotokollen verknüpft @StudyPlanSecurityChecks2026 @StudyPlanSecurity2026.
 
 === Zuordnung der Anforderungen zu den Prüforten
 
-Die Prüfung folgt den Grenzen, an denen Daten oder Befugnisse übergeben werden: vom Renderer an den Preload und Main-Prozess, von ausgewählten Dateien an die Parser sowie von entfernten Diensten an die lokale Anwendung.
-Hinzu kommen Fenster- und Sessionkonfiguration sowie Einstellungen, die erst beim Paketieren wirksam werden.
-@tab:hardening-checkpoints ordnet diesen Stellen die konkrete Umsetzung und das jeweilige Prüfverfahren zu.
-Die Nummern beziehen sich auf alle 20 Electron-Empfehlungen; verwandte Punkte sind für die Darstellung zusammengefasst.
-A7 gilt für den gesamten Richtlinienabgleich.
-Die Einzelbewertungen verbleiben in der Projektmatrix @StudyPlanSecurity2026.
+Die Prüforte wurden entlang der Zugriffswege ausgewählt: zwischen Renderer und Main-Prozess, bei der Übernahme von Dateien und Netzwerkdaten sowie beim Laden lokaler Anwendungsressourcen.
+Hinzu kamen Fenster- und Sessioneinstellungen, die Electron-Version und die Konfiguration des ausgelieferten Pakets.
+
+Bei IPC wurden drei Fragen unterschieden: Darf das aufrufende Fenster die Schnittstelle verwenden, entspricht die Anfrage dem Vertrag und ist die angemeldete Person zum Datenzugriff berechtigt?
+Damit werden Senderprüfung, Eingabevalidierung und fachliche Zugriffskontrolle jeweils einer eigenen Verantwortung zugeordnet @StudyPlanHardeningImplementation2026.
+
+@tab:hardening-checkpoints fasst die Prüforte und Leitfragen zusammen.
+Die Nummern ordnen alle 20 Electron-Empfehlungen zu; verwandte Punkte sind gebündelt.
+A7 gilt für die gesamte Checkliste, weitere Anforderungsbezüge sind ergänzend angegeben @StudyPlanSecurity2026.
 
 #pagebreak(weak: true)
 
@@ -851,61 +824,53 @@ Die Einzelbewertungen verbleiben in der Projektmatrix @StudyPlanSecurity2026.
       set par(justify: false)
       set text(size: 9pt)
       table(
-        columns: (0.8fr, 2.4fr, 2.5fr),
+        columns: (0.8fr, 1.4fr, 3.5fr),
         inset: 5pt,
         align: left,
         table.header([*Bezug*],
-        [*Prüfstelle und Umsetzung*],
-        [*Prüfverfahren*]),
+        [*Prüfort*],
+        [*Leitfrage*]),
         [Nr. 1; A6, A8],
-        [*Netzwerkanbindung im Main:* HTTPS-Adressen ohne eingebettete Zugangsdaten für das Feature Studiengänge, Supabase und PowerSync prüfen.
-          Abrufe im Feature Studiengänge und Supabase-Abrufe lehnen Weiterleitungen ab.],
-        [Code- und Konfigurationstests; Redirectversuch mit tatsächlichem Node-Fetch.],
+        [Netzwerkanbindung im Main],
+        [Sind die Verbindungen für Studiengangsdaten, Supabase und PowerSync auf sichere Protokolle begrenzt, und wie werden Zugangsdaten in Adressen sowie Weiterleitungen behandelt?],
         [Nr. 2–4],
-        [*Fenster und Preload:* `nodeIntegration: false`, `contextIsolation: true`, `sandbox: true`; privilegierte Zugriffe bleiben im Main.],
-        [Codeinspektion von Fensterkonfiguration und Startpfaden.],
+        [Fenster und Preload],
+        [Sind Renderer und privilegierte Laufzeit durch die Einstellungen für Node-Integration, Kontextisolation und Sandbox getrennt?],
         [Nr. 5],
-        [*Session-Berechtigungen:* Check- und Request-Handler erlauben ausschließlich `clipboard-sanitized-write` für das zugelassene Fenster und Dokument.],
-        [Codeinspektion der gemeinsamen Fenster- und Dokumentprüfung.],
+        [Session-Berechtigungen],
+        [Werden nur benötigte Berechtigungen und nur für das vorgesehene Fenster und Dokument freigegeben?],
         [Nr. 6, 8–10],
-        [*Fenster- und Startoptionen:* Web-Sicherheit bleibt aktiv; unsichere Inhalte, experimentelle Funktionen und zusätzliche Blink-Funktionen werden nicht freigegeben.],
-        [Code- und Startpfadprüfung mit den Standardwerten der dokumentierten Electron-Version.
-          Die Abwesenheit eines Overrides wird von einer expliziten Einstellung unterschieden.],
+        [Fenster- und Startoptionen],
+        [Bleibt die Web-Sicherheit aktiv, und werden unsichere Inhalte oder unbenötigte experimentelle Funktionen durch Einstellungen oder Startoptionen freigegeben?],
         [Nr. 7],
-        [*Renderer-HTML:* CSP mit `default-src 'none'`, `script-src 'self'`, gesperrten Objekten und Frames.],
-        [Codeabgleich und P3: Blockierung einer fremden Skriptquelle.],
+        [Renderer-HTML],
+        [Begrenzt die Content Security Policy (CSP), aus welchen Quellen Skripte und weitere Inhalte geladen werden dürfen?],
         [Nr. 11–12],
-        [*Webviews:* Keine Nutzung und keine Aktivierung von `webviewTag`.],
-        [Quellcodesuche und versionsbezogener Standardwert.
-          Beide Empfehlungen sind wegen des fehlenden Mechanismus begründet nicht anwendbar.],
+        [Webviews],
+        [Wird `webviewTag` verwendet oder aktiviert, und welche Empfehlungen zu dessen Konfiguration sind dadurch anwendbar?],
         [Nr. 13–15],
-        [*Navigation, Fenster und Shell:* Dokumentpolicy begrenzt Navigation; neue Fenster werden abgelehnt; `shell.openExternal` wurde entfernt.],
-        [Codeinspektion, Policy-Tests und Paketversuche mit fremder Navigation und `window.open`.],
+        [Navigation, Fenster und Shell],
+        [Wie werden Navigation und zusätzliche Fenster begrenzt, und welche externen Aufrufe sind über `shell.openExternal` zulässig?],
         [Nr. 17, 20; A2, A4],
-        [*Beide IPC-Eingänge:* Feste Preload-Kanäle ohne Electron-Rohobjekte.
-          Gemeinsame Policy prüft registriertes Fenster, Hauptframe und Dokumentadresse; Operationskennung und Eingabe werden im Main validiert.],
-        [Codeabgleich, sechs Sender-Unit-Tests und P1 an beiden realen Bridges.],
+        [Beide IPC-Eingänge],
+        [Sind die Preload-Schnittstellen begrenzt, und werden Absender, Operationskennung und Eingaben geprüft, bevor die fachliche Verarbeitung beginnt?],
         [Nr. 18],
-        [*Lokale Ressourcen:* `app://bundle/index.html` mit fester Rendererwurzel, GET/HEAD, Pfad- und Realpathprüfung sowie passenden Inhaltstypen; keine CSP-Umgehung.],
-        [Resolver- und Handler-Tests einschließlich eines Junction-Ausbruchs; Assetzugriffe im gebauten Paket.],
+        [Lokale Ressourcen],
+        [Wie werden lokale Inhalte ausgeliefert, und bleibt der Dateizugriff auch bei abweichenden Pfaden oder Verknüpfungen auf die vorgesehene Rendererwurzel begrenzt?],
         [Nr. 16; A1],
-        [*Laufzeitversion:* Electron 44.5.1 exakt in Paketdefinition und Lockfile festgelegt.
-          Native Datenbankmodule müssen weiterhin funktionieren.],
-        [Buildprotokoll, nativer Datenbankcheck und Paket-User-Agent des dokumentierten Prüfstands.],
+        [Electron-Version],
+        [Entspricht die verwendete Version dem Aktualisierungsstand zum Prüfzeitpunkt, und bleiben die nativen Datenbankmodule nach einer Aktualisierung funktionsfähig?],
         [Nr. 19; A1],
-        [*Paketkonfiguration:* Vier unbenötigte Fuse-Optionen deaktiviert; Laden aus ASAR und eingebettete ASAR-Integritätsprüfung aktiviert.],
-        [Fuse-Werte aus der EXE lesen, eingebetteten mit tatsächlichem ASAR-Headerhash vergleichen; Paket-, Datenbank- und Workerfunktion prüfen.],
+        [Ausgeliefertes Paket],
+        [Sind unbenötigte Electron-Startfunktionen über Fuses deaktiviert und die vorgesehenen Schutzmaßnahmen für das ASAR-Anwendungsarchiv im Paket wirksam?],
         [Ergänzend; A5, A8],
-        [*Datei- und Datenübernahme:* CSV-/ICS-Auswahl im Main; Dateityp und Größe begrenzen.
-          Eingaben und externe Katalogdaten vor fachlicher Übernahme validieren; fremde Textinhalte als Text darstellen.],
-        [Codeabgleich der Importpfade aus Phase 1, Validierungs- und Katalogtests sowie P2 am Aufgabentitel.],
+        [Datei- und Datenübernahme],
+        [Sind Dateizugriffe, Typ und Größe begrenzt, werden externe Daten vor der Übernahme validiert und fremde Textinhalte als Text dargestellt?],
       )
     },
-    caption: [Prüforte, Härtungsmaßnahmen und Nachweise im Demonstrator; Zuordnung nach @StudyPlanSecurity2026 und @StudyPlanSecurityRemediation2026, ergänzt um die lokalen Importpfade nach @StudyPlanHardeningImplementation2026.],
+    caption: [Prüforte und Leitfragen des Sicherheitsabgleichs; Zuordnung nach @StudyPlanSecurity2026, ergänzt um die lokalen Importpfade nach @StudyPlanHardeningImplementation2026.],
   ) <tab:hardening-checkpoints>
 ]
-
-Bei IPC werden drei Kontrollen getrennt geprüft: Die Senderpolicy erlaubt das aufrufende Fenster und Dokument, das Schema prüft die Form der Anfrage und die Fachlogik entscheidet über den Datenzugriff anhand der Sitzung und Berechtigungen @StudyPlanHardeningImplementation2026.
 
 === Umgesetzte Nachbesserungen
 

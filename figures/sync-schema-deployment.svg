@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="260" viewBox="0 0 1200 260" role="img" aria-labelledby="title description">
+  <title id="title">Bereitstellung einer kompatiblen additiven Schemaerweiterung</title>
+  <desc id="description">Zunächst werden Schema und Zugriffsregeln im Backend erweitert. Danach wird die Datenverteilung im PowerSync-Dienst angepasst. Abschließend wird die Desktop-Version mit dem erweiterten lokalen Schema und den zugehörigen Funktionen bereitgestellt. Die Pfeile bezeichnen die Bereitstellungsreihenfolge, keinen Laufzeit-Datenfluss.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
+    <style>
+      text { font-family: Arial, sans-serif; font-size: 25px; fill: #17242c; text-anchor: middle; }
+      .heading { font-size: 28px; font-weight: 700; }
+      .note { font-size: 23px; fill: #475761; }
+      .box { fill: #f3f7fa; stroke: #6d7f8b; stroke-width: 2; }
+      .step { fill: none; stroke: #234d68; stroke-width: 3; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect x="20" y="25" width="340" height="175" rx="8" class="box"/>
+  <text x="190" y="65" class="heading">1. Backend erweitern</text>
+  <text x="190" y="104" class="note">Supabase / PostgreSQL</text>
+  <text x="190" y="145">Schema und</text>
+  <text x="190" y="177">Zugriffsregeln</text>
+  <path d="M360 112 H430" class="step"/>
+
+  <rect x="430" y="25" width="340" height="175" rx="8" class="box"/>
+  <text x="600" y="65" class="heading">2. Verteilung anpassen</text>
+  <text x="600" y="104" class="note">PowerSync-Dienst</text>
+  <text x="600" y="145">Neue Daten zur</text>
+  <text x="600" y="177">Verteilung freigeben</text>
+  <path d="M770 112 H840" class="step"/>
+
+  <rect x="840" y="25" width="340" height="175" rx="8" class="box"/>
+  <text x="1010" y="65" class="heading">3. Client bereitstellen</text>
+  <text x="1010" y="104" class="note">Desktop-Anwendung</text>
+  <text x="1010" y="145">Erweitertes lokales Schema</text>
+  <text x="1010" y="177">und zugehörige Funktionen</text>
+  <text x="600" y="243" class="note">Pfeile: Bereitstellungsreihenfolge bei kompatiblen, additiven Erweiterungen</text>
+</svg>
