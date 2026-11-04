@@ -48,27 +48,48 @@ Um diesen Angriffsvektoren zu begegnen, definieren die _Electron Security Guidel
 Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Erzwingen von _Context Isolation_ und Sandboxing, restriktive Navigations- und Inhaltsrichtlinien (_Content Security Policy_) sowie eine rigorose Validierung sämtlicher IPC-Nachrichten und deren Absender.
 Die Richtlinien heben insbesondere hervor, dass die Exposition nativer Systemfähigkeiten gegenüber potenziell unsicherem Web-Code das kritischste Sicherheitsrisiko der Plattform darstellt.
 
+=== Lokale Ressourcen über eigene Protokolle <sec:theory-electron-protocols>
+
+Eine Electron-Anwendung kann ihre Oberfläche aus lokal ausgelieferten HTML-, JavaScript- und CSS-Dateien laden.
+Neben dem direkten Laden über `file://` unterstützt Electron eigene URL-Schemata, deren Anfragen ein im Main-Prozess registrierter Protokollhandler beantwortet.
+Eine Adresse wie `app://bundle/index.html` kann so auf eine lokale Anwendungsdatei abgebildet werden, ohne einen HTTP-Server zu starten.
+`app` ist dabei ein frei gewählter Schemaname, dessen Verhalten die Anwendung festlegt @ElectronProtocol2026.
+
+Der Handler bildet einen kontrollierbaren Zugang zu den lokalen Ressourcen: Die Anwendung kann festlegen, welche Adressen auf welche Dateien zugreifen dürfen.
+Dazu müssen angeforderte Pfade gegen das vorgesehene Ressourcenverzeichnis geprüft werden.
+Eigenschaften wie die Behandlung als sicheres oder standardkonformes Schema werden bei der Registrierung ausdrücklich konfiguriert; sie ergeben sich nicht aus dem Namen @ElectronProtocol2026.
+
 === Navigation über Hash-Routing <sec:hash-routing>
 
-In modernen Webanwendungen auf Basis von Single-Page-Architekturen (SPA) erfolgt die Navigation primär clientseitig über dedizierte Routing-Bibliotheken (beispielsweise React Router).
-Der Umgang mit Routen unterscheidet sich jedoch grundlegend zwischen klassischen webbasierten Umgebungen und der lokalen Desktop-Laufzeit von Electron.
+Single-Page-Anwendungen bilden unterschiedliche Ansichten über clientseitige Routen ab.
+Im regulären Browserbetrieb kann ein Webserver beim direkten Aufruf oder Neuladen einer solchen Route die zentrale `index.html` ausliefern.
+Eine entsprechende Rewriting-Regel ordnet beispielsweise den Pfad `/settings` dieser Einstiegsdatei zu (_Fallback-Routing_).
+Das clientseitige Skript wertet anschließend den angeforderten Pfad aus und stellt die zugehörige Ansicht im DOM dar.
 
-Im regulären Webbetrieb über das Hypertext Transfer Protocol (HTTP/HTTPS) greifen Webserver oder Content Delivery Networks auf serverseitige Rewriting-Mechanismen zurück: Fordert ein Browser einen virtuellen clientseitigen Pfad wie `/settings` an, wird die Anfrage serverseitig auf die zentrale Einstiegsdatei `index.html` umgeleitet (_Fallback-Routing_).
-Das clientseitige Skript übernimmt anschließend die Auswertung des Pfades und stellt die entsprechende Ansicht im DOM dar.
+In Electron lassen sich die Frontend-Ressourcen dagegen direkt über `file://` von der Festplatte laden, etwa mit `win.loadFile('dist/index.html')`.
+Dabei steht keine serverseitige Fallback-Regel zur Verfügung.
+Eine pfadbasierte Route kann beim Neuladen deshalb auf eine nicht vorhandene lokale Datei verweisen und einen Ladefehler verursachen, obwohl der vorherige Seitenwechsel innerhalb der bereits geladenen Anwendung funktioniert hat.
 
-In einer Desktop-Umgebung unter Electron werden die Frontend-Ressourcen in Standardkonfigurationen hingegen nicht über einen HTTP-Server bereitgestellt, sondern über das Dateisystem-Protokoll (`file://`) direkt von der Festplatte geladen (etwa via `win.loadFile('dist/index.html')`).
-Während eine rein clientseitige Navigation innerhalb der Anwendung problemlos funktioniert, führt ein Neuladen des Fensters (_Reload_) bei pfadbasiertem Routing (_Path-_ bzw. _Browser-Routing_) zu Laufzeitfehlern:
+Hash-Routing hält die Route im Fragment der Adresse, also hinter dem Zeichen `#`, und vermeidet damit eine Änderung des Ressourcenpfads.
+Das Fragment wird vor dem Zugriff auf die adressierte Ressource abgetrennt und anschließend clientseitig ausgewertet @RFC3986.
+So bleibt die geladene Ressource beim Seitenwechsel gleich; der Router bestimmt anhand des Fragments die darzustellende Ansicht @WouterHashRouting2026.
 
-Der zugrunde liegende Chromium-Prozess interpretiert den Pfad `/settings` unter dem `file://`-Schema nicht als virtuellen Zustand, sondern als absolute Dateisystemabfrage.
-Da auf dem Host-System typischerweise keine physische Datei unter dem angeforderten Pfad existiert, schlägt der Ladevorgang fehl (`ERR_FILE_NOT_FOUND`).
+Dieses Verfahren lässt sich sowohl mit `file://` als auch mit einem eigenen Anwendungsschema verwenden.
+Bei `app://bundle/index.html#/settings` liefert der Protokollhandler die `index.html`, während der Router die Ansicht für `#/settings` auswählt.
 
-Um dieses Problem ohne die Latenz und den Overhead eines integrierten lokalen Webservers zu lösen, kommt das sogenannte _Hash-Routing_ zum Einsatz.
-Entsprechend dem Standard für Uniform Resource Identifier (URI) wird der Fragment-Bezeichner (eingeleitet durch ein Raute-Zeichen `#`) auf Protokoll- und Dateisystemebene ignoriert:
+=== Paketierung und Electron Fuses <sec:theory-electron-fuses>
 
-$ "file:///path/to/app/dist/index.html#/settings" $
+Electron-Anwendungen bündeln ihren Programmcode und ihre Ressourcen häufig in einem ASAR-Archiv (`app.asar`).
+Electron behandelt dessen Inhalt für viele Dateizugriffe wie ein virtuelles Verzeichnis.
+Bestimmte native Module benötigen dagegen reale Dateipfade und werden deshalb außerhalb des Archivs mitgeliefert @ElectronAsar2026.
 
-Wird die Anwendung in diesem Zustand neu geladen, fordert Chromium ausschließlich die bis zum Hash spezifizierte Datei `index.html` vom Dateisystem an.
-Nach erfolgreicher Initialisierung liest der clientseitige Hash-Router den verbleibenden Fragment-Bezeichner (`#/settings`) aus dem `window.location`-Objekt aus und rekonstruiert den korrekten Anwendungszustand ohne Verbindungsabbrüche.
+Electron Fuses sind Schalter in der Electron-Binary, mit denen beim Paketieren Funktionen aktiviert oder deaktiviert werden können.
+Dadurch lassen sich unbenötigte Fähigkeiten der ausgelieferten Laufzeit begrenzen.
+Beispielsweise steuert `RunAsNode`, ob die Anwendung über die Umgebungsvariable `ELECTRON_RUN_AS_NODE` als Node.js-Prozess gestartet werden kann @ElectronFuses2026.
+
+Weitere Fuses betreffen das Laden des Anwendungscodes und dessen Integrität.
+`OnlyLoadAppFromAsar` beschränkt die Suche nach dem Anwendungscode auf `app.asar`.
+In Verbindung mit `EnableEmbeddedAsarIntegrityValidation` kann das Archiv beim Laden anhand der im Paket hinterlegten Integritätsinformationen geprüft werden @ElectronFuses2026 @ElectronAsarIntegrity2026.
 
 == Drizzle als persistente Datenzugriffsschicht <sec:theory-persistence>
 

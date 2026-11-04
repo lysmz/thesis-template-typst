@@ -874,13 +874,10 @@ A7 gilt für die gesamte Checkliste, weitere Anforderungsbezüge sind ergänzend
 
 === Umgesetzte Nachbesserungen
 
-Der erste dokumentierte Richtlinienabgleich vom 3. Oktober 2026 identifizierte neben bereits vorhandenen Schutzmaßnahmen konkrete Abweichungen.
-Die Anwendung verwendete noch das `file://`-Protokoll und Electron 39.8.10.
-Das externe Öffnen war lediglich auf HTTPS begrenzt, und mehrere unbenötigte Fuse-Optionen waren in der untersuchten Binary aktiviert.
-Diese Befunde wurden in einen Nachbesserungsplan überführt und am 4. Oktober durch Änderungen sowie eine gezielte Nachprüfung bearbeitet.
-Die Matrix vom 6. Oktober konsolidiert diesen Verlauf @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026 @StudyPlanSecurity2026.
+Bei der Prüfung wurden neben den bereits vorhandenen Schutzmaßnahmen mehrere Stellen mit Nachbesserungsbedarf festgestellt.
+Die folgenden Änderungen betrafen das Laden lokaler Inhalte, die IPC-Senderprüfung, externe Verbindungen und die Konfiguration des Anwendungspakets @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
 
-Für lokale Ressourcen wurde das Protokoll `app:` eingerichtet.
+Die bisherige Auslieferung über `file://` wurde durch das eigene Protokoll `app:` ersetzt, dessen Grundlagen in @sec:theory-electron-protocols erläutert sind.
 Sein Handler liefert ausschließlich Dateien innerhalb der gebauten Rendererwurzel aus.
 Neben der syntaktischen Pfadprüfung wird der tatsächlich aufgelöste Dateipfad geprüft, damit auch Verknüpfungen keinen Zugriff außerhalb dieser Wurzel eröffnen.
 Die Dokumentpolicy erlaubt im Paket ausschließlich das vorgesehene Dokument unter `app://bundle/index.html`; dessen Hash-Routen bleiben nutzbar.
@@ -898,48 +895,68 @@ Der Datenabruf im Feature Studiengänge und die Supabase-Anbindung verwenden zus
 Der Prüfer erhält die Schreibweise einer gültigen Adresse: Eine zwischenzeitliche Normalisierung ergänzte am PowerSync-Endpunkt einen Slash und verhinderte die Verbindung.
 Die Korrektur und ein Regressionstest sichern dieses Detail ab @StudyPlanSecurityRemediation2026.
 
-Electron wurde auf 44.5.1 aktualisiert.
+Electron wurde von 39.8.10 auf 44.5.1 aktualisiert.
 Damit mussten auch die nativen Datenbankabhängigkeiten und ihr Paketbetrieb geprüft werden; die erforderlichen Anpassungen betrafen `better-sqlite3`, das PowerSync-Node-SDK und den nativen Prüfschritt.
 Die Paketauswahl wurde auf gebaute Anwendungsteile und Produktionsabhängigkeiten begrenzt, während Drizzle-Migrationen weiterhin über `extraResources` ausgeliefert werden.
 Prüfdokumente und Umgebungsdateien gehören nicht zum Anwendungspaket @StudyPlanSecurityRemediation2026.
 
+Aufbauend auf den in @sec:theory-electron-fuses beschriebenen Paketmechanismen wurden unbenötigte Laufzeitfunktionen eingeschränkt.
 Die Fuse-Konfiguration deaktiviert `RunAsNode`, die Auswertung von `NODE_OPTIONS`, Node-Inspektionsargumente und zusätzliche Dateiprotokollprivilegien.
-Aktiviert wurden `OnlyLoadAppFromAsar` und `EnableEmbeddedAsarIntegrityValidation`; Cookie- und Snapshot-Fuses blieben nach Bedarfsprüfung unverändert.
-Die Werte wurden am gebauten Windows-Paket ausgelesen und die eingebetteten Integritätsmetadaten mit dem tatsächlichen ASAR-Header verglichen @StudyPlanSecurityRemediation2026.
+Damit entfallen Startmöglichkeiten und Eingriffe in die Laufzeit, die für den vorgesehenen Anwendungsbetrieb nicht benötigt werden.
+Aktiviert wurden `OnlyLoadAppFromAsar` und `EnableEmbeddedAsarIntegrityValidation`, um das Laden auf das Anwendungsarchiv zu beschränken und dessen Integritätsprüfung einzuschalten.
+Cookie- und Snapshot-Fuses blieben nach Bedarfsprüfung unverändert @StudyPlanSecurityRemediation2026.
 
 === Nachweisverfahren
 
 Die Nachweise wurden auf vier Ebenen erhoben.
-*Codeinspektion* ordnet Einstellungen und Kontrollen den tatsächlichen Einstiegspunkten zu.
-*Automatisierte Tests* prüfen ausgewählte Entscheidungen und Fehlerpfade; hierfür wurden vorhandene Dispatcher-, Service-, Upload- und Katalogtests sowie eine kleine Security-Suite verwendet.
-*Paketprüfungen* kontrollieren Buildabhängigkeiten, Fuses und Integritätsmetadaten an der erzeugten Anwendung.
-*Laufzeitbeobachtungen* zeigen die Wirkung ausgewählter Maßnahmen im gestarteten Paket.
-Die Prüfprotokolle halten den jeweiligen Anwendungs- und Paketstand fest @StudyPlanSecurityRemediation2026.
+Die Codeinspektion erfasste Einstellungen und Kontrollen an den jeweiligen Einstiegspunkten; automatisierte Tests prüften Entscheidungen und Fehlerpfade.
+Paketprüfungen untersuchten die erzeugte Anwendung, während Laufzeitversuche ausgewählte Kontrollen im gestarteten Paket auslösten @StudyPlanSecurityRemediation2026.
 
-Die Security-Suite prüft unter anderem sechs Senderfälle: einen erlaubten Hauptframe, ein fremdes Fenster, einen Unterframe, einen fehlenden Frame, eine falsche Dokumentadresse und ein zerstörtes Fenster.
-Hinzu kommen Pfad- und Handlerfälle sowie negative HTTPS-Konfigurationen.
-Die Senderfälle verwenden nachgebildete Electron-Objekte; der Redirecttest verwendet Node-Fetch mit einem lokalen Testserver @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.
+Im Code wurde nachvollzogen, wo Fenster-, Ressourcen- und Netzwerkregeln eingebunden sind und ob die IPC-Schemaprüfung vor der fachlichen Verarbeitung erfolgt.
+Für die automatisierten Prüfungen wurden vorhandene Dispatcher-, Service-, Upload- und Katalogtests sowie eine Security-Suite verwendet @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
 
-Die drei praktischen Fälle P1–P3 wurden am korrigierten Windows-Paket über dessen bestehenden Renderer ausgeführt.
-*P1* übergibt je eine ungültige Eingabe an die API- und Kollaborationsbridge und prüft die Fehlerantworten `VALIDATION_ERROR` beziehungsweise `INVALID`.
-Die Reihenfolge der Schemaprüfung vor der fachlichen Verarbeitung wird ergänzend im Code nachvollzogen @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
+Die Security-Suite umfasste sechs Senderfälle: einen erlaubten Hauptframe, ein fremdes Fenster, einen Unterframe, einen fehlenden Frame, eine falsche Dokumentadresse und ein zerstörtes Fenster.
+Dafür wurden Electron-Objekte nachgebildet.
+Hinzu kamen Prüfungen von Ressourcenpfaden und Protokollhandlern sowie ungültigen HTTPS-Konfigurationen.
+Ein Redirecttest verwendete Node-Fetch mit einem lokalen Testserver @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.
 
-*P2* speichert über die reguläre Aufgabenoberfläche einen synthetischen HTML-artigen Titel mit einem SVG-Element und einem harmlosen Ausführungsmarker.
-Die Darstellung wird unmittelbar und nach erneutem Öffnen der Aufgabenansicht untersucht.
-Erwartet werden ausschließlich Textknoten, kein aus dem Titel erzeugtes SVG-Element und kein gesetzter Marker.
-Das Protokoll ergänzt die DOM-Beobachtung um das Lesen der gespeicherten Aufgabe und den zu diesem Zeitpunkt verbundenen Sync-Zustand ohne ausstehende Uploads @StudyPlanSecurityRemediation2026.
+Am gebauten Windows-Paket wurden die Fuse-Werte ausgelesen und die eingebetteten Integritätsmetadaten mit dem tatsächlichen ASAR-Header verglichen.
+Ergänzend wurde die Funktion der nativen Datenbankmodule und des PowerSync-Workers im Paket geprüft @StudyPlanSecurityRemediation2026.
 
-*P3* versucht, eine von der CSP nicht zugelassene fremde Skriptquelle zu laden.
-Bewertet wird das konkrete `securitypolicyviolation`-Ereignis einschließlich der verletzten Skriptrichtlinie; ein DNS-Fehler allein wäre kein ausreichender Nachweis.
-Ergänzend wurden fremde Navigation und das Öffnen eines zusätzlichen Fensters versucht.
-Die Versuche werden über die DevTools ausgelöst und beobachtet @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
+Die Laufzeitversuche wurden über den bestehenden Renderer des korrigierten Windows-Pakets ausgeführt und mithilfe der DevTools ausgelöst beziehungsweise beobachtet.
+@tab:security-runtime-procedure fasst Durchführung und Prüfkriterien zusammen; die beobachteten Ergebnisse werden in @sec:security-evaluation ausgewertet.
+
+#block[
+  #show figure.where(kind: table): set block(breakable: true)
+  #figure(
+    {
+      set par(justify: false)
+      set text(size: 9pt)
+      table(
+        columns: (1fr, 2.2fr, 2.5fr),
+        inset: 5pt,
+        align: left,
+        table.header([*Fall*], [*Durchführung*], [*Prüfkriterium*]),
+        [P1 – Eingabevalidierung],
+        [Je eine ungültige Eingabe über die API- und Kollaborationsbridge senden.],
+        [Fehlerantworten `VALIDATION_ERROR` beziehungsweise `INVALID`; die vorgelagerte Schemaprüfung wird ergänzend im Code nachvollzogen.],
+        [P2 – Textdarstellung],
+        [Einen HTML-artigen Aufgabentitel mit SVG-Element und harmlosem Ausführungsmarker speichern; die Darstellung unmittelbar und nach erneutem Öffnen untersuchen.],
+        [Der Titel erscheint als Textknoten; aus ihm entsteht kein SVG-Element, und der Ausführungsmarker bleibt ungesetzt.],
+        [P3 – Inhaltsrichtlinie],
+        [Eine von der CSP nicht zugelassene fremde Skriptquelle laden.],
+        [Ein `securitypolicyviolation`-Ereignis weist die verletzte Skriptrichtlinie aus.],
+        [Navigation und Fenster],
+        [Fremde Navigation und das Öffnen eines zusätzlichen Fensters auslösen.],
+        [Die Anwendungsadresse bleibt erhalten; ein zusätzliches Fenster oder externes Browserfenster wird nicht geöffnet.],
+      )
+    },
+    caption: [Durchführung und Prüfkriterien der Laufzeitversuche nach @StudyPlanSecurityChecks2026 und @StudyPlanSecurityRemediation2026.],
+  ) <tab:security-runtime-procedure>
+]
 
 Dateihashes binden die finalen Paket- und Laufzeitprotokolle an dieselbe EXE und dasselbe ASAR-Archiv.
 Die technischen Paket- und Laufzeitbelege stammen vom 4. Oktober 2026 und wurden in der Matrix vom 6. Oktober zusammengeführt @StudyPlanSecurityRemediation2026 @StudyPlanSecurity2026.
-
-Die wesentliche verbleibende Transportgrenze betrifft die SDK-interne Redirectbehandlung von PowerSync.
-Dort wurde die HTTPS-Startkonfiguration geprüft, aber kein praktischer Redirect- oder Downgradeversuch am Sync-Stream durchgeführt.
-Die Ergebnisse der Prüfungen und ihre Bewertung für A7 werden in @ch:experiments ausgewiesen @StudyPlanSecurity2026.
 
 == Handlungsempfehlungen des Migrationsleitfadens <sec:migration-recommendations>
 
