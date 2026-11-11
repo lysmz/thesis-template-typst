@@ -43,12 +43,11 @@ Online-Funktionen können erhalten bleiben und mit lokaler Datenhaltung sowie ei
 
 == Aufbau der Arbeit
 
-Der weitere Aufbau der Arbeit orientiert sich am Prozess des Design Science Research (DSR) und gliedert sich in sieben aufeinander aufbauende Kapitel:
+Der weitere Aufbau der Arbeit orientiert sich am Prozess des Design Science Research (DSR) und gliedert sich in sechs aufeinander aufbauende Kapitel:
 
 - *Kapitel 2* legt das theoretische Fundament der Arbeit: Es führt in KI-gestützte Entwicklungsplattformen sowie API-Verträge ein, analysiert Electron als Web-zu-Desktop-Laufzeitumgebung unter Sicherheitsgesichtspunkten, behandelt Persistenz- und Local-First-Architekturen
 - *Kapitel 3* etabliert den methodischen Rahmen, begründet die Wahl des DSR-Ansatzes und operationalisiert den konkreten Forschungsprozess.
 - *Kapitel 4* widmet sich der Problem- und Kontextanalyse: Es analysiert bestehende cloudbasierte Entwicklungswerkzeuge (u. a. Replit, Lovable) und leitet die Anforderungen an das Artefakt ab.
 - *Kapitel 5* dokumentiert Entwurf und Entwicklung des Artefakts, fokussiert auf die konzeptionelle Architektur und die Umsetzung der Electron-Anwendung.
 - *Kapitel 6* evaluiert und demonstriert den entwickelten Migrationspfad anhand einer empirischen Fallstudie.
-- *Kapitel 7* reflektiert die Ergebnisse, diskutiert methodische Limitationen und ordnet die Lösung in den Stand der Technik ein.
-- *Kapitel 8* schließt die Arbeit mit einer Zusammenfassung der Kernbeiträge und einem Ausblick auf weiterführenden Forschungsbedarf ab.
+- *Kapitel 7* bündelt die zentralen Ergebnisse, diskutiert Entscheidungen, Beitrag und Grenzen des Migrationswegs und schließt mit einem Ausblick auf weiterführende Untersuchungen und die Weiterentwicklung der Anwendung.
