@@ -601,10 +601,17 @@ Die Desktop-Anwendung bietet die Anmeldung mit den vorhandenen E-Mail-Adressen u
 
 Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail.
 Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken.
-Die Oberfläche bildete daraus eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.
-Die Seite `/einladung/:token` ermöglichte das Anzeigen und Annehmen der Einladung @StudienplanerInviteReview2026.
+Die Oberfläche bildete aus der Adresse der Web-Anwendung und dem Token eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.
+Die Seite `/einladung/:token` ermöglichte das Anzeigen und Annehmen der Einladung.
+Das zentrale Backend prüfte den Token anhand der gespeicherten Gruppe und legte nach der Anmeldung die Mitgliedschaft an @StudienplanerInviteReview2026.
 
-Für den synchronisierten Bereich wurde die Auswahl der einzuladenden Personen in die Anwendung verlagert.
+Dieser Ablauf setzt eine für die eingeladenen Personen erreichbare Web-Anwendung mit zugehörigem Backend voraus.
+Nach der Migration wird die Oberfläche lokal auf dem jeweiligen Gerät geladen; ihre lokale Adresse bietet kein gemeinsames Ziel für einen weitergegebenen Einladungslink.
+Für einen weiterhin linkbasierten Ablauf wäre daher eine erreichbare Einladungsseite oder eine Übergabe des Tokens an die installierte App vorzusehen.
+Die gemeinsame Prüfung der Einladung und die Vergabe der Mitgliedschaft müssten weiterhin über das entfernte Backend erfolgen.
+
+Für den synchronisierten Bereich wurde stattdessen die direkte Einladung vorhandener Konten gewählt.
+Damit wird der Ablauf innerhalb der App abgewickelt und benötigt keine zusätzliche öffentlich erreichbare Einladungsseite.
 Zur Vereinfachung der Auswahl können Gruppeneigentümer nach Benutzer- oder Anzeigenamen der als auffindbar markierten Profile suchen.
 Die Suche liefert bis zu 20 Treffer mit Kennung, Benutzername und Anzeigename; die eigene Identität, vorhandene Mitglieder und bereits eingeladene Personen werden ausgeschlossen @StudyPlanSyncArchitecture2026.
 

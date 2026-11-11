@@ -32,7 +32,6 @@
 #include "content/05-migration.typ"
 #include "content/06-evaluation.typ"
 #include "content/07-discussion.typ"
-#include "content/08-summary.typ"
 
 #show: appendix                         // Switch from main content to appendix
 
