@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1510" viewBox="0 0 1400 1510" role="img" aria-labelledby="title description">
   <title id="title">Modulaufteilung der PowerSync- und Supabase-Integration</title>
-  <desc id="description">Zwei fachliche IPC-Pfade führen aus dem Renderer durch begrenzte Preload-Funktionen in den Main-Prozess. Die lokale Kernanwendung nutzt API-Dispatcher, Handler, Services und Repositories mit libSQL. Der Kollaborationspfad nutzt einen eigenen IPC-Handler und CollaborationRuntime. Repositories greifen über database.ts und einen Drizzle-Wrapper auf die PowerSync-Datenbank mit better-sqlite3 zu. schema.ts liefert das Client-Schema. Ein Online-Gateway ruft Supabase-RPCs auf; der Connector liefert JWT-Anmeldetoken und lädt Aufgabenänderungen hoch. PowerSync verteilt Backend-Änderungen anhand der Sync Streams. Die Paketierung bindet einen eigenen Worker ein und entpackt native Pakete aus ASAR.</desc>
+  <desc id="description">Zwei fachliche IPC-Pfade führen aus dem Renderer durch begrenzte Preload-Funktionen in den Main-Prozess. Die Offline-Kernanwendung nutzt API-Dispatcher, Handler, Services und Repositories mit libSQL. Der Kollaborationspfad nutzt einen eigenen IPC-Handler und CollaborationRuntime. Repositories greifen über database.ts und einen Drizzle-Wrapper auf die PowerSync-Datenbank mit better-sqlite3 zu. schema.ts liefert das Client-Schema. Ein Online-Gateway ruft Supabase-RPCs auf; der Connector liefert JWT-Anmeldetoken und lädt Aufgabenänderungen hoch. PowerSync verteilt Backend-Änderungen anhand der Sync Streams. Die Paketierung bindet einen eigenen Worker ein und entpackt native Pakete aus ASAR.</desc>
   <defs>
     <marker id="local-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#234d68"/></marker>
     <marker id="remote-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#68507e"/></marker>
@@ -39,28 +39,28 @@
   <path class="local" d="M 880 280 V 420"/>
   <rect class="local-box" x="70" y="420" width="340" height="90" rx="8"/>
   <text x="240" y="455" class="code">api-dispatcher.ts</text>
-  <text x="240" y="490" class="note">Generierter API-Vertrag</text>
+  <text x="240" y="490" class="note">Generierter OpenAPI-Vertrag</text>
   <path class="local" d="M 240 510 V 600"/>
   <rect class="box" x="70" y="600" width="340" height="95" rx="8"/>
   <text x="240" y="639">Handler und Services</text>
   <text x="240" y="674" class="note">Lokale Kernfunktionen</text>
   <path class="local" d="M 240 695 V 775"/>
   <rect class="box" x="70" y="775" width="340" height="85" rx="8"/>
-  <text x="240" y="811">Repositories / Drizzle</text>
+  <text x="240" y="811" style="font-size: 25px">Repositories / Drizzle ORM</text>
   <text x="240" y="844" class="note">Datenzugriff aus Phase 1</text>
   <path class="local both" d="M 240 860 V 940"/>
   <rect class="local-box" x="70" y="940" width="340" height="105" rx="8"/>
-  <text x="240" y="981" class="heading">Persönliches SQLite</text>
+  <text x="240" y="981" class="heading">Lokale Kerndatenbank</text>
   <text x="240" y="1018" class="code">@libsql/client</text>
-  <text x="240" y="1142" class="note">Drizzle-Kit-Migrationen</text>
+  <text x="240" y="1142" class="note">SQL-Migrationsdateien</text>
 
   <rect class="local-box" x="500" y="420" width="760" height="90" rx="8"/>
   <text x="880" y="455" class="code">collaboration/ipc.ts</text>
-  <text x="880" y="490" class="note">Eigener Modulvertrag, Zod-Prüfung und lokale Sitzung</text>
+  <text x="880" y="490" class="note">Kollaborationsvertrag und Supabase-Kollaborationssitzung</text>
   <path class="local" d="M 880 510 V 560"/>
   <rect class="local-box" x="500" y="560" width="760" height="95" rx="8"/>
   <text x="880" y="599" class="code">CollaborationRuntime</text>
-  <text x="880" y="635" class="note">Sitzung, Lebenszyklus und Fachlogik</text>
+  <text x="880" y="635" class="note">Sitzung, Lebenszyklus und Geschäftslogik</text>
   <path class="local" d="M 880 655 V 695 H 675 V 735"/>
   <path class="local" d="M 880 695 H 1095 V 735"/>
   <rect class="box" x="500" y="735" width="350" height="85" rx="8"/>
@@ -74,7 +74,7 @@
   <rect class="local-box" x="500" y="890" width="350" height="155" rx="8"/>
   <text x="675" y="927" class="code">database.ts</text>
   <text x="675" y="963">Drizzle-Wrapper</text>
-  <text x="675" y="997">PowerSync / SQLite</text>
+  <text x="675" y="997" style="font-size: 21px">Lokale Kollaborationsdatenbank</text>
   <text x="675" y="1030" class="note">better-sqlite3 + Worker</text>
   <rect class="box" x="930" y="890" width="330" height="155" rx="8"/>
   <text x="1095" y="927" class="code">connector.ts</text>
@@ -82,7 +82,7 @@
   <text x="1095" y="999" class="code">fetchCredentials</text>
   <text x="1095" y="1031" class="code">uploadData</text>
   <path class="local" d="M 850 990 H 930"/>
-  <text x="890" y="970" class="note">Queue</text>
+  <path d="M 890 1000 V 1055" stroke="#9ba5ac" stroke-width="1.5" stroke-dasharray="4 3"/><text x="890" y="1080" class="note" style="font-size: 23px">Upload-Warteschlange</text>
 
   <rect class="box" x="500" y="1105" width="350" height="75" rx="8"/>
   <text x="675" y="1137" class="code">schema.ts</text>

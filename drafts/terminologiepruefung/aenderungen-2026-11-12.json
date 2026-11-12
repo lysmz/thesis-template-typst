@@ -1,0 +1,2714 @@
+[
+  {
+    "file": "content/01-intro.typ",
+    "line": 16,
+    "before": "Eine Anwendung, die oberflächlich funktioniert, aber unbemerkt unsicher oder architektonisch mangelhaft ist, kann in einer solchen lokalen Laufzeitumgebung Schäden verursachen, die über die Zugriffsmöglichkeiten einer im Browser isolierten Anwendung hinausgehen.",
+    "after": "Eine Anwendung, die oberflächlich funktioniert, aber unbemerkt unsicher oder architektonisch mangelhaft ist, kann in einer solchen Desktop-Zielumgebung Schäden verursachen, die über die Zugriffsmöglichkeiten einer im Browser isolierten Anwendung hinausgehen."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 21,
+    "before": "Besonders kritisch wird diese Diskrepanz, sobald eine solche Webanwendung in eine lokale Desktop-Umgebung migriert werden soll.",
+    "after": "Besonders kritisch wird diese Diskrepanz, sobald eine solche Webanwendung in eine Desktop-Zielumgebung migriert werden soll."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 22,
+    "before": "Die Zielumgebung stellt völlig andere Anforderungen als die isolierte Sandbox der KI-gestützten Entwicklungsplattform, und die von der Plattform getroffenen Architekturentscheidungen lassen sich nicht unverändert übernehmen.",
+    "after": "Die Desktop-Zielumgebung einschließlich Betriebssystem, Dateisystem und Zugriffsrechten stellt andere Anforderungen als die Sandbox der KI-gestützten Entwicklungsplattform; die von der Plattform getroffenen Architekturentscheidungen lassen sich deshalb nicht unverändert übernehmen."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 32,
+    "before": "Validierungsobjekt ist eine konkrete Fallstudie: der Studienplaner, eine deutschsprachige Studienverwaltungsanwendung, die als Replit-Webprototyp vorliegt und in eine Electron-Anwendung migriert wird.",
+    "after": "Die Fallstudie ist der Studienplaner, eine deutschsprachige Studienverwaltungsanwendung. Der Webprototyp des Studienplaners wurde auf Replit erzeugt und wird in eine Electron-Anwendung migriert."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 39,
+    "before": "Damit soll veranschaulicht werden, dass die Migration in eine Desktop-Umgebung nicht auf den Umbau zu einer ausschließlich offline nutzbaren Anwendung beschränkt ist.",
+    "after": "Damit soll veranschaulicht werden, dass die Migration in eine Desktop-Zielumgebung nicht auf den Umbau zu einer ausschließlich offline nutzbaren Anwendung beschränkt ist."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 40,
+    "before": "Local-First bündelt mehrere für die Migration KI-generierter Software zentrale Eigenschaften: Offline-Fähigkeit, Datensouveränität und eine vom Netzwerk entkoppelte, dauerhaft verfügbare Nutzung.",
+    "after": "Local-First bündelt mehrere für die Migration KI-generierter Software zentrale Eigenschaften: autonome Offline-Verfügbarkeit, Datensouveränität und eine vom Netzwerk entkoppelte, dauerhaft verfügbare Nutzung."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 41,
+    "before": "Die Arbeit untersucht jedoch nicht sämtliche Aspekte dieses Paradigmas, sondern setzt einen besonderen Schwerpunkt auf die Synchronisierung lokal gespeicherter Daten.",
+    "after": "Die Arbeit untersucht jedoch nicht sämtliche Aspekte dieses Paradigmas, sondern setzt einen besonderen Schwerpunkt auf die Synchronisation lokal gespeicherter Daten."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 46,
+    "before": "Der weitere Aufbau der Arbeit orientiert sich am Prozess des Design Science Research (DSR) und gliedert sich in sechs aufeinander aufbauende Kapitel:",
+    "after": "Der weitere Aufbau der Arbeit orientiert sich an Design Science Research (DSR) und den Forschungsaktivitäten nach Peffers et al. und gliedert sich in sechs aufeinander aufbauende Kapitel:"
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 48,
+    "before": "- *Kapitel 2* legt das theoretische Fundament der Arbeit: Es führt in KI-gestützte Entwicklungsplattformen sowie API-Verträge ein, analysiert Electron als Web-zu-Desktop-Laufzeitumgebung unter Sicherheitsgesichtspunkten, behandelt Persistenz- und Local-First-Architekturen",
+    "after": "- *Kapitel 2* legt das theoretische Fundament der Arbeit: Es führt in KI-gestützte Entwicklungsplattformen sowie API-Verträge ein, analysiert die Electron-Laufzeit unter Sicherheitsgesichtspunkten und behandelt lokale Datenhaltung sowie Local-First-Architekturen."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 49,
+    "before": "- *Kapitel 3* etabliert den methodischen Rahmen, begründet die Wahl des DSR-Ansatzes und operationalisiert den konkreten Forschungsprozess.",
+    "after": "- *Kapitel 3* erläutert die Orientierung an DSR und den Forschungsaktivitäten nach Peffers et al. sowie das konkrete Vorgehen der Untersuchung."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 50,
+    "before": "- *Kapitel 4* widmet sich der Problem- und Kontextanalyse: Es analysiert bestehende KI-gestützte Entwicklungsplattformen (u. a. Replit, Lovable) und leitet die Anforderungen an das Artefakt ab.",
+    "after": "- *Kapitel 4* widmet sich der Problem- und Kontextanalyse: Es analysiert bestehende KI-gestützte Entwicklungsplattformen (u. a. Replit, Lovable) und leitet die Anforderungen an die Electron-Anwendung und den Migrationspfad ab."
+  },
+  {
+    "file": "content/01-intro.typ",
+    "line": 51,
+    "before": "- *Kapitel 5* dokumentiert Entwurf und Entwicklung des Artefakts, fokussiert auf die konzeptionelle Architektur und die Umsetzung der Electron-Anwendung.",
+    "after": "- *Kapitel 5* dokumentiert die Migration des Webprototyps zur Electron-Anwendung und leitet daraus die Empfehlungen des Migrationspfads ab."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 7,
+    "before": "Unter KI-gestützten Entwicklungsplattformen (beispielsweise Replit oder Lovable) wird im Kontext dieser Arbeit die Generierung und iterative Überarbeitung von Anwendungscode auf Basis natürlicher Sprache verstanden.",
+    "after": "KI-gestützte Entwicklungsplattformen (beispielsweise Replit oder Lovable) ermöglichen im Kontext dieser Arbeit die Generierung und iterative Überarbeitung von Anwendungscode auf Basis natürlicher Sprache."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 15,
+    "before": "Zwar verfügen sie über integrierte Werkzeuge zur automatisierten Fehlerkorrektur und zur grundlegenden Sicherheitsanalyse, diese Validierungen beziehen sich jedoch primär auf die plattforminterne Zielumgebung.",
+    "after": "Zwar verfügen sie über integrierte Werkzeuge zur automatisierten Fehlerkorrektur und zur grundlegenden Sicherheitsanalyse, diese Validierungen beziehen sich jedoch primär auf die Laufzeitumgebung der jeweiligen Plattform."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 31,
+    "before": "== Electron als Desktop-Laufzeit <sec:theory-electron>",
+    "after": "== Electron-Laufzeit <sec:theory-electron>"
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 34,
+    "before": "Das Framework erzwingt architektonisch keine strikten Vorgaben bezüglich des Prozessdesigns oder der internen Kommunikationsflüsse, sodass die Verantwortung für eine sichere Konfiguration und Prozessisolierung primär bei den Entwickelnden liegt.",
+    "after": "Das Framework erzwingt architektonisch keine strikten Vorgaben bezüglich des Prozessdesigns oder der internen Kommunikationsflüsse, sodass die Verantwortung für eine sichere Konfiguration von Prozesstrennung, Sandboxing und Kontextisolation primär bei den Entwickelnden liegt."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 36,
+    "before": "Grundsätzlich unterscheidet Electron zwischen dem zentralen Hauptprozess (_Main Process_) mit vollem Zugriff auf Betriebssystemressourcen und einem oder mehreren Darstellungsprozessen (_Renderer Processes_), die typischerweise der Benutzeroberfläche dienen.",
+    "after": "Grundsätzlich unterscheidet Electron zwischen dem zentralen Main-Prozess mit vollem Zugriff auf Betriebssystemressourcen und einem oder mehreren Renderer-Prozessen, die typischerweise der Benutzeroberfläche dienen."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 37,
+    "before": "Konfigurationsabhängig lässt sich diese Trennung jedoch aufweichen: Durch Optionen wie `nodeIntegration: true` können native Node.js-APIs unmittelbar innerhalb des Renderers ausgeführt werden.",
+    "after": "Getrennte Prozesse begrenzen für sich genommen noch nicht die verfügbaren Systemzugriffe: Durch Optionen wie `nodeIntegration: true` können Node.js-APIs unmittelbar innerhalb des Renderers ausgeführt werden."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 45,
+    "before": "Besteht keine strikte Prozesstrennung, entfällt die Schutzwirkung der Chromium-Sandbox: Gelingt es Angreifenden, beispielsweise über Cross-Site Scripting (XSS) oder manipulierte externe Inhalte, Schadcode in den Darstellungsprozess einzuschleusen, kann dies unmittelbar zu _Remote Code Execution_ (RCE) auf Ebene des Host-Betriebssystems führen.",
+    "after": "Ist die Node.js-Integration im Renderer aktiviert, wird dessen Sandboxing deaktiviert. Gelingt es Angreifenden beispielsweise über Cross-Site Scripting (XSS) oder manipulierte externe Inhalte, Schadcode im Renderer auszuführen, können verfügbare Node.js-APIs eine _Remote Code Execution_ (RCE) auf Ebene des Host-Betriebssystems ermöglichen @ElectronSecurity2026."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 47,
+    "before": "Um diesen Angriffsvektoren zu begegnen, definieren die _Electron Security Guidelines_ @ElectronSecurity2026 verbindliche Best Practices für die Laufzeitumgebung.",
+    "after": "Um diesen Angriffsvektoren zu begegnen, beschreiben die _Electron-Sicherheitsrichtlinien (Electron Security Guidelines)_ @ElectronSecurity2026 empfohlene Schutzmaßnahmen für die Electron-Laufzeit."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 48,
+    "before": "Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Erzwingen von _Context Isolation_ und Sandboxing, restriktive Navigations- und Inhaltsrichtlinien (_Content Security Policy_) sowie eine rigorose Validierung sämtlicher IPC-Nachrichten und deren Absender.",
+    "after": "Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Aktivieren von Sandboxing und _Kontextisolation (Context Isolation)_, restriktive Navigationsregeln und eine _Content Security Policy_ (CSP) sowie die Validierung sämtlicher IPC-Nachrichten und die IPC-Absenderprüfung. Sandboxing beschränkt die Systemzugriffe des Renderer-Prozesses; Kontextisolation trennt den JavaScript-Kontext der Webseite vom Kontext des Preload-Skripts."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 53,
+    "before": "Eine Electron-Anwendung kann ihre Oberfläche aus lokal ausgelieferten HTML-, JavaScript- und CSS-Dateien laden.",
+    "after": "Eine Electron-Anwendung kann ihre Benutzeroberfläche aus lokal ausgelieferten HTML-, JavaScript- und CSS-Dateien laden."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 54,
+    "before": "Neben dem direkten Laden über `file://` unterstützt Electron eigene URL-Schemata, deren Anfragen ein im Main-Prozess registrierter Protokollhandler beantwortet.",
+    "after": "Neben dem direkten Laden über `file://` unterstützt Electron anwendungseigene URL-Schemata, deren Anfragen ein im Main-Prozess registrierter Protokollhandler beantwortet."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 59,
+    "before": "Dazu müssen angeforderte Pfade gegen das vorgesehene Ressourcenverzeichnis geprüft werden.",
+    "after": "Dazu müssen angeforderte Pfade gegen das vorgesehene Renderer-Ressourcenverzeichnis geprüft werden."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 73,
+    "before": "Hash-Routing hält die Route im Fragment der Adresse, also hinter dem Zeichen `#`, und vermeidet damit eine Änderung des Ressourcenpfads.",
+    "after": "Hash-Routing hält die Route im Adressfragment, also hinter dem Zeichen `#`, und vermeidet damit eine Änderung des Ressourcenpfads."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 74,
+    "before": "Das Fragment wird vor dem Zugriff auf die adressierte Ressource abgetrennt und anschließend clientseitig ausgewertet @RFC3986.",
+    "after": "Das Adressfragment wird vor dem Zugriff auf die adressierte Ressource abgetrennt und anschließend clientseitig ausgewertet @RFC3986."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 75,
+    "before": "So bleibt die geladene Ressource beim Seitenwechsel gleich; der Router bestimmt anhand des Fragments die darzustellende Ansicht @WouterHashRouting2026.",
+    "after": "So bleibt die geladene Ressource beim Seitenwechsel gleich; der Router bestimmt anhand des Adressfragments die darzustellende Ansicht @WouterHashRouting2026."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 77,
+    "before": "Dieses Verfahren lässt sich sowohl mit `file://` als auch mit einem eigenen Anwendungsschema verwenden.",
+    "after": "Dieses Verfahren lässt sich sowohl mit `file://` als auch mit einem anwendungseigenen URL-Schema verwenden."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 94,
+    "before": "== Drizzle als persistente Datenzugriffsschicht <sec:theory-persistence>",
+    "after": "== Drizzle ORM als Datenzugriffsschicht <sec:theory-persistence>"
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 96,
+    "before": "Drizzle (häufig als _Drizzle ORM_ bezeichnet) ist ein leichtgewichtiges, typsicheres Object-Relational-Mapping-Werkzeug (ORM) für das TypeScript-Ökosystem.",
+    "after": "Drizzle ORM ist ein leichtgewichtiges, typsicheres Object-Relational-Mapping-Werkzeug (ORM) für das TypeScript-Ökosystem."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 97,
+    "before": "Im Gegensatz zu traditionellen, monolithischen ORM-Systemen verzichtet Drizzle auf umfangreiche Laufzeit-Engines oder externe Binärabhängigkeiten und ist als modulare Werkzeugsuite konzipiert.",
+    "after": "Die Drizzle-Werkzeugsuite verzichtet im Gegensatz zu traditionellen, monolithischen ORM-Systemen auf umfangreiche Laufzeit-Engines oder externe Binärabhängigkeiten und ist modular aufgebaut."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 100,
+    "before": "- *Drizzle ORM (Kernbibliothek):* Die Datenbankschemata werden deklarativ in reinem TypeScript definiert und fungieren als zentrale Referenz (_Single Source of Truth_).",
+    "after": "- *Drizzle ORM (Kernbibliothek):* Die Datenbankschemata werden deklarativ in TypeScript beschrieben. Diese zentrale Schemadefinition bildet die Grundlage für den typisierten Datenzugriff."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 106,
+    "before": "Architektonisch fungiert Drizzle nicht als eigenständiger Datenbanktreiber, sondern setzt als Abstraktionsschicht auf bestehenden Treiber-Ökosystemen auf.",
+    "after": "Architektonisch fungiert Drizzle ORM nicht als eigenständiger Datenbanktreiber, sondern setzt als Abstraktionsschicht auf bestehenden Treiber-Ökosystemen auf."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 109,
+    "before": "+ *Dateibasierte und eingebettete Systeme (SQLite):* Über Treiber wie `better-sqlite3` oder libSQL-basierte Lösungen (wie Turso) ermöglicht Drizzle einen performanten, lokalen Datenzugriff innerhalb der Node.js-Laufzeitumgebung des Electron-Hauptprozesses.",
+    "after": "+ *Dateibasierte und eingebettete Systeme (SQLite):* Über Treiber wie `better-sqlite3` oder libSQL-basierte Lösungen (wie Turso) ermöglicht Drizzle ORM einen performanten, lokalen Datenzugriff innerhalb der Node.js-Laufzeitumgebung des Main-Prozesses."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 110,
+    "before": "+ *Client-Server-Datenbanksysteme (PostgreSQL):* Über native Treiber (wie `pg` oder `postgres.js`) bindet Drizzle relationale PostgreSQL-Instanzen an, wobei die identische TypeScript-Schemadefinition beibehalten wird.",
+    "after": "+ *Client-Server-Datenbanksysteme (PostgreSQL):* Über native Treiber (wie `pg` oder `postgres.js`) bindet Drizzle ORM relationale PostgreSQL-Instanzen an, wobei die identische TypeScript-Schemadefinition beibehalten wird."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 112,
+    "before": "Durch diesen modularen Aufbau und den Verzicht auf schwergewichtige Abstraktionen eignet sich Drizzle besonders für hybride Anwendungsszenarien, bei denen datenbanknahe Performanz und statische Typsicherheit bei minimalem Laufzeit-Overhead gefordert sind.",
+    "after": "Durch diesen modularen Aufbau und den Verzicht auf schwergewichtige Abstraktionen eignet sich Drizzle ORM besonders für hybride Anwendungsszenarien, bei denen datenbanknahe Performanz und statische Typsicherheit bei minimalem Laufzeit-Overhead gefordert sind."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 116,
+    "before": "Das Architekturparadigma _Local-First_ definiert ein Modell für datenintensive Anwendungen, bei dem die primäre Datenhoheit (_Single Source of Truth_) nicht auf einem entfernten Server, sondern lokal auf dem Endgerät des Nutzers verortet ist.",
+    "after": "Das Architekturparadigma _Local-First_ beschreibt datenintensive Anwendungen, bei denen ein primärer lokaler Datenbestand auf dem Endgerät des Nutzers die lokale Verarbeitung ermöglicht."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 126,
+    "before": "Im Kontext externer Datenflüsse ist architektonisch zwischen einer unidirektionalen Übernahme und einer vollwertigen Synchronisation zu differenzieren: Bei einer einfachen Datenübernahme werden Referenzdaten einmalig bezogen, validiert und lokal persistiert.",
+    "after": "Bei externen Datenflüssen ist zwischen einer einseitigen Datenübernahme und einer kollaborativen Synchronisation zu unterscheiden: Bei einer einseitigen Datenübernahme werden Referenzdaten bezogen, validiert und lokal gespeichert."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 128,
+    "before": "Lokaler Schreibabschluss (_Local Commit_) und entfernter Konsensabgleich finden dabei zeitlich entkoppelt statt @Kleppmann2019.",
+    "after": "Lokaler Schreibabschluss (_Local Commit_) und die Bestätigung der Übernahme durch das Backend finden dabei zeitlich entkoppelt statt @Kleppmann2019."
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 138,
+    "before": "  caption: [Zusammenspiel von lokaler Persistenz, Backend und PowerSync Service. Eigene Darstellung nach @PowerSyncWritingChanges2026 und @PowerSyncSupabase2026.],",
+    "after": "  caption: [Zusammenspiel von lokaler Datenhaltung, Backend und PowerSync-Dienst. Eigene Darstellung nach @PowerSyncWritingChanges2026 und @PowerSyncSupabase2026.],"
+  },
+  {
+    "file": "content/02-basics.typ",
+    "line": 143,
+    "before": "Als zentrale Datenbasis und Replikationsquelle fungiert Supabase, eine quelloffene _Backend-as-a-Service_-Plattform (BaaS).",
+    "after": "Supabase ist eine quelloffene _Backend-as-a-Service_-Plattform (BaaS). Ihre PostgreSQL-Datenbank dient als zentrale Backend-Datenbank und Replikationsquelle."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 5,
+    "before": "== Forschungsansatz und Erkenntnisziel",
+    "after": "== Design Science Research und Erkenntnisziel"
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 7,
+    "before": "Die Arbeit verfolgt einen gestaltungsorientierten Forschungsansatz.",
+    "after": "Die Arbeit orientiert sich an DSR. Dabei wird eine Lösung für ein praktisches Problem entwickelt und anhand festgelegter Anforderungen bewertet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 9,
+    "before": "Als Forschungsrahmen dient Design Science Research.",
+    "after": "Die Forschungsaktivitäten nach Peffers et al. wurden bereits bei der Gliederung der Arbeit eingeplant."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 12,
+    "before": "Die Zuordnung zu diesem Rahmen strukturiert die wissenschaftliche Darstellung des tatsächlich durchgeführten Vorgehens.",
+    "after": "Diese Forschungsaktivitäten strukturieren die wissenschaftliche Darstellung des durchgeführten Vorgehens."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 13,
+    "before": "Sie bedeutet nicht, dass sämtliche technischen Schritte bereits zu Beginn festgelegt waren.",
+    "after": "Ihre frühzeitige Planung bedeutet nicht, dass sämtliche technischen Schritte bereits zu Beginn festgelegt waren."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 15,
+    "before": "Die nachfolgend beschriebenen Phasen fassen diesen Prozess rückblickend zusammen.",
+    "after": "Die nachfolgend beschriebenen Entwicklungsphasen fassen den tatsächlichen Migrationsprozess zusammen."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 17,
+    "before": "Das Erkenntnisziel besteht darin, die für die Migration notwendigen Veränderungen nachvollziehbar zu beschreiben und daraus einen fallbezogenen Migrationspfad abzuleiten.",
+    "after": "Das zentrale wissenschaftliche Ergebnis ist der Migrationspfad. Er wird aus den für die Migration notwendigen Veränderungen abgeleitet und beschreibt ein fallbezogenes Vorgehen."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 18,
+    "before": "Die Electron-Anwendung dient als technischer Demonstrator.",
+    "after": "Die Electron-Anwendung dient als technischer Demonstrator, an dem die Umsetzung des Migrationspfads gezeigt und geprüft wird."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 26,
+    "before": "Untersucht wurde damit ein KI-generiertes Ausgangsartefakt, dessen Komponenten für eine lokale Desktop-Laufzeit neu eingeordnet werden mussten.",
+    "after": "Untersucht wurde damit ein KI-generierter Webprototyp, dessen Komponenten für die Electron-Laufzeit neu eingeordnet werden mussten."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 29,
+    "before": "Dabei wurden Oberfläche, Schnittstellen, Geschäftslogik, Datenhaltung und externe Abhängigkeiten erfasst.",
+    "after": "Dabei wurden Benutzeroberfläche, Schnittstellen, Geschäftslogik, Datenhaltung und externe Abhängigkeiten erfasst."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 37,
+    "before": "== Vorversuch und Konsequenzen für das Migrationsvorgehen <sec:migration-preliminary>",
+    "after": "== Erster Migrationsversuch und Konsequenzen für das Migrationsvorgehen <sec:migration-preliminary>"
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 41,
+    "before": "Die Migration sollte schrittweise erfolgen, beginnend mit der Datenbank und anschließend den Schnittstellen und der Oberfläche.",
+    "after": "Die Migration sollte schrittweise erfolgen, beginnend mit der Datenbank und anschließend den Schnittstellen und der Benutzeroberfläche."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 43,
+    "before": "Die Schnittstellen wurden zunächst manuell angepasst, ohne den vorhandenen API-Vertrag als gemeinsame Grundlage für die Generierung der Schnittstellenbausteine weiterzuführen.",
+    "after": "Die Schnittstellen wurden zunächst manuell angepasst, ohne den vorhandenen OpenAPI-Vertrag als gemeinsame Grundlage für die Generierung der Schnittstellenbausteine weiterzuführen."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 45,
+    "before": "Bei der weiteren Bearbeitung wurden vorhandene Dateien und ihre Fachlogik durch das LLM gelesen und in der Zielstruktur neu geschrieben.",
+    "after": "Bei der weiteren Bearbeitung wurden vorhandene Dateien und ihre Geschäftslogik durch das LLM gelesen und in der Zielstruktur neu geschrieben."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 48,
+    "before": "Solche Eingriffe erschwerten es, notwendige Anpassungen an die Desktop-Umgebung von unbeabsichtigten Veränderungen des Anwendungsverhaltens zu unterscheiden.",
+    "after": "Solche Eingriffe erschwerten es, notwendige Anpassungen an die Desktop-Zielumgebung von unbeabsichtigten Veränderungen des Anwendungsverhaltens zu unterscheiden."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 50,
+    "before": "Dadurch war weniger übersichtlich, ob der übernommene Funktionsumfang und das Verhalten weiterhin dem Ausgangsartefakt entsprachen.",
+    "after": "Dadurch war weniger übersichtlich, ob der übernommene Funktionsumfang und das Verhalten weiterhin dem Webprototyp entsprachen."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 53,
+    "before": "Vorhandene Oberflächenkomponenten und fachliche Regeln sollten gezielt weiterverwendet und Änderungen auf die Anforderungen der Zielumgebung zurückgeführt werden.",
+    "after": "Vorhandene Oberflächenkomponenten und fachliche Regeln sollten gezielt weiterverwendet und Änderungen auf die Anforderungen der Desktop-Zielumgebung zurückgeführt werden."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 54,
+    "before": "Für die Kernschnittstellen wurde der vorhandene OpenAPI-Vertrag beibehalten; Typen, Aufrufhilfen und Laufzeitschemata wurden daraus mit einer auf IPC angepassten Generierung abgeleitet.",
+    "after": "Für die Kernschnittstellen wurde der vorhandene OpenAPI-Vertrag beibehalten; Typen, React-Query-Hooks und Zod-Laufzeitschemata wurden daraus mit einer auf IPC angepassten Codegenerierung abgeleitet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 56,
+    "before": "Der Vorversuch erklärt damit die Entwicklung dieser Entscheidungen.",
+    "after": "Der erste Migrationsversuch erklärt damit die Entwicklung dieser Entscheidungen."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 62,
+    "before": "Diese sind Arbeitsschritte innerhalb der Entwurfs- und Entwicklungsaktivität des Forschungsrahmens und bilden kein eigenständiges Forschungsmodell.",
+    "after": "Diese sind Arbeitsschritte innerhalb der DSR-Aktivität Entwurf und Entwicklung und bilden kein eigenständiges Forschungsmodell."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 64,
+    "before": "=== Phase 1: Migration zu einer lokal nutzbaren Offline-Anwendung",
+    "after": "=== Phase 1: Migration zur Offline-Kernanwendung"
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 67,
+    "before": "Hierzu wurden die Komponenten auf eine Desktop-Architektur mit getrennten Verantwortlichkeiten für Darstellung, Geschäftslogik und Datenzugriff abgebildet.",
+    "after": "Hierzu wurden die Komponenten auf eine Desktop-Architektur mit getrennten Verantwortlichkeiten für Benutzeroberfläche, Geschäftslogik und Datenzugriff abgebildet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 71,
+    "before": "Ziel dieser Phase war die Entwicklung einer Electron-Anwendung, deren lokale Kernfunktionen ohne Netzwerkverbindung ausführbar [verbindung zu Local-First Paradigma Offline by Default] sind und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet.",
+    "after": "Ziel dieser Phase war eine Electron-Anwendung, deren lokale Kernfunktionen die autonome Offline-Verfügbarkeit des Local-First-Paradigmas unterstützen und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 72,
+    "before": "Die Verantwortlichkeiten und Schnittstellen wurden so gestaltet, dass Synchronisierung und weitere externe Dienste später integriert werden können, ohne die lokale Kernarchitektur erneut grundlegend umzustrukturieren.",
+    "after": "Die Verantwortlichkeiten und Schnittstellen wurden so gestaltet, dass Synchronisation und weitere externe Dienste später integriert werden können, ohne die lokale Kernarchitektur erneut grundlegend umzustrukturieren."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 75,
+    "before": "=== Phase 2: Ergänzung um Synchronisierung und weitere Online-Anbindungen",
+    "after": "=== Phase 2: Ergänzung um Synchronisation und weitere Online-Anbindungen"
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 77,
+    "before": "Aufbauend auf der lokal ausführbaren Kernanwendung wurden in der zweiten Phase die netzwerkabhängigen Funktionen betrachtet.",
+    "after": "Aufbauend auf der Offline-Kernanwendung wurden in der zweiten Phase die netzwerkabhängigen Funktionen betrachtet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 82,
+    "before": "Der Abruf eines Studiengangkatalogs dient als Beispiel für das Herunterladen externer Daten und deren Übernahme in die lokale Anwendung.",
+    "after": "Die einseitige Datenübernahme aus einem Studiengangskatalog dient als Beispiel für das Herunterladen externer Daten und deren Speicherung in der lokalen Anwendung."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 83,
+    "before": "Dieser Vorgang umfasst keine Synchronisierung und veranschaulicht zunächst einen einfachen Netzwerkzugriff.",
+    "after": "Dieser Vorgang umfasst keine Synchronisation und veranschaulicht zunächst einen einfachen Netzwerkzugriff."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 84,
+    "before": "Darauf aufbauend wurde mit der gemeinsamen Aufgabenverwaltung in Studiengruppen ein Kollaborationsfall betrachtet.",
+    "after": "Darauf aufbauend wurde mit der Verwaltung gemeinsamer Gruppenaufgaben ein Beispiel für die Zusammenarbeit in synchronisierten Studiengruppen betrachtet."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 85,
+    "before": "Hier werden lokal verarbeitete Änderungen über eine zusätzliche Synchronisierungsinfrastruktur zwischen den Beteiligten ausgetauscht.",
+    "after": "Hier werden lokal verarbeitete Änderungen über eine zusätzliche Synchronisationsinfrastruktur zwischen den Beteiligten ausgetauscht."
+  },
+  {
+    "file": "content/03-method.typ",
+    "line": 92,
+    "before": "Der Sicherheitsbegriff wird für diese Arbeit über die Umsetzung der anwendbaren Electron Security Guidelines einschließlich Eingabevalidierung und Maßnahmen gegen die Ausführung fremden Codes operationalisiert @ElectronSecurity2026.",
+    "after": "Der Sicherheitsbegriff wird für diese Arbeit über die Umsetzung der anwendbaren Electron-Sicherheitsrichtlinien einschließlich Eingabevalidierung und Maßnahmen gegen die Ausführung fremden Codes operationalisiert @ElectronSecurity2026."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 8,
+    "before": "Für dessen Bearbeitung ist zunächst zu bestimmen, welche Architekturmerkmale des Ausgangsartefakts die Migration beeinflussen.",
+    "after": "Für dessen Bearbeitung ist zunächst zu bestimmen, welche Architekturmerkmale des Webprototyps die Migration beeinflussen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 30,
+    "before": "      [Soweit serverseitige Logik als eigener Quellcode vorliegt, kann ihre Übernahme und Anpassung an die lokale Laufzeit untersucht werden.],",
+    "after": "      [Soweit serverseitige Logik als eigener Quellcode vorliegt, kann ihre Übernahme und Anpassung an die Electron-Laufzeit untersucht werden.],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 38,
+    "before": "Die praktische Untersuchung wird daher auf den Replit-Prototyp Studienplaner begrenzt.",
+    "after": "Die praktische Untersuchung wird daher auf den Webprototyp Studienplaner begrenzt."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 41,
+    "before": "== Funktionen und Architektur des Ausgangsartefakts <sec:starting-artifact>",
+    "after": "== Funktionen und Architektur des Webprototyps <sec:starting-artifact>"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 43,
+    "before": "=== Funktionsumfang des Ausgangsartefakts <sec:functional-scope>",
+    "after": "=== Funktionsumfang des Webprototyps <sec:functional-scope>"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 46,
+    "before": "@tab:feature-scope gibt einen Überblick über die Features des Ausgangsartefakts und ihre Funktionen.",
+    "after": "@tab:feature-scope gibt einen Überblick über die Funktionsbereiche des Webprototyps und ihre Funktionen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 60,
+    "before": "    [Monatsansicht mit Tages-Popover, Termindetails und Löschen, farbliche Kennzeichnung der Terminarten, iCal-/ICS-Import, mehrtägige Termine und nach Priorität filterbare Listenansicht.],",
+    "after": "    [Monatsansicht mit Tages-Popover, Termindetails und Löschen, farbliche Kennzeichnung der Terminarten, iCal-Import (ICS-Dateien), mehrtägige Termine und nach Priorität filterbare Listenansicht.],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 65,
+    "before": "    [Authentifizierung],",
+    "after": "    [Kontoverwaltung],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 70,
+    "before": "    [Anlegen benannter Gruppen und Einladen weiterer Mitglieder; gemeinsame Aufgaben mit Fälligkeit, zuständiger Person und Status „offen“ beziehungsweise „erledigt“. Kommentare, gemeinsame Kalendertermine sowie zusätzliche Gruppeninhalte wie Links und Notizen],",
+    "after": "    [Anlegen benannter Gruppen und Einladen weiterer Mitglieder; gemeinsame Gruppenaufgaben mit Fälligkeit, zuständiger Person und Status „offen“ beziehungsweise „erledigt“. Kommentare, gemeinsame Termine sowie zusätzliche Gruppeninhalte wie Links und Notizen],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 73,
+    "before": "  caption: [Funktionsumfang des Ausgangsartefakts auf Grundlage der ursprünglichen Erstellungs-Prompts.],",
+    "after": "  caption: [Funktionsumfang des Webprototyps auf Grundlage der ursprünglichen Erstellungs-Prompts.],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 76,
+    "before": "Zu den Online-Anbindungen der Webanwendung gehören die Bereitstellung der Studiengänge und zugehörigen Module über das Backend sowie die gemeinsame Nutzung von Aufgaben und weiteren Inhalten im Feature Studiengruppen.",
+    "after": "Zu den Online-Anbindungen der Webanwendung gehören die Bereitstellung der Studiengänge und zugehörigen Module über das Backend sowie die gemeinsame Nutzung von Aufgaben und weiteren Inhalten im Funktionsbereich Studiengruppen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 80,
+    "before": "Eine Übersicht der Verzeichnisse und zentralen Dateien des Ausgangsartefakts zeigt der Dateibaum in @app:web-prototype-filetree.",
+    "after": "Eine Übersicht der Verzeichnisse und zentralen Dateien des Webprototyps zeigt der Dateibaum in @app:web-prototype-filetree."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 86,
+    "before": "  caption: [Ursprüngliche Webarchitektur des Studienplaners mit Laufzeitkommunikation und OpenAPI-basierter Codegenerierung; eigene Darstellung auf Grundlage des Ausgangsartefakts.],",
+    "after": "  caption: [Ursprüngliche Webarchitektur des Studienplaners mit Laufzeitkommunikation und OpenAPI-basierter Codegenerierung; eigene Darstellung auf Grundlage des Webprototyps.],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 104,
+    "before": "  caption: [Exemplarischer Express-Route-Handler für die Abfrage anstehender Termine im Ausgangsartefakt.],",
+    "after": "  caption: [Exemplarischer Express-Route-Handler für die Abfrage anstehender Termine im Webprototyp.],"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 112,
+    "before": "Die Features Noten, Kalender und Stundenplan beruhen im Kern auf dem Anlegen, Lesen, Ändern und Löschen persistenter Anwendungsdaten und werden deshalb als CRUD-Verarbeitung zusammengefasst.",
+    "after": "Die Funktionsbereiche Noten, Kalender und Stundenplan beruhen im Kern auf dem Anlegen, Lesen, Ändern und Löschen persistenter Anwendungsdaten und werden deshalb als lokale CRUD-Verarbeitung zusammengefasst."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 114,
+    "before": "CSV- und iCal-/ICS-Importe bilden eine weitere Gruppe, da sie jeweils das Einlesen, Parsen, Validieren und Speichern externer Dateien erfordern.",
+    "after": "CSV- und iCal-Importe bilden eine weitere Gruppe, da sie jeweils das Einlesen, Parsen, Validieren und Speichern externer Dateien erfordern."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 116,
+    "before": "Bei den Online-Anbindungen werden zwei unterschiedliche Verarbeitungspfade untersucht.",
+    "after": "Bei den Online-Anbindungen werden zwei unterschiedliche Verarbeitungsmuster untersucht."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 117,
+    "before": "Das Feature Studiengänge dient als Beispiel für die einseitige Übernahme externer Referenzdaten in die lokale Datenhaltung.",
+    "after": "Der Funktionsbereich Studiengänge dient als Beispiel für die einseitige Datenübernahme von Katalogdaten in die lokale Datenhaltung."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 118,
+    "before": "Im Feature Studiengruppen wird anhand gemeinsamer Aufgaben die kollaborative Synchronisation betrachtet, bei der lokale Änderungen übertragen und entfernte Änderungen übernommen werden.",
+    "after": "Im Funktionsbereich Studiengruppen wird anhand gemeinsamer Gruppenaufgaben die kollaborative Synchronisation betrachtet, bei der lokale Änderungen übertragen und entfernte Änderungen übernommen werden."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 119,
+    "before": "Gruppenerstellung und Einladungen werden dabei als unmittelbar netzwerkabhängige Verwaltungsoperationen eingeordnet.",
+    "after": "Gruppenerstellung und direkte Kontoeinladungen werden dabei als Operationen der netzwerkabhängigen Gruppenverwaltung eingeordnet."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 121,
+    "before": "Die Migration wird anhand dieser wiederkehrenden Verarbeitungsmuster beschrieben, sodass gleichartige Abläufe nicht für jedes Feature erneut erläutert werden müssen.",
+    "after": "Die Migration wird anhand dieser wiederkehrenden Verarbeitungsmuster beschrieben, sodass gleichartige Abläufe nicht für jeden Funktionsbereich erneut erläutert werden müssen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 127,
+    "before": "Die Zielarchitektur muss deshalb die Vertrauensgrenzen und Zugriffsmöglichkeiten an die lokale Laufzeit anpassen und zugleich einen sinnvoll nutzbaren Kernumfang des Ausgangsartefakts erhalten.",
+    "after": "Die Zielarchitektur muss deshalb die Vertrauensgrenzen und Zugriffsmöglichkeiten an die Electron-Laufzeit anpassen und zugleich einen sinnvoll nutzbaren Kernumfang des Webprototyps erhalten."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 133,
+    "before": "Darstellung, Geschäftslogik und Datenzugriff sollen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe werden entsprechend in Controller, Services und Repositories gegliedert.",
+    "after": "Benutzeroberfläche, Geschäftslogik und Datenzugriff sollen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe werden entsprechend in Handler, Services und Repositories gegliedert. Die Handler übernehmen dabei die Rolle der Controller an der Schnittstelle."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 137,
+    "before": "Die kollaborative Synchronisation im Feature Studiengruppen soll die gleichzeitige Zusammenarbeit unterstützen @Kleppmann2019.",
+    "after": "Die kollaborative Synchronisation im Funktionsbereich Studiengruppen soll die gleichzeitige Zusammenarbeit unterstützen @Kleppmann2019."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 139,
+    "before": "Unter einer gehärteten Electron-Anwendung versteht diese Arbeit die Umsetzung der anwendbaren Electron Security Guidelines im festgelegten Prüfumfang.",
+    "after": "Unter einer gehärteten Electron-Anwendung versteht diese Arbeit die Umsetzung der anwendbaren Electron-Sicherheitsrichtlinien im festgelegten Prüfumfang."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 140,
+    "before": "Dazu zählen insbesondere Renderer-Isolation, begrenzte privilegierte Schnittstellen, die Prüfung von IPC-Absendern und Eingaben sowie Beschränkungen für nachgeladene Inhalte, Navigation und zusätzliche Fenster @ElectronSecurity2026.",
+    "after": "Dazu zählen insbesondere Sandboxing und Kontextisolation des Renderers bei deaktivierter Node.js-Integration, begrenzte privilegierte Schnittstellen, die IPC-Absenderprüfung und Eingabevalidierung sowie Beschränkungen für nachgeladene Inhalte, Navigation und zusätzliche Fenster @ElectronSecurity2026."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 150,
+    "before": "=== A1: Lauffähige Desktop-Anwendung",
+    "after": "=== A1: Lauffähige Electron-Anwendung"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 152,
+    "before": "Das Ausgangsartefakt muss in eine lauffähige Electron-Anwendung migriert werden.",
+    "after": "Der Webprototyp muss in eine lauffähige Electron-Anwendung migriert werden."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 153,
+    "before": "Bewertet werden der Start eines gebauten Pakets und die Ausführbarkeit der Funktionen, die den zuvor beschriebenen Verarbeitungspfaden zugeordnet sind.",
+    "after": "Bewertet werden der Start der installierten Electron-Anwendung und die Ausführbarkeit der Funktionen, die den zuvor beschriebenen Verarbeitungsmustern zugeordnet sind."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 157,
+    "before": "Darstellung, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichkeiten besitzen.",
+    "after": "Benutzeroberfläche, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichkeiten besitzen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 161,
+    "before": "=== A3: Weiterverwendung des Ausgangsartefakts",
+    "after": "=== A3: Weiterverwendung des Webprototyps"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 163,
+    "before": "Bestandteile des Ausgangsartefakts sollen soweit möglich weiterverwendet werden.",
+    "after": "Bestandteile des Webprototyps sollen soweit möglich weiterverwendet werden."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 176,
+    "before": "Die zur lokalen Verarbeitung vorgesehenen persönlichen Funktionen sowie die lokale Identitätsverwaltung im Feature Authentifizierung müssen die autonome Offline-Verfügbarkeit gewährleisten.",
+    "after": "Die zur lokalen Verarbeitung vorgesehenen persönlichen Funktionen sowie die lokale Kontoverwaltung müssen die autonome Offline-Verfügbarkeit gewährleisten."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 177,
+    "before": "Für das Feature Studiengänge wird ein bereits lokal verfügbarer Datenbestand vorausgesetzt.",
+    "after": "Für den Funktionsbereich Studiengänge wird ein bereits lokal verfügbarer Katalogbestand vorausgesetzt."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 180,
+    "before": "=== A6: Kollaborative Synchronisation im Feature Studiengruppen",
+    "after": "=== A6: Kollaborative Synchronisation im Funktionsbereich Studiengruppen"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 182,
+    "before": "Gemeinsame Aufgaben werden als exemplarischer Synchronisationsfall gewählt, da mehrere Beteiligte denselben Datenbestand bearbeiten und Änderungen auch ohne unmittelbare Netzwerkverbindung lokal erfassen können sollen.",
+    "after": "Gemeinsame Gruppenaufgaben werden als exemplarischer Synchronisationsfall gewählt, da mehrere Beteiligte denselben Datenbestand bearbeiten und Änderungen auch ohne unmittelbare Netzwerkverbindung lokal erfassen können sollen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 187,
+    "before": "=== A7: Härtung gemäß Electron Security Guidelines",
+    "after": "=== A7: Härtung gemäß Electron-Sicherheitsrichtlinien"
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 196,
+    "before": "Der Demonstrator muss die beschriebenen Verarbeitungspfade für CRUD-Verarbeitung, Dateiimporte, einseitige Datenübernahme und kollaborative Synchronisation abdecken.",
+    "after": "Die Electron-Anwendung muss die beschriebenen Verarbeitungsmuster für lokale CRUD-Verarbeitung, Dateiimporte, einseitige Datenübernahme und kollaborative Synchronisation abdecken."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 197,
+    "before": "Unmittelbar netzwerkabhängige Verwaltungsoperationen werden gesondert ausgewiesen.",
+    "after": "Die netzwerkabhängige Gruppenverwaltung wird gesondert ausgewiesen."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 198,
+    "before": "Der Nachweis ordnet den Verarbeitungspfaden konkrete Funktionen sowie die angewendeten Architektur- und Sicherheitsmuster zu.",
+    "after": "Der Nachweis ordnet den Verarbeitungsmustern konkrete Funktionen sowie die angewendeten Architektur- und Sicherheitsmuster zu."
+  },
+  {
+    "file": "content/04-analysis.typ",
+    "line": 199,
+    "before": "Er muss zeigen, wie weitere Funktionen mit vergleichbaren Verarbeitungspfaden auf diesen Mustern aufbauen können.",
+    "after": "Er muss zeigen, wie weitere Funktionen mit vergleichbaren Verarbeitungsmustern auf diesen Mustern aufbauen können."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 38,
+    "before": "Das Backend des Ausgangsartefakts verwendete TypeScript und Node.js @StudienplanerSource2026.",
+    "after": "Das Backend des Webprototyps verwendete TypeScript und Node.js @StudienplanerSource2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 39,
+    "before": "Da der Electron-Main-Prozess ebenfalls eine Node.js-Laufzeit bereitstellt, konnten fachliche Logik und Bibliotheken als Grundlage der lokalen Umsetzung dienen @ElectronProcessModel2026.",
+    "after": "Da der Electron-Main-Prozess ebenfalls eine Node.js-Laufzeit bereitstellt, konnten Geschäftslogik und Bibliotheken als Grundlage der lokalen Umsetzung dienen @ElectronProcessModel2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 52,
+    "before": "Eine lokale SQLite-Datei ersetzte die PostgreSQL-Verbindung; `DATABASE_URL` entfiel für die lokale Datenhaltung.",
+    "after": "Eine lokale SQLite-Datei bildet die lokale Kerndatenbank und ersetzt die PostgreSQL-Verbindung des Webprototyps; `DATABASE_URL` entfiel für die lokale Datenhaltung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 53,
+    "before": "Der Main-Prozess übernahm das Anlegen, Öffnen und Migrieren der Benutzerdatenbank @StudienplanerSource2026 @StudyPlanDatabase2026.",
+    "after": "Der Main-Prozess übernahm das Anlegen, Öffnen und Migrieren der lokalen Kerndatenbank @StudienplanerSource2026 @StudyPlanDatabase2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 57,
+    "before": "Ein Update kann so Programmdateien ersetzen, ohne die Benutzerdatenbank auszutauschen.",
+    "after": "Ein Update kann so Programmdateien ersetzen, ohne die lokale Kerndatenbank auszutauschen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 64,
+    "before": "Auf Treiberebene wurde die PostgreSQL-Bibliothek `pg` für die lokale Datenhaltung durch `@libsql/client` abgelöst. Drizzle blieb dabei als einheitliche Abstraktionsschicht für das Schema und den Datenzugriff erhalten.",
+    "after": "Auf Treiberebene wurde die PostgreSQL-Bibliothek `pg` für die lokale Datenhaltung durch `@libsql/client` abgelöst. Drizzle ORM blieb dabei als einheitliche Abstraktionsschicht für das Schema und den Datenzugriff erhalten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 66,
+    "before": "@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen. ",
+    "after": "@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 77,
+    "before": "[*PostgreSQL / Drizzle*],",
+    "after": "[*PostgreSQL / Drizzle ORM*],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 78,
+    "before": "[*SQLite / Drizzle*],",
+    "after": "[*SQLite / Drizzle ORM*],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 103,
+    "before": "Zur Einrichtung des Datenbankschemas standen mit Drizzle zwei Ansätze zur Auswahl: Während `drizzle-kit push` Schemadefinitionen direkt und ohne gesonderte SQL-Dateien mit der Zieldatenbank abgleicht @DrizzlePush2026, erzeugt `drizzle-kit generate` versionierte SQL-Migrationsdateien auf Basis von Schema-Snapshots @DrizzleGenerate2026.",
+    "after": "Zur Einrichtung des Datenbankschemas standen mit Drizzle Kit zwei Ansätze zur Auswahl: Während `drizzle-kit push` Schemadefinitionen direkt und ohne gesonderte SQL-Dateien mit der Zieldatenbank abgleicht @DrizzlePush2026, erzeugt `drizzle-kit generate` versionierte SQL-Migrationsdateien auf Basis von Schema-Snapshots @DrizzleGenerate2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 105,
+    "before": "Für den Demonstrator wurde der generatorbasierte Ansatz gewählt. ",
+    "after": "Für den Demonstrator wurde der generatorbasierte Ansatz gewählt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 106,
+    "before": "Die im Verzeichnis `drizzle` abgelegten Dateien werden gemeinsam mit dem Quellcode versioniert. ",
+    "after": "Die im Verzeichnis `drizzle` abgelegten Dateien werden gemeinsam mit dem Quellcode versioniert."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 107,
+    "before": "Damit lassen sich Schemaerweiterungen bei Updates schrittweise auf bestehende Benutzerdatenbanken anwenden.",
+    "after": "Damit lassen sich Schemaerweiterungen bei Updates schrittweise auf bestehende lokale Kerndatenbanken anwenden."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 109,
+    "before": "Die zugehörige Konfiguration in @lst:drizzle-config definiert den SQLite-Dialekt, den Schema-Einstiegspunkt sowie das Ausgabeverzeichnis der Migrationen @StudyPlanDatabase2026. ",
+    "after": "Die zugehörige Konfiguration in @lst:drizzle-config definiert den SQLite-Dialekt, den Schema-Einstiegspunkt sowie das Ausgabeverzeichnis der Migrationen @StudyPlanDatabase2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 119,
+    "before": "caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQLite-Migrationen.],",
+    "after": "caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQL-Migrationsdateien für SQLite.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 122,
+    "before": "Damit die Migrationen auch im Produktivbetrieb ausgeführt werden können, bindet `electron-builder.yml` den Ordner `drizzle` über `extraResources` in das Installationspaket ein (@lst:migration-resources). ",
+    "after": "Damit die Migrationen auch im Produktivbetrieb ausgeführt werden können, bindet `electron-builder.yml` den Ordner `drizzle` über `extraResources` in das Installationspaket ein (@lst:migration-resources)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 132,
+    "before": "caption: [Auslieferung der Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],",
+    "after": "caption: [Auslieferung der SQL-Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 143,
+    "before": "Für Funktionen mit Referenzdaten stellen die Datenmigrationen `0001_seed-study-programs.sql` und `0002_seed-timetable-presets.sql` Studiengänge, Lehrveranstaltungen und Stundenplanvorlagen bereit. ",
+    "after": "Die Datenmigration `0001_seed-study-programs.sql` stellt Studiengänge und ihre Module für den Funktionsbereich Studiengänge bereit. Die Datenmigration `0002_seed-timetable-presets.sql` stellt dagegen Presets mit Kursen für den davon getrennten Funktionsbereich Stundenplan bereit."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 146,
+    "before": "=== Übernahme des API-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>",
+    "after": "=== Übernahme des OpenAPI-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 148,
+    "before": "Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter `lib/api-spec/openapi.yaml` aus, der nach `api/openapi.yaml` in das Desktop-Projekt übernommen wurde. ",
+    "after": "Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter `lib/api-spec/openapi.yaml` aus, der nach `api/openapi.yaml` in das Desktop-Projekt übernommen wurde."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 149,
+    "before": "Dessen Operationskennungen, Parameter und Datenschemata dienten bereits im Web-Prototyp als zentrale Spezifikation für Validierung und Client-Generierung @StudienplanerSource2026.",
+    "after": "Dessen Operationskennungen (`operationId`), Parameter und Datenschemata dienten bereits im Webprototyp als zentrale Spezifikation für Validierung und Client-Generierung @StudienplanerSource2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 151,
+    "before": "Die Entscheidung, an diesem zentralen Vertrag festzuhalten, resultiert wesentlich aus den Erfahrungen des Vorversuchs (@sec:migration-preliminary). ",
+    "after": "Die Entscheidung, an diesem zentralen Vertrag festzuhalten, resultiert wesentlich aus den Erfahrungen des ersten Migrationsversuchs (@sec:migration-preliminary)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 154,
+    "before": "Als Alternative hätte das bisherige Werkzeug Orval beibehalten und die damit erzeugten Hooks, Typen und Zod-Schemata manuell für Electron-IPC adaptiert werden können. ",
+    "after": "Als Alternative hätte das bisherige Werkzeug Orval beibehalten und die damit erzeugten React-Query-Hooks, Typen und Zod-Laufzeitschemata manuell für Electron-IPC adaptiert werden können."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 155,
+    "before": "Dies hätte jedoch bedeutet, bei künftigen Schemaänderungen mehrere abhängige Module händisch synchronisieren zu müssen. Um diesen Bruch zu vermeiden, wurde die zentrale Vertragsgrundlage beibehalten und deren Übersetzung auf den IPC-Transport über eigene TypeScript-Generatoren unter `scripts/openapi-ipc` automatisiert @StudyPlanApiMigration2026. ",
+    "after": "Dies hätte jedoch bedeutet, bei künftigen Schemaänderungen mehrere abhängige Module händisch synchronisieren zu müssen. Um diesen Bruch zu vermeiden, wurde der zentrale OpenAPI-Vertrag beibehalten und deren Übersetzung auf den IPC-Transport über eigene TypeScript-Generatoren unter `scripts/openapi-ipc` automatisiert @StudyPlanApiMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 163,
+    "before": "caption: [Vertragsbasierte Codegenerierung und Aufrufwege im Web-Prototyp und in der lokalen Electron-Kernanwendung.",
+    "after": "caption: [Vertragsbasierte Codegenerierung und Aufrufwege im Webprototyp und in der Offline-Kernanwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 165,
+    "before": "Spätere Synchronisierungs- und Online-Pfade sind nicht dargestellt.],",
+    "after": "Spätere Synchronisations- und Online-Pfade sind nicht dargestellt.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 168,
+    "before": "Die wesentliche Verschiebung liegt in der Realisierung des Transports: Anstelle von HTTP-Requests an einen Express-Server tritt eine typisierte Prozesskommunikation über Preload und IPC. ",
+    "after": "Die wesentliche Verschiebung liegt in der Realisierung des Transports: Anstelle von HTTP-Requests an einen Express-Server tritt eine typisierte Prozesskommunikation über Preload und IPC."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 180,
+    "before": "[*Web-Prototyp*],",
+    "after": "[*Webprototyp*],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 181,
+    "before": "[*Electron-Kernanwendung*],",
+    "after": "[*Offline-Kernanwendung*],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 188,
+    "before": "[Projektspezifische TypeScript-Generatoren für Client, Hooks und Zod-Verträge.],",
+    "after": "[Projektspezifische TypeScript-Generatoren für Client, React-Query-Hooks und Zod-Laufzeitschemata.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 199,
+    "before": "[Strings im generierten Client; Datumsprüfung in Zod-Schemata.],",
+    "after": "[Strings im generierten Client; Datumsprüfung in Zod-Laufzeitschemata.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 203,
+    "before": "[Begrenzte Bridge, Absender- und Schemaprüfung sowie fachliche Sitzungsprüfung.],",
+    "after": "[Begrenzte Preload-Schnittstelle, IPC-Absenderprüfung und Eingabevalidierung sowie fachliche Sitzungsprüfung.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 209,
+    "before": "Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt die Toolchain aus der `openapi.yaml` die benötigten Module getrennt nach Zielumgebung @StudyPlanApiMigration2026:",
+    "after": "Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt der IPC-Codegenerator aus der `openapi.yaml` gemeinsame Module und Renderer-Module @StudyPlanApiMigration2026:"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 212,
+    "before": "- *Renderer-Module (`src/renderer/src/api/generated`):* React-Query-Hooks für die Benutzeroberfläche und standardisierte Query-Key-Hilfsfunktionen.",
+    "after": "- *Renderer-Module (`src/renderer/src/api/generated`):* React-Query-Hooks für die Benutzeroberfläche und standardisierte Hilfsfunktionen für Abfrageschlüssel."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 216,
+    "before": "Die Codeerzeugung übersetzt die Vertragsbeschreibung während der Entwicklung schrittweise in TypeScript-Module. ",
+    "after": "Die Codegenerierung übersetzt den OpenAPI-Vertrag während der Entwicklung schrittweise in TypeScript-Module."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 219,
+    "before": "Die Orchestrierung übernimmt buildGeneratedFiles. ",
+    "after": "Die Orchestrierung übernimmt buildGeneratedFiles."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 228,
+    "before": "Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion zodSchema. ",
+    "after": "Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion zodSchema."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 231,
+    "before": "Die Generatorfunktion contractSource bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über z.infer den passenden TypeScript-Typ ab. ",
+    "after": "Die Generatorfunktion contractSource bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über z.infer den passenden TypeScript-Typ ab."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 276,
+    "before": "Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge. ",
+    "after": "Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 316,
+    "before": "Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Query Keys.",
+    "after": "Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Abfrageschlüssel (Query Keys)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 318,
+    "before": "Im letzten Schritt formatiert der Generator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser. ",
+    "after": "Im letzten Schritt formatiert der IPC-Codegenerator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 319,
+    "before": "Das Skript scripts/openapi-ipc/generate.ts legt die Zielverzeichnisse an und speichert contract.generated.ts, client.generated.ts, react-query.generated.ts sowie die Exportmodule als UTF-8-Dateien ab. ",
+    "after": "Das Skript scripts/openapi-ipc/generate.ts legt die Zielverzeichnisse an und speichert contract.generated.ts, client.generated.ts, react-query.generated.ts sowie die Exportmodule als UTF-8-Dateien ab."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 321,
+    "before": "=== IPC-Transport, Preload-Schnittstelle und Dispatcher",
+    "after": "=== IPC-Transport, Preload-Schnittstelle und API-Dispatcher"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 324,
+    "before": "@fig:ipc-dispatcher-flow zeigt den Aufrufweg und die Verarbeitung im zentralen Dispatcher.",
+    "after": "@fig:ipc-dispatcher-flow zeigt den Aufrufweg und die Verarbeitung im zentralen API-Dispatcher."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 331,
+    "before": "Die Preload-Bridge stellt über `contextBridge.exposeInMainWorld` ausschließlich `window.apiTransport.invoke` bereit; das vollständige `ipcRenderer`-Modul und frei wählbare Kanalnamen bleiben dem Renderer vorenthalten @ElectronContextBridge2026 @ElectronIpc2026.",
+    "after": "Die Preload-Schnittstelle stellt über `contextBridge.exposeInMainWorld` ausschließlich `window.apiTransport.invoke` bereit; das vollständige `ipcRenderer`-Modul und frei wählbare Kanalnamen bleiben dem Renderer vorenthalten @ElectronContextBridge2026 @ElectronIpc2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 335,
+    "before": "Für eine im Vertrag definierte Operation ohne registrierten Handler liefert der Dispatcher `NOT_IMPLEMENTED`.",
+    "after": "Für eine im Vertrag definierte Operation ohne registrierten Handler liefert der API-Dispatcher `NOT_IMPLEMENTED`."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 338,
+    "before": "=== Grenzen und kritische Würdigung des Generatoransatzes",
+    "after": "=== Grenzen und kritische Würdigung des IPC-Codegenerators"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 340,
+    "before": "Der Generator verwendet OpenAPI als Vertragsformat für IPC, obwohl die Spezifikation HTTP-Schnittstellen beschreibt @OpenApi310.",
+    "after": "Der IPC-Codegenerator verwendet OpenAPI als Vertragsformat für IPC, obwohl die Spezifikation HTTP-Schnittstellen beschreibt @OpenApi310."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 343,
+    "before": "Der Generator deckt bewusst nur den im Demonstrator tatsächlich benötigten Funktionsumfang der Spezifikation ab. ",
+    "after": "Der IPC-Codegenerator deckt bewusst nur den im Demonstrator tatsächlich benötigten Funktionsumfang der Spezifikation ab."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 346,
+    "before": "Die gemeinsame Ableitung von Typen, Validierung und Client vermeidet deren manuelle Synchronisierung.",
+    "after": "Die gemeinsame Ableitung von Typen, Validierung und Client vermeidet deren manuelle Synchronisation."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 347,
+    "before": "Dafür wurde eine eigene Toolchain entwickelt, die bei Änderungen der unterstützten Spezifikation oder der Zielbibliotheken mitgepflegt werden muss @StudyPlanApiMigration2026.",
+    "after": "Dafür wurde eine eigene Toolchain für den IPC-Codegenerator entwickelt, die bei Änderungen der unterstützten Spezifikation oder der Zielbibliotheken mitgepflegt werden muss @StudyPlanApiMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 350,
+    "before": "Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert. ",
+    "after": "Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 352,
+    "before": "Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt. ",
+    "after": "Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 355,
+    "before": "Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt @StudyPlanFrontendMigration2026. ",
+    "after": "Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt @StudyPlanFrontendMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 358,
+    "before": "Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein. ",
+    "after": "Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 362,
+    "before": "Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt. ",
+    "after": "Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 366,
+    "before": "Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026. ",
+    "after": "Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 367,
+    "before": "Da der Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt.",
+    "after": "Da der IPC-Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 369,
+    "before": "Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt. ",
+    "after": "Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 371,
+    "before": "Für die Navigation nutzt die Anwendung weiterhin wouter. ",
+    "after": "Für die Navigation nutzt die Anwendung weiterhin wouter."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 375,
+    "before": "=== Lokale Authentifizierung als erster vollständiger Verarbeitungspfad",
+    "after": "=== Lokale Anmeldung als erster vollständiger Verarbeitungspfad"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 377,
+    "before": "Nach der Übernahme der Oberfläche begrenzte der vorhandene Anmeldeablauf zunächst den Zugang zu den fachlichen Seiten.",
+    "after": "Nach der Übernahme der Benutzeroberfläche begrenzte der vorhandene Anmeldeablauf zunächst den Zugang zu den fachlichen Seiten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 382,
+    "before": "Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufweg zwischen Oberfläche, Preload, Dispatcher und lokaler Datenhaltung an einem zusammenhängenden Ablauf genutzt werden konnte.",
+    "after": "Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufweg zwischen Benutzeroberfläche, Preload, API-Dispatcher und lokaler Datenhaltung an einem zusammenhängenden Ablauf genutzt werden konnte."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 390,
+    "before": "Passwort-Hashes bleiben im Main-Prozess und in der lokalen Benutzertabelle; die Oberfläche erhält nur die vorgesehenen Benutzerdaten.",
+    "after": "Passwort-Hashes bleiben im Main-Prozess und in der lokalen Benutzertabelle; die Benutzeroberfläche erhält nur die vorgesehenen Benutzerdaten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 392,
+    "before": "Diese lokale Sitzung liegt im Arbeitsspeicher und endet beim Beenden der Anwendung; die Benutzerdatensätze bleiben dagegen in der SQLite-Datenbank gespeichert @StudienplanerSource2026 @StudyPlanLocalAuth2026.",
+    "after": "Diese lokale Anwendungssitzung liegt im Arbeitsspeicher und endet beim Beenden der Anwendung; die Benutzerdatensätze bleiben dagegen in der lokalen Kerndatenbank gespeichert @StudienplanerSource2026 @StudyPlanLocalAuth2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 394,
+    "before": "Bei erfolgreicher Anmeldung oder Registrierung leert der Renderer den bisherigen React-Query-Cache, speichert die Benutzerinformation unter dem Query Key von `getMe` und navigiert zur Anwendung.",
+    "after": "Bei erfolgreicher lokaler Anmeldung oder Registrierung leert der Renderer den bisherigen React-Query-Cache, speichert die Benutzerinformation unter dem Abfrageschlüssel von `getMe` und navigiert zur Anwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 395,
+    "before": "`UNAUTHENTICATED` führt zur Anmeldung und wird von der Query-Wiederholungslogik berücksichtigt.",
+    "after": "`UNAUTHENTICATED` führt zur lokalen Anmeldung und wird von der Query-Wiederholungslogik berücksichtigt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 397,
+    "before": "Die Weiterleitung bei bestehender Anmeldung erfolgt über einen React-Effekt @StudyPlanLocalAuth2026.",
+    "after": "Die Weiterleitung bei bestehender lokaler Anmeldung erfolgt über einen React-Effekt @StudyPlanLocalAuth2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 399,
+    "before": "=== Integration der CRUD-Funktionen am Beispiel der Notenverwaltung <sec:crud-migration>",
+    "after": "=== Integration der lokalen lokale CRUD-Verarbeitung am Beispiel der Notenverwaltung <sec:crud-migration>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 401,
+    "before": "Nach der Oberflächenintegration und der lokalen Authentifizierung wurden die weiteren fachlichen Funktionen mit dem vorbereiteten Aufrufweg verbunden.",
+    "after": "Nach der Integration der Benutzeroberfläche und der lokalen Anmeldung wurden die weiteren fachlichen Funktionen mit dem vorbereiteten Aufrufweg verbunden."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 408,
+    "before": "Die Eingabeprüfung wurde durch die bereits eingerichtete Vertragsvalidierung des Dispatchers übernommen.",
+    "after": "Der API-Dispatcher übernahm die Eingabevalidierung anhand des OpenAPI-Vertrags."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 425,
+    "before": "      [Fachlogik],",
+    "after": "      [Geschäftslogik],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 430,
+    "before": "      [Lesen und Schreiben der Notendatensätze über Drizzle mit benutzerbezogenen Auswahlbedingungen.],",
+    "after": "      [Lesen und Schreiben der Notendatensätze über Drizzle ORM mit benutzerbezogenen Auswahlbedingungen.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 440,
+    "before": "Die resultierenden Handler werden in die gemeinsame Registry aufgenommen, die der IPC-Dispatcher verwendet @StudyPlanGradesMigration2026.",
+    "after": "Die resultierenden Handler werden in die gemeinsame Registry aufgenommen, die der API-Dispatcher verwendet @StudyPlanGradesMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 442,
+    "before": "Die Benutzerkennung stammt bei diesen Operationen aus der lokalen Sitzung im Main-Prozess.",
+    "after": "Die Benutzerkennung stammt bei diesen Operationen aus der lokalen Anwendungssitzung im Main-Prozess."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 454,
+    "before": "Die Oberfläche aktualisiert anschließend die Abfragen für Notenliste und Statistik @StudyPlanGradesMigration2026.",
+    "after": "Die Benutzeroberfläche aktualisiert anschließend die Abfragen für Notenliste und Statistik @StudyPlanGradesMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 460,
+    "before": "  caption: [Lokaler CRUD-Aufrufweg am Beispiel der Notenerfassung. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg und die anschließende Aktualisierung der Oberfläche.],",
+    "after": "  caption: [Lokaler CRUD-Aufrufweg am Beispiel der Notenerfassung. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg und die anschließende Aktualisierung der Benutzeroberfläche.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 463,
+    "before": "`scripts/grades/grades.test.ts` verbindet den generierten Client mit Dispatcher, Handlern, Service, Repositories und einer SQLite-Datenbank im Arbeitsspeicher.",
+    "after": "`scripts/grades/grades.test.ts` verbindet den generierten Client mit API-Dispatcher, Handlern, Service, Repositories und einer SQLite-Datenbank im Arbeitsspeicher."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 465,
+    "before": "Der direkte Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.",
+    "after": "Der direkte API-Dispatcher-Aufruf ersetzt die native IPC-Kommunikation."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 469,
+    "before": "Im Web-Prototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`.",
+    "after": "Im Webprototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 482,
+    "before": "In der Desktop-Anwendung ersetzt eine native Dateiauswahl den HTTP-Upload.",
+    "after": "In der Electron-Anwendung ersetzt eine native Dateiauswahl den HTTP-Upload."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 505,
+    "before": "Damit ist die lokale Kernanwendung einschließlich der Dateiimporte umgesetzt @StudyPlanLocalCore2026.",
+    "after": "Damit ist die Offline-Kernanwendung einschließlich der Dateiimporte umgesetzt @StudyPlanLocalCore2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 508,
+    "before": "== Phase 2: Netzwerkanbindungen und Local-First-Synchronisierung",
+    "after": "== Phase 2: Netzwerkanbindungen und Local-First-Synchronisation"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 510,
+    "before": "Die zweite Phase ergänzt die Synchronisierung gemeinsamer Aufgaben im Feature Studiengruppen sowie den Online-Abruf von Studiengangsdaten.",
+    "after": "Die zweite Phase ergänzt die Synchronisation gemeinsamer Gruppenaufgaben im Funktionsbereich Studiengruppen sowie den Online-Abruf von Katalogdaten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 512,
+    "before": "=== Auswahlkriterien und betrachtete Synchronisierungslösungen <sec:sync-tool-selection>",
+    "after": "=== Auswahlkriterien und betrachtete Synchronisationslösungen <sec:sync-tool-selection>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 514,
+    "before": "Für die Synchronisierung sollte eine bestehende Lösung eingesetzt werden, die Aufgabenänderungen lokal speichert und bei verfügbarer Verbindung abgleicht (A6).",
+    "after": "Für die Synchronisation sollte eine bestehende Lösung eingesetzt werden, die Aufgabenänderungen lokal speichert und bei verfügbarer Verbindung abgleicht (A6)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 548,
+    "before": "Supabase stellt die PostgreSQL-Datenbank für den gemeinsamen Gruppenbestand sowie die Authentifizierung der beteiligten Benutzer bereit @SupabaseDatabase2026 @SupabaseAuth2026.",
+    "after": "Die Supabase-PostgreSQL-Datenbank speichert den gemeinsamen Gruppenbestand; Supabase stellt außerdem die Authentifizierung der beteiligten Benutzer bereit @SupabaseDatabase2026 @SupabaseAuth2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 552,
+    "before": "Auch Turso unterstützt Synchronisierung und Offline-Schreibzugriffe @TursoSync2026.",
+    "after": "Auch Turso unterstützt Synchronisation und Offline-Schreibzugriffe @TursoSync2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 555,
+    "before": "=== Vorprüfung der Integration und Drizzle-Anbindung",
+    "after": "=== Spike-Tests zur Synchronisationsintegration und Drizzle-Anbindung"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 557,
+    "before": "Vor der Integration in die Anwendung wurde die gewählte Kombination anhand zweier Prototypen erprobt.",
+    "after": "Vor der Integration in die Anwendung wurden in einem Worktree Spike-Tests mit zwei Prototypen durchgeführt, um die Synchronisationsintegration und anschließend die Drizzle-Anbindung zu erproben."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 565,
+    "before": "Die Weiterverwendung von Drizzle erforderte jedoch Anpassungen des Schemas an PowerSync.",
+    "after": "Die Weiterverwendung von Drizzle ORM erforderte jedoch Anpassungen des Schemas an PowerSync."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 569,
+    "before": "Für die weitere Migration standen deshalb zwei Vorgehensweisen zur Auswahl: die vollständige Umstellung der bestehenden Schemata und Datenzugriffe auf den PowerSync-Bestand oder die schrittweise Migration einzelner Funktionsbereiche.",
+    "after": "Für die weitere Migration standen deshalb zwei Vorgehensweisen zur Auswahl: die vollständige Umstellung der bestehenden Schemata und Datenzugriffe auf den lokalen Kollaborationsdatenbestand oder die schrittweise Migration einzelner Funktionsbereiche."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 570,
+    "before": "Gewählt wurde die zweite Variante, um die Offline-Kernanwendung weiterzuverwenden und zunächst nur den Kollaborationsbereich anzupassen.",
+    "after": "Gewählt wurde die zweite Variante, um die Offline-Kernanwendung weiterzuverwenden und zunächst nur das Studiengruppen-Feature um Synchronisation zu erweitern."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 573,
+    "before": "=== Architektur mit zwei lokalen Datenhaltungsbereichen <sec:sync-architecture>",
+    "after": "=== Architektur mit lokaler Kerndatenbank und lokaler Kollaborationsdatenbank <sec:sync-architecture>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 575,
+    "before": "Während der schrittweisen Migration bleibt die SQLite-Datenbank aus Phase 1 für persönliche Funktionen und bestehende lokale Gruppen erhalten.",
+    "after": "Während der schrittweisen Migration bleibt die lokale Kerndatenbank aus Phase 1 für persönliche Funktionen und lokale Studiengruppen erhalten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 576,
+    "before": "Der synchronisierte Kollaborationsbereich erhält einen eigenen lokalen Datenbestand.",
+    "after": "Für die synchronisierten Studiengruppen wird eine zusätzliche lokale Kollaborationsdatenbank verwendet."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 577,
+    "before": "Beide Bereiche werden vom Main-Prozess angesprochen; die Oberfläche verwendet weiterhin die begrenzten Preload-/IPC-Schnittstellen.",
+    "after": "Beide Datenbanken werden vom Main-Prozess angesprochen; die Benutzeroberfläche verwendet weiterhin die begrenzten Preload-Schnittstellen und IPC."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 580,
+    "before": "Die Oberfläche führt die bestehenden lokalen Gruppen unter `/gruppen` als „Gruppen“ und den ergänzten Kollaborationsbereich unter `/gruppen-sync` als „Gruppen (Sync)“.",
+    "after": "Die Benutzeroberfläche führt das zunächst mit seinen grundlegenden CRUD-Interaktionen übernommene lokale Studiengruppen-Feature unter `/gruppen` als „Gruppen“ und die um Synchronisation erweiterte Implementierung unter `/gruppen-sync` als „Gruppen (Sync)“."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 581,
+    "before": "Beide Implementierungen bestehen während der Migration nebeneinander; vorhandene lokale Gruppendaten werden nicht automatisch in den synchronisierten Bereich übertragen @StudyPlanGroupTransition2026.",
+    "after": "Beide Implementierungen desselben ursprünglichen Studiengruppen-Features bestehen während der Migration nebeneinander; vorhandene lokale Gruppendaten werden nicht automatisch in den lokalen Kollaborationsdatenbestand übertragen @StudyPlanGroupTransition2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 585,
+    "before": "  caption: [Architektur nach Ergänzung der Synchronisierung im Feature Studiengruppen.",
+    "after": "  caption: [Architektur nach Ergänzung der Synchronisation im Funktionsbereich Studiengruppen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 586,
+    "before": "    Dargestellt sind die beiden lokalen Datenhaltungsbereiche sowie direkte Online-Aufrufe, Upload und Download.",
+    "after": "    Dargestellt sind die lokale Kerndatenbank und die lokale Kollaborationsdatenbank sowie direkte Online-Aufrufe, Upload und Download."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 587,
+    "before": "    Der separate Datenabruf im Feature Studiengänge ist hier nicht dargestellt.",
+    "after": "    Der separate Datenabruf im Funktionsbereich Studiengänge ist hier nicht dargestellt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 593,
+    "before": "Davon getrennt bleiben administrative Gruppenfunktionen, die Supabase unmittelbar aufrufen und deshalb eine Netzwerkverbindung benötigen @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.",
+    "after": "Davon getrennt bleibt die netzwerkabhängige Gruppenverwaltung: Ihre Operationen rufen Supabase unmittelbar auf und benötigen deshalb eine Netzwerkverbindung @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 595,
+    "before": "=== Konten und Einladungsablauf im Kollaborationsbereich <sec:collaboration-invitations>",
+    "after": "=== Benutzerkonten und Einladungsablauf im synchronisierten Studiengruppen-Feature <sec:collaboration-invitations>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 597,
+    "before": "Für den Kollaborationsbereich werden entfernte Benutzerkonten verwendet, die von der lokalen Kontoverwaltung aus Phase 1 getrennt sind.",
+    "after": "Für die synchronisierten Studiengruppen werden Supabase-Benutzerkonten verwendet. Diese sind von den lokalen Benutzerkonten der Offline-Kernanwendung getrennt und nicht automatisch mit ihnen verknüpft."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 600,
+    "before": "Die Desktop-Anwendung bietet die Anmeldung mit den vorhandenen E-Mail-Adressen und Passwörtern; Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung sind in ihrer Oberfläche nicht enthalten @StudyPlanSyncArchitecture2026.",
+    "after": "Die Electron-Anwendung bietet die Anmeldung mit vorhandenen Supabase-Benutzerkonten über E-Mail-Adresse und Passwort; Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung für diese Konten sind in ihrer Benutzeroberfläche nicht enthalten @StudyPlanSyncArchitecture2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 603,
+    "before": "Im Web-Prototyp erzeugte die Gruppenroute einen Einladungstoken.",
+    "after": "Für die linkbasierte Gruppeneinladung im Webprototyp erzeugte die Gruppenroute einen Einladungstoken."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 604,
+    "before": "Die Oberfläche bildete aus der Adresse der Web-Anwendung und dem Token eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.",
+    "after": "Die Benutzeroberfläche bildete aus der Adresse der Web-Anwendung und dem Token eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 609,
+    "before": "Nach der Migration wird die Oberfläche lokal auf dem jeweiligen Gerät geladen; ihre lokale Adresse bietet kein gemeinsames Ziel für einen weitergegebenen Einladungslink.",
+    "after": "Nach der Migration wird die Benutzeroberfläche lokal auf dem jeweiligen Gerät geladen; ihre lokale Adresse bietet kein gemeinsames Ziel für einen weitergegebenen Einladungslink."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 610,
+    "before": "Für einen weiterhin linkbasierten Ablauf wäre daher eine erreichbare Einladungsseite oder eine Übergabe des Tokens an die installierte App vorzusehen.",
+    "after": "Für einen weiterhin linkbasierten Ablauf wäre daher eine erreichbare Einladungsseite oder eine Übergabe des Tokens an die installierte Electron-Anwendung vorzusehen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 613,
+    "before": "Für den synchronisierten Bereich wurde stattdessen die direkte Einladung vorhandener Konten gewählt.",
+    "after": "Für die synchronisierten Studiengruppen wurde stattdessen die direkte Kontoeinladung vorhandener Supabase-Benutzerkonten gewählt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 614,
+    "before": "Damit wird der Ablauf innerhalb der App abgewickelt und benötigt keine zusätzliche öffentlich erreichbare Einladungsseite.",
+    "after": "Damit wird der Ablauf innerhalb der Electron-Anwendung abgewickelt und benötigt keine zusätzliche öffentlich erreichbare Einladungsseite."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 618,
+    "before": "Die Auswahl eines Profils erzeugt eine personenbezogene Einladung.",
+    "after": "Die Auswahl eines Profils erzeugt eine direkte Kontoeinladung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 622,
+    "before": "=== Technische Integration der Kollaborationsmodule <sec:sync-implementation>",
+    "after": "=== Technische Integration der synchronisierten Studiengruppen <sec:sync-implementation>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 626,
+    "before": "Die technische Umsetzung begann mit der Anpassung des Datenmodells für PostgreSQL und den lokalen PowerSync-Bestand:",
+    "after": "Die technische Umsetzung begann mit der Anpassung des Datenmodells für die Supabase-PostgreSQL-Datenbank und den lokalen Kollaborationsdatenbestand:"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 627,
+    "before": "- *Identifikatoren:* Die fünf Tabellen des Features Studiengruppen wurden in Supabase über versionierte SQL-Migrationen mit UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab @StudyPlanSyncIntegration2026.",
+    "after": "- *Kennungen:* Die fünf Tabellen des Studiengruppen-Features wurden in Supabase über versionierte SQL-Migrationsdateien mit UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab @StudyPlanSyncIntegration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 629,
+    "before": "- *Schemaableitung:* Die zentrale Datei `schema.ts` definiert diesen lokalen Tabellenbestand und generiert mittels `DrizzleAppSchema` die für das PowerSync-SDK erforderliche Konfigurationsstruktur.",
+    "after": "- *Schemaableitung:* Die zentrale Drizzle-Schemadefinition in `schema.ts` beschreibt den lokalen Kollaborationsdatenbestand und generiert mittels `DrizzleAppSchema` das PowerSync-Client-Schema."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 631,
+    "before": "==== Backend-Anbindung und Replikationsregeln",
+    "after": "==== Backend-Anbindung und Sync Streams"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 638,
+    "before": "Die deklarative Datenverteilung erfolgt über die Dienstkonfiguration `sync-streams-v4.yaml`. Diese definiert auf Basis von SQL-Abfragen, welche Teilmengen an die jeweiligen Clients repliziert werden. Schreib- und Lesepfade sind hierbei asymmetrisch getrennt: Die Streams regeln ausschließlich den nachgelagerten Download, während Autorisierungsprüfungen für Schreibzugriffe im Backend greifen @StudyPlanSyncIntegration2026.",
+    "after": "Die Datenverteilung durch den PowerSync-Dienst wird über Sync Streams in `sync-streams-v4.yaml` konfiguriert. SQL-Abfragen legen fest, welche Teilmengen an die jeweiligen Clients repliziert werden. Die Sync Streams steuern ausschließlich den Download; die Autorisierung von Schreibzugriffen erfolgt im Backend @StudyPlanSyncIntegration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 640,
+    "before": "@lst:collaboration-stream illustriert die Definition des Aufgaben-Streams: Die Pseudofunktion `auth.user_id()` liefert die Identität des authentifizierten Clients. Über eine Unterabfrage (`user_groups`) werden dessen aktive Gruppenmitgliedschaften ermittelt, woraufhin die Replikation auf Aufgaben dieser Gruppen beschränkt wird. Ähnliche Selektionsregeln steuern die Verteilung von Gruppenmetadaten, Profilen und Einladungen.",
+    "after": "@lst:collaboration-stream illustriert die Definition des Aufgaben-Sync-Streams: Die Pseudofunktion `auth.user_id()` liefert die Identität des authentifizierten Clients. Über eine Unterabfrage (`user_groups`) werden dessen aktive Gruppenmitgliedschaften ermittelt, woraufhin die Replikation auf Aufgaben dieser Gruppen beschränkt wird. Weitere Sync Streams steuern die Verteilung von Gruppenmetadaten, Profilen und Einladungen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 649,
+    "before": "  caption: [Auswahl gemeinsamer Aufgaben in `sync-streams-v4.yaml` (Auszug) @StudyPlanSyncIntegration2026.],",
+    "after": "  caption: [Auswahl gemeinsamer Gruppenaufgaben in `sync-streams-v4.yaml` (Auszug) @StudyPlanSyncIntegration2026.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 653,
+    "before": "Durch `auto_subscribe: true` wird der Stream beim Verbindungsaufbau automatisch abonniert @PowerSyncStreams2026.",
+    "after": "Durch `auto_subscribe: true` wird der Sync Stream beim Verbindungsaufbau automatisch abonniert @PowerSyncStreams2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 657,
+    "before": "Die Steuerung des synchronisierten Bereichs übernimmt das Modul `CollaborationRuntime`.",
+    "after": "Die Steuerung des synchronisierten Studiengruppen-Features übernimmt das Modul `CollaborationRuntime`."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 658,
+    "before": "Es kapselt den Sitzungszustand, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff.",
+    "after": "Es kapselt den Zustand der Supabase-Kollaborationssitzung, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 659,
+    "before": "Für die Anmeldung ruft der Connector im Main-Prozess `signInWithPassword` mit den eingegebenen Zugangsdaten auf und authentifiziert damit die zuvor eingerichteten Konten @StudyPlanSyncArchitecture2026 @SupabasePasswordSignIn2026.",
+    "after": "Für die Anmeldung mit dem Supabase-Benutzerkonto ruft der Connector im Main-Prozess `signInWithPassword` mit den eingegebenen Zugangsdaten auf und authentifiziert damit das Konto @StudyPlanSyncArchitecture2026 @SupabasePasswordSignIn2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 660,
+    "before": "Nach erfolgreicher Anmeldung öffnet die Laufzeit eine benutzerbezogene SQLite-Datenbank und verbindet sie mit PowerSync (@lst:collaboration-connect).",
+    "after": "Nach erfolgreicher Anmeldung mit dem Supabase-Benutzerkonto öffnet die Laufzeit eine nach diesem Konto getrennte lokale Kollaborationsdatenbank und verbindet sie mit PowerSync (@lst:collaboration-connect)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 672,
+    "before": "  caption: [Initialisierung und Verbindung der benutzerspezifischen Kollaborationsdatenbank; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],",
+    "after": "  caption: [Initialisierung und Verbindung der lokalen Kollaborationsdatenbank je Supabase-Benutzerkonto; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 678,
+    "before": "Der Vertrag für die Kollaborationsschnittstelle ist in `src/shared/collaboration/ipc.ts` hinterlegt.",
+    "after": "Der manuell typisierte Kollaborationsvertrag ist in `src/shared/collaboration/ipc.ts` hinterlegt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 679,
+    "before": "Er wird manuell typisiert; Zod-Schemata prüfen die Eingaben im Main-Prozess @StudyPlanSyncIntegration2026.",
+    "after": "Zod-Laufzeitschemata prüfen die Eingaben dieses Kollaborationsvertrags im Main-Prozess @StudyPlanSyncIntegration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 686,
+    "before": "  caption: [Modulaufteilung der Kollaborationsintegration neben der lokalen Kernanwendung.",
+    "after": "  caption: [Modulaufteilung der Kollaborationsintegration neben der Offline-Kernanwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 705,
+    "before": "      [Lokale PowerSync-Datenbank, Replikationsverbindung und Upload-Warteschlange.],",
+    "after": "      [Lokale Kollaborationsdatenbank, Replikationsverbindung und Upload-Warteschlange.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 714,
+    "before": "  caption: [Für den Kollaborationsbereich ergänzte Laufzeitabhängigkeiten @StudyPlanSyncIntegration2026.],",
+    "after": "  caption: [Für das synchronisierte Studiengruppen-Feature ergänzte Laufzeitabhängigkeiten @StudyPlanSyncIntegration2026.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 729,
+    "before": "Mit dem synchronisierten Datenbestand verteilt sich die Schemaverwaltung auf Backend, PowerSync-Dienst und Desktop-Anwendung.",
+    "after": "Mit dem lokalen Kollaborationsdatenbestand verteilt sich die Schemaverwaltung auf Backend, PowerSync-Dienst und Electron-Anwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 730,
+    "before": "Die persönliche Datenbank wird weiterhin über die mitgelieferten Drizzle-Migrationen aktualisiert.",
+    "after": "Die lokale Kerndatenbank wird weiterhin über die mitgelieferten SQL-Migrationsdateien von Drizzle Kit aktualisiert."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 731,
+    "before": "Für den synchronisierten Bereich werden dagegen das PostgreSQL-Schema und die Datenverteilung serverseitig gepflegt; das lokale Schema wird dem PowerSync-SDK deklarativ vorgegeben @SupabaseSchemaMigrations2026 @PowerSyncSchemaChanges2026.",
+    "after": "Für die synchronisierten Studiengruppen werden dagegen das PostgreSQL-Datenbankschema und die Sync Streams serverseitig gepflegt; das PowerSync-Client-Schema wird dem PowerSync-SDK deklarativ vorgegeben @SupabaseSchemaMigrations2026 @PowerSyncSchemaChanges2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 736,
+    "before": "  caption: [Bereitstellung einer kompatiblen, additiven Schemaerweiterung über Backend, Synchronisierungsdienst und Client. Eigene Darstellung nach @PowerSyncSchemaDeployment2026.],",
+    "after": "  caption: [Bereitstellung einer kompatiblen, additiven Schemaerweiterung über Backend, Synchronisationsdienst und Client. Eigene Darstellung nach @PowerSyncSchemaDeployment2026.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 743,
+    "before": "Das Terminbeispiel aus der Vorprüfung zeigt die Schemaanpassungen für einen weiteren Datenbereich.",
+    "after": "Das Terminbeispiel aus den Spike-Tests zeigt die Schemaanpassungen für einen weiteren Datenbereich."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 747,
+    "before": "Im Prototyp ersetzt eine Textkennung den automatisch erzeugten Integer; `ownerId` verweist auf die entfernte Supabase-Identität.",
+    "after": "Im Prototyp ersetzt eine Textkennung den automatisch erzeugten Integer; `ownerId` verweist auf das Supabase-Benutzerkonto."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 748,
+    "before": "Datumswerte werden als Text gespeichert: Das Repository erzeugt beim Schreiben ISO-Strings und wandelt sie beim Lesen wieder in `Date`-Werte um.",
+    "after": "Datumswerte werden als Text gespeichert: Das Repository erzeugt beim Schreiben ISO-8601-Zeichenketten und wandelt sie beim Lesen wieder in `Date`-Werte um."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 771,
+    "before": "=== Online-Datenabruf im Feature Studiengänge <sec:study-catalog-download>",
+    "after": "=== Einseitige Datenübernahme im Funktionsbereich Studiengänge <sec:study-catalog-download>"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 773,
+    "before": "Das Feature Studiengänge verwendet einen einseitigen Datenabruf: Fachliche Referenzdaten werden online bereitgestellt, in die lokale Datenbank übernommen und anschließend offline gelesen.",
+    "after": "Der Funktionsbereich Studiengänge verwendet eine einseitige Datenübernahme: Katalogdaten werden online bereitgestellt, in die lokale Kerndatenbank übernommen und anschließend offline gelesen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 774,
+    "before": "Der Demonstrator ergänzt hierzu den in Phase 1 ausgelieferten Seed-Bestand um online abrufbare Beispieldaten; der vorhandene Grundbestand bleibt erhalten @StudyPlanCatalog2026.",
+    "after": "Die Electron-Anwendung ergänzt hierzu den in Phase 1 mitgelieferten Katalog-Grundbestand um online abrufbare Beispieldaten; der vorhandene Katalog-Grundbestand bleibt erhalten @StudyPlanCatalog2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 776,
+    "before": "Dafür wurde eine Supabase Edge Function ergänzt, die Studiengänge und zugehörige Lehrveranstaltungen aus einer JSON-Datei über einen öffentlichen HTTP-Endpunkt bereitstellt.",
+    "after": "Dafür wurde eine Supabase Edge Function ergänzt, die Studiengänge und zugehörige Module aus einer JSON-Datei über einen öffentlichen HTTP-Endpunkt bereitstellt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 778,
+    "before": "Änderungen am angebotenen Katalog erfordern eine erneute Bereitstellung dieser Datei mit der Funktion, jedoch keine neue Version der Desktop-Anwendung.",
+    "after": "Änderungen am angebotenen Katalog erfordern eine erneute Bereitstellung dieser Datei mit der Funktion, jedoch keine neue Version der Electron-Anwendung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 779,
+    "before": "Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Lehrveranstaltungen erweitert @StudyPlanCatalog2026.",
+    "after": "Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Module erweitert @StudyPlanCatalog2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 781,
+    "before": "Beim Öffnen des Features Studiengänge liest die Oberfläche zunächst den lokalen Bestand und löst zusätzlich die Aktualisierung aus.",
+    "after": "Beim Öffnen des Funktionsbereichs Studiengänge liest die Benutzeroberfläche zunächst den lokalen Katalogbestand und löst zusätzlich die Aktualisierung aus."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 785,
+    "before": "Nach erfolgreicher Übernahme werden die betroffenen Abfragen der Oberfläche erneut ausgeführt @StudyPlanCatalog2026.",
+    "after": "Nach erfolgreicher Übernahme werden die betroffenen Abfragen der Benutzeroberfläche erneut ausgeführt @StudyPlanCatalog2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 788,
+    "before": "Die Oberfläche zeigt den Fehler an und bietet einen erneuten Versuch an.",
+    "after": "Die Benutzeroberfläche zeigt den Fehler an und bietet einen erneuten Versuch an."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 794,
+    "before": "Die zweite Phase ergänzt die lokale Kernanwendung um synchronisierte Gruppenaufgaben und aktualisierbare Studiengangsdaten.",
+    "after": "Die zweite Phase ergänzt die Offline-Kernanwendung um gemeinsame Gruppenaufgaben und aktualisierbare Katalogdaten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 795,
+    "before": "Aufgaben können während einer bestehenden Kollaborationssitzung ohne Verbindung bearbeitet werden; nach einem Anwendungsneustart ist jedoch eine erneute entfernte Anmeldung erforderlich @StudyPlanSyncArchitecture2026.",
+    "after": "Gemeinsame Gruppenaufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden; nach einem Anwendungsneustart ist jedoch eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich @StudyPlanSyncArchitecture2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 799,
+    "before": "Beim Katalogabruf muss der vorhandene lokale Bestand auch nach einem Verbindungsfehler nutzbar bleiben; unmittelbar netzwerkabhängige Gruppenaktionen müssen den Fehler verständlich anzeigen (A8).",
+    "after": "Beim Katalogabruf muss der vorhandene lokale Bestand auch nach einem Verbindungsfehler nutzbar bleiben; Operationen der netzwerkabhängigen Gruppenverwaltung müssen Verbindungsfehler verständlich anzeigen (A8)."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 805,
+    "before": "Nach der funktionalen Umsetzung wurden die Sicherheitsgrenzen der Desktop-Anwendung zusammenhängend geprüft und daraus notwendige Nachbesserungen abgeleitet.",
+    "after": "Nach der funktionalen Umsetzung wurden die Sicherheitsgrenzen der Electron-Anwendung zusammenhängend geprüft und daraus notwendige Nachbesserungen abgeleitet."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 806,
+    "before": "Grundlage war die Electron-Sicherheitscheckliste, deren Empfehlungen gemäß A7 auf die Anwendung zu übertragen sind @ElectronSecurity2026.",
+    "after": "Grundlage war die Checkliste der Electron-Sicherheitsrichtlinien, deren Empfehlungen gemäß A7 auf die Anwendung zu übertragen sind @ElectronSecurity2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 811,
+    "before": "Die Matrix wurde während der Prüfung und Nachbesserung fortgeschrieben und mit den zugehörigen Prüfprotokollen verknüpft @StudyPlanSecurityChecks2026 @StudyPlanSecurity2026.",
+    "after": "Die Sicherheitsmatrix wurde während der Prüfung und Nachbesserung fortgeschrieben und mit den zugehörigen Prüfprotokollen verknüpft @StudyPlanSecurityChecks2026 @StudyPlanSecurity2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 816,
+    "before": "Hinzu kamen Fenster- und Sessioneinstellungen, die Electron-Version und die Konfiguration des ausgelieferten Pakets.",
+    "after": "Hinzu kamen Fenster- und Electron-Session-Einstellungen, die Electron-Version und die Konfiguration des ausgelieferten Anwendungspakets."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 819,
+    "before": "Damit werden Senderprüfung, Eingabevalidierung und fachliche Zugriffskontrolle jeweils einer eigenen Verantwortung zugeordnet @StudyPlanHardeningImplementation2026.",
+    "after": "Damit werden IPC-Absenderprüfung, Eingabevalidierung und fachliche Zugriffskontrolle jeweils einer eigenen Verantwortung zugeordnet @StudyPlanHardeningImplementation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 842,
+    "before": "        [Sind die Verbindungen für Studiengangsdaten, Supabase und PowerSync auf sichere Protokolle begrenzt, und wie werden Zugangsdaten in Adressen sowie Weiterleitungen behandelt?],",
+    "after": "        [Sind die Verbindungen für Katalogdaten, Supabase und PowerSync auf sichere Protokolle begrenzt, und wie werden Zugangsdaten in Adressen sowie Weiterleitungen behandelt?],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 845,
+    "before": "        [Sind Renderer und privilegierte Laufzeit durch die Einstellungen für Node-Integration, Kontextisolation und Sandbox getrennt?],",
+    "after": "        [Sind die Node.js-Integration im Renderer deaktiviert sowie Sandboxing und Kontextisolation aktiviert?],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 847,
+    "before": "        [Session-Berechtigungen],",
+    "after": "        [Berechtigungen der Electron-Session],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 854,
+    "before": "        [Begrenzt die Content Security Policy (CSP), aus welchen Quellen Skripte und weitere Inhalte geladen werden dürfen?],",
+    "after": "        [Begrenzt die CSP, aus welchen Quellen Skripte und weitere Inhalte geladen werden dürfen?],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 866,
+    "before": "        [Wie werden lokale Inhalte ausgeliefert, und bleibt der Dateizugriff auch bei abweichenden Pfaden oder Verknüpfungen auf die vorgesehene Rendererwurzel begrenzt?],",
+    "after": "        [Wie werden lokale Inhalte ausgeliefert, und bleibt der Dateizugriff auch bei abweichenden Pfaden oder Verknüpfungen auf das vorgesehene Renderer-Ressourcenverzeichnis begrenzt?],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 872,
+    "before": "        [Sind unbenötigte Electron-Startfunktionen über Fuses deaktiviert und die vorgesehenen Schutzmaßnahmen für das ASAR-Anwendungsarchiv im Paket wirksam?],",
+    "after": "        [Sind unbenötigte Electron-Startfunktionen über Fuses deaktiviert und die vorgesehenen Schutzmaßnahmen für das ASAR-Archiv im Paket wirksam?],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 885,
+    "before": "Die folgenden Änderungen betrafen das Laden lokaler Inhalte, die IPC-Senderprüfung, externe Verbindungen und die Konfiguration des Anwendungspakets @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.",
+    "after": "Die folgenden Änderungen betrafen das Laden lokaler Inhalte, die IPC-Absenderprüfung, externe Verbindungen und die Konfiguration des Anwendungspakets @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 887,
+    "before": "Die bisherige Auslieferung über `file://` wurde durch das eigene Protokoll `app:` ersetzt, dessen Grundlagen in @sec:theory-electron-protocols erläutert sind.",
+    "after": "Die bisherige Auslieferung über `file://` wurde durch das anwendungseigene URL-Schema `app:` ersetzt, dessen Grundlagen in @sec:theory-electron-protocols erläutert sind."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 888,
+    "before": "Sein Handler liefert ausschließlich Dateien innerhalb der gebauten Rendererwurzel aus.",
+    "after": "Sein Protokollhandler liefert ausschließlich Dateien innerhalb des gebauten Renderer-Ressourcenverzeichnisses aus."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 889,
+    "before": "Neben der syntaktischen Pfadprüfung wird der tatsächlich aufgelöste Dateipfad geprüft, damit auch Verknüpfungen keinen Zugriff außerhalb dieser Wurzel eröffnen.",
+    "after": "Neben der syntaktischen Pfadprüfung wird der tatsächlich aufgelöste Dateipfad geprüft, damit auch Verknüpfungen keinen Zugriff außerhalb des Renderer-Ressourcenverzeichnisses eröffnen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 891,
+    "before": "Navigation, Berechtigungsprüfung und IPC-Senderprüfung beziehen sich auf diese Dokumentpolicy.",
+    "after": "Navigation, Berechtigungsprüfung und IPC-Absenderprüfung beziehen sich auf diese Dokumentpolicy."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 895,
+    "before": "Beide IPC-Eingänge behielten ihre gemeinsame Senderprüfung.",
+    "after": "Beide IPC-Eingänge behielten ihre gemeinsame IPC-Absenderprüfung."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 897,
+    "before": "Dadurch lässt sich die tatsächlich verwendete Policy unabhängig vom Dispatcher prüfen @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.",
+    "after": "Dadurch lässt sich die tatsächlich verwendete Policy unabhängig vom API-Dispatcher prüfen @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 901,
+    "before": "Der Datenabruf im Feature Studiengänge und die Supabase-Anbindung verwenden zusätzlich `redirect: 'error'`.",
+    "after": "Der Datenabruf im Funktionsbereich Studiengänge und die Supabase-Anbindung verwenden zusätzlich `redirect: 'error'`."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 907,
+    "before": "Die Paketauswahl wurde auf gebaute Anwendungsteile und Produktionsabhängigkeiten begrenzt, während Drizzle-Migrationen weiterhin über `extraResources` ausgeliefert werden.",
+    "after": "Die Paketauswahl wurde auf gebaute Anwendungsteile und Produktionsabhängigkeiten begrenzt, während SQL-Migrationsdateien von Drizzle Kit weiterhin über `extraResources` ausgeliefert werden."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 913,
+    "before": "Aktiviert wurden `OnlyLoadAppFromAsar` und `EnableEmbeddedAsarIntegrityValidation`, um das Laden auf das Anwendungsarchiv zu beschränken und dessen Integritätsprüfung einzuschalten.",
+    "after": "Aktiviert wurden `OnlyLoadAppFromAsar` und `EnableEmbeddedAsarIntegrityValidation`, um das Laden auf das ASAR-Archiv zu beschränken und dessen Integritätsprüfung einzuschalten."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 919,
+    "before": "Die Codeinspektion erfasste Einstellungen und Kontrollen an den jeweiligen Einstiegspunkten; automatisierte Tests prüften Entscheidungen und Fehlerpfade.",
+    "after": "Die Quellcodeinspektion erfasste Einstellungen und Kontrollen an den jeweiligen Einstiegspunkten; automatisierte Tests prüften Entscheidungen und Fehlerpfade."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 920,
+    "before": "Paketprüfungen untersuchten die erzeugte Anwendung, während Laufzeitversuche ausgewählte Kontrollen im gestarteten Paket auslösten @StudyPlanSecurityRemediation2026.",
+    "after": "Paketprüfungen untersuchten das erzeugte Anwendungspaket, während manuelle Laufzeitversuche ausgewählte Kontrollen in der installierten Electron-Anwendung auslösten @StudyPlanSecurityRemediation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 922,
+    "before": "Im Code wurde nachvollzogen, wo Fenster-, Ressourcen- und Netzwerkregeln eingebunden sind und ob die IPC-Schemaprüfung vor der fachlichen Verarbeitung erfolgt.",
+    "after": "Im Code wurde nachvollzogen, wo Fenster-, Ressourcen- und Netzwerkregeln eingebunden sind und ob die IPC-Eingabevalidierung vor der fachlichen Verarbeitung erfolgt."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 923,
+    "before": "Für die automatisierten Prüfungen wurden vorhandene Dispatcher-, Service-, Upload- und Katalogtests sowie eine Security-Suite verwendet @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.",
+    "after": "Für die automatisierten Prüfungen wurden vorhandene API-Dispatcher-, Service-, Upload- und Katalogtests sowie eine Security-Suite verwendet @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 928,
+    "before": "Ein Redirecttest verwendete Node-Fetch mit einem lokalen Testserver @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.",
+    "after": "Ein Test von HTTP-Weiterleitungen verwendete Node-Fetch mit einem lokalen Testserver @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 933,
+    "before": "Die Laufzeitversuche wurden über den bestehenden Renderer des korrigierten Windows-Pakets ausgeführt und mithilfe der DevTools ausgelöst beziehungsweise beobachtet.",
+    "after": "Die manuellen Laufzeitversuche wurden in der installierten Electron-Anwendung auf Windows mithilfe der DevTools ausgelöst und im bestehenden Renderer beobachtet. Dabei wurde der korrigierte Paketstand verwendet."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 948,
+    "before": "        [Je eine ungültige Eingabe über die API- und Kollaborationsbridge senden.],",
+    "after": "        [Je eine ungültige Eingabe über die API-Preload-Schnittstelle und die Kollaborations-Preload-Schnittstelle senden.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 949,
+    "before": "        [Fehlerantworten `VALIDATION_ERROR` beziehungsweise `INVALID`; die vorgelagerte Schemaprüfung wird ergänzend im Code nachvollzogen.],",
+    "after": "        [Fehlerantworten `VALIDATION_ERROR` beziehungsweise `INVALID`; die vorgelagerte Eingabevalidierung wird ergänzend im Code nachvollzogen.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 953,
+    "before": "        [P3 – Inhaltsrichtlinie],",
+    "after": "        [P3 – CSP],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 961,
+    "before": "    caption: [Durchführung und Prüfkriterien der Laufzeitversuche nach @StudyPlanSecurityChecks2026 und @StudyPlanSecurityRemediation2026.],",
+    "after": "    caption: [Durchführung und Prüfkriterien der manuellen Laufzeitversuche nach @StudyPlanSecurityChecks2026 und @StudyPlanSecurityRemediation2026.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 966,
+    "before": "Die technischen Paket- und Laufzeitbelege stammen vom 4. Oktober 2026 und wurden in der Matrix vom 6. Oktober zusammengeführt @StudyPlanSecurityRemediation2026 @StudyPlanSecurity2026.",
+    "after": "Die technischen Paket- und Laufzeitbelege stammen vom 4. Oktober 2026 und wurden in der Sicherheitsmatrix vom 6. Oktober zusammengeführt @StudyPlanSecurityRemediation2026 @StudyPlanSecurity2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 977,
+    "before": "*M1: Ausgangsartefakt und Zielumgebung abgleichen.*",
+    "after": "*M1: Webprototyp und Desktop-Zielumgebung abgleichen.*"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 978,
+    "before": "Vor der Übernahme sind Oberfläche, Schnittstellen, Fachlogik, Datenhaltung und externe Abhängigkeiten zu erfassen.",
+    "after": "Vor der Übernahme sind Benutzeroberfläche, Schnittstellen, Geschäftslogik, Datenhaltung und externe Abhängigkeiten zu erfassen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 980,
+    "before": "Zunächst sollte je ein repräsentativer Ablauf der benötigten Interaktionsformen ausgewählt werden.",
+    "after": "Zunächst sollte je ein repräsentativer Ablauf der benötigten Verarbeitungsmuster ausgewählt werden."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 985,
+    "before": "Die Fallstudie zeigt den Nutzen dieser Vorprüfung: Die verwendete TypeScript-Laufzeit ermöglichte die Weiterverwendung von Backend-Komponenten, während die PowerSync-Anbindung zusätzliche Anpassungen nativer Abhängigkeiten und ihrer Paketierung erforderte @StudyPlanSyncSpikes2026 @StudyPlanSyncIntegration2026.",
+    "after": "Die Spike-Tests der Fallstudie zeigen den Nutzen einer solchen technischen Erprobung: Die verwendete TypeScript-Laufzeit ermöglichte die Weiterverwendung von Backend-Komponenten, während die PowerSync-Anbindung zusätzliche Anpassungen nativer Abhängigkeiten und ihrer Paketierung erforderte @StudyPlanSyncSpikes2026 @StudyPlanSyncIntegration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1003,
+    "before": "Ein vorhandener API-Vertrag kann hierfür weiterverwendet werden, sofern seine Bedeutungen erhalten bleiben.",
+    "after": "Ein vorhandener OpenAPI-Vertrag kann hierfür weiterverwendet werden, sofern seine Bedeutungen erhalten bleiben."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1009,
+    "before": "Änderungen am Vertrag müssen in den erzeugten Modulen nachvollziehbar ankommen; Darstellung und Fachlogik sind nur bei tatsächlich veränderter Semantik anzupassen.",
+    "after": "Änderungen am Vertrag müssen in den erzeugten Modulen nachvollziehbar ankommen; Darstellung und Geschäftslogik sind nur bei tatsächlich veränderter Semantik anzupassen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1015,
+    "before": "Dabei sind Oberflächenkomponenten und ihre Abhängigkeiten mit den Build-, Import- und Routingbedingungen der Desktop-Umgebung abzugleichen.",
+    "after": "Dabei sind Oberflächenkomponenten und ihre Abhängigkeiten mit den Build-, Import- und Routingbedingungen der Desktop-Zielumgebung abzugleichen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1017,
+    "before": "In Webrouten verbundene Schnittstellenverarbeitung, Fachlogik und Datenzugriffe sind nach ihren Verantwortlichkeiten zu trennen.",
+    "after": "In Webrouten verbundene Schnittstellenverarbeitung, Geschäftslogik und Datenzugriffe sind nach ihren Verantwortlichkeiten zu trennen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1021,
+    "before": "Im Demonstrator erschloss die lokale Anmeldung den Zugang zu den fachlichen Seiten; die Notenverwaltung konkretisierte anschließend die wiederverwendbare Aufteilung der CRUD-Verarbeitung @StudyPlanLocalAuth2026 @StudyPlanGradesMigration2026.",
+    "after": "Im Demonstrator erschloss die lokale Anmeldung den Zugang zu den fachlichen Seiten; die Notenverwaltung konkretisierte anschließend die wiederverwendbare Aufteilung der lokalen CRUD-Verarbeitung @StudyPlanLocalAuth2026 @StudyPlanGradesMigration2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1025,
+    "before": "Die Oberfläche soll den Import auslösen; der Main-Prozess übernimmt die native Auswahl und den Zugriff auf die ausgewählte Datei.",
+    "after": "Die Benutzeroberfläche soll den Import auslösen; der Main-Prozess übernimmt die native Auswahl und den Zugriff auf die ausgewählte Datei."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1033,
+    "before": "Je nach Funktion ist zwischen dem Abruf externer Daten und der Synchronisierung eigener Änderungen zu wählen.",
+    "after": "Je nach Funktion ist zwischen dem Abruf externer Daten und der Synchronisation eigener Änderungen zu wählen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1036,
+    "before": "*M6: Downloads mit dauerhafter lokaler Übernahme verbinden.*",
+    "after": "*M6: Einseitige Datenübernahme mit dauerhafter lokaler Speicherung verbinden.*"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1042,
+    "before": "Die Oberfläche soll den vorhandenen lokalen Bestand weiterhin lesen können, auch wenn die zusätzliche Aktualisierung scheitert.",
+    "after": "Die Benutzeroberfläche soll den vorhandenen lokalen Bestand weiterhin lesen können, auch wenn die zusätzliche Aktualisierung scheitert."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1046,
+    "before": "*M7: Synchronisierung an einem ausgewählten Funktionsbereich integrieren.*",
+    "after": "*M7: Synchronisation an einem ausgewählten Funktionsbereich integrieren.*"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1047,
+    "before": "Vor der breiten Migration ist die vorgesehene Kombination aus lokaler Datenbank, Synchronisierung und entferntem Backend in einem begrenzten Ablauf zu prüfen.",
+    "after": "Vor der breiten Migration ist die vorgesehene Kombination aus lokaler Datenbank, Synchronisation und entferntem Backend in einem begrenzten Ablauf zu prüfen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1048,
+    "before": "Die Vorprüfung soll Schemaabbildung, ORM-Zugriff, Identitäten, lokale Persistenz, ausstehende Änderungen und Paketbetrieb umfassen.",
+    "after": "Die Spike-Tests sollen Schemaabbildung, ORM-Zugriff, lokale Benutzerkonten und Supabase-Benutzerkonten, lokale Speicherung, ausstehende Änderungen und den Betrieb der installierten Anwendung umfassen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1050,
+    "before": "Daraufhin wurde die schrittweise Migration eines abgegrenzten Kollaborationsbereichs gewählt @StudyPlanSyncSpikes2026.",
+    "after": "Daraufhin wurde die schrittweise Erweiterung des Studiengruppen-Features um Synchronisation gewählt @StudyPlanSyncSpikes2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1055,
+    "before": "Vorausgesetzte entfernte Konten und fachliche Änderungen der Benutzerführung sind ausdrücklich festzuhalten @StudyPlanSyncIntegration2026 @StudyPlanSyncArchitecture2026.",
+    "after": "Vorausgesetzte Supabase-Benutzerkonten und fachliche Änderungen der Benutzerführung sind ausdrücklich festzuhalten @StudyPlanSyncIntegration2026 @StudyPlanSyncArchitecture2026."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1063,
+    "before": "Mit der Synchronisierung ist außerdem die Verantwortung für Schemaänderungen neu zu ordnen.",
+    "after": "Mit der Synchronisation ist außerdem die Verantwortung für Schemaänderungen neu zu ordnen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1071,
+    "before": "Abschließend sind die tatsächlich entstandenen Fenster, Preload-Bridges, IPC-Eingänge, Ressourcen- und Netzwerkpfade gemeinsam zu prüfen.",
+    "after": "Abschließend sind die tatsächlich entstandenen Fenster, Preload-Schnittstellen, IPC-Eingänge, Ressourcen- und Netzwerkpfade gemeinsam zu prüfen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1098,
+    "before": "        [Interaktionsformen und externe Abhängigkeiten benennen; kleinen Desktop-Paketstand einschließlich vorgesehener nativer Module starten.],",
+    "after": "        [Verarbeitungsmuster und externe Abhängigkeiten benennen; einen frühen Desktop-Paketstand einschließlich vorgesehener nativer Module installieren und die installierte Anwendung starten.],"
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1106,
+    "before": "        [Aufruf von Oberfläche bis Repository nachvollziehen; persönliche Datenzuordnung, CRUD-Verhalten und Fehler prüfen.",
+    "after": "        [Aufruf von Benutzeroberfläche bis Repository nachvollziehen; persönliche Datenzuordnung, CRUD-Verhalten und Fehler prüfen."
+  },
+  {
+    "file": "content/05-migration.typ",
+    "line": 1109,
+    "before": "        [Abbruch, ungeeignete Eingaben und gültigen Import prüfen; fachliches Ergebnis und Aktualisierung der Oberfläche nachvollziehen.],",
+    "after": "        [Abbruch, ungeeignete Eingaben und gültigen Import prüfen; fachliches Ergebnis und Aktualisierung der Benutzeroberfläche nachvollziehen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 6,
+    "before": "Im Mittelpunkt stehen die lokale Nutzbarkeit, die Architektur, die Weiterverwendung des Ausgangsartefakts, die Online-Anbindungen und die Sicherheitsmaßnahmen.",
+    "after": "Im Mittelpunkt stehen die lokale Nutzbarkeit, die Architektur, die Weiterverwendung des Webprototyps, die Online-Anbindungen und die Sicherheitsmaßnahmen."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 11,
+    "before": "Die Funktionsprüfung folgt typischen Benutzerabläufen: Anwendung starten, Daten bearbeiten, die Verbindung unterbrechen und gespeicherte Änderungen nach einem Neustart erneut öffnen.",
+    "after": "Die Funktionsprüfung folgt typischen Benutzerabläufen: installierte Electron-Anwendung starten, Daten bearbeiten, die Verbindung unterbrechen und gespeicherte Änderungen nach einem Neustart erneut öffnen."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 12,
+    "before": "Für die Kollaboration werden Aufgaben zwischen zwei Konten ausgetauscht sowie Gruppen und Einladungen geprüft.",
+    "after": "Für die synchronisierten Studiengruppen werden gemeinsame Gruppenaufgaben zwischen zwei Supabase-Benutzerkonten ausgetauscht sowie Gruppen und direkte Kontoeinladungen geprüft."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 15,
+    "before": "Manuelle Versuche prüfen die Bedienung der gebauten Anwendung.",
+    "after": "Manuelle Funktionsprüfungen untersuchen die Bedienung der installierten Electron-Anwendung."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 20,
+    "before": "== Nutzbarkeit der lokalen Desktop-Anwendung <sec:local-feature-evaluation>",
+    "after": "== Nutzbarkeit der Electron-Anwendung <sec:local-feature-evaluation>"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 22,
+    "before": "Die lokale Kernanwendung soll ohne Internetverbindung starten und persönliche Daten dauerhaft speichern.",
+    "after": "Die Offline-Kernanwendung soll ohne Internetverbindung starten und persönliche Daten dauerhaft speichern."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 38,
+    "before": "        [Verbindung trennen, Anwendung starten und mit einem vorhandenen lokalen Konto anmelden.],",
+    "after": "        [Verbindung trennen, installierte Electron-Anwendung starten und mit einem vorhandenen lokalen Benutzerkonto anmelden.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 41,
+    "before": "        [Noten, Kalendereinträge und Stundenplaneinträge ohne Verbindung anlegen beziehungsweise bearbeiten und erneut öffnen.],",
+    "after": "        [Noten, Termine und Stundenplaneinträge ohne Verbindung anlegen beziehungsweise bearbeiten und erneut öffnen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 50,
+    "before": "        [Zu einem anderen lokalen Konto und anschließend zum ursprünglichen Konto wechseln.],",
+    "after": "        [Zu einem anderen lokalen Benutzerkonto und anschließend zum ursprünglichen Konto wechseln.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 59,
+    "before": "Ihre Nutzung setzt keine Anmeldung am entfernten Kollaborationsdienst voraus.",
+    "after": "Ihre Nutzung setzt keine Anmeldung mit einem Supabase-Benutzerkonto voraus."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 61,
+    "before": "Kalender- und Notenimport wurden gemeinsam als Dateiimport geprüft.",
+    "after": "Der iCal-Import und der CSV-Notenimport wurden gemeinsam als Dateiimporte geprüft."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 63,
+    "before": "Die Desktop-Anpassung betrifft insbesondere die lokale Dateiauswahl.",
+    "after": "Die Desktop-Anpassung betrifft insbesondere die native Dateiauswahl."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 75,
+    "before": "        table.header([*Prüffall*], [*Ergebnis bei Kalender- und Notenimport*]),",
+    "after": "        table.header([*Prüffall*], [*Ergebnis beim iCal-Import und CSV-Notenimport*]),"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 84,
+    "before": "    caption: [Ergebnisse der Kalender- und Notenimporte.],",
+    "after": "    caption: [Ergebnisse des iCal-Imports und des CSV-Notenimports.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 88,
+    "before": "== Architektur und Weiterverwendung des Ausgangsartefakts <sec:architecture-evaluation>",
+    "after": "== Architektur und Weiterverwendung des Webprototyps <sec:architecture-evaluation>"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 92,
+    "before": "Hier lässt sich der Aufruf von der Oberfläche über die Schnittstelle und die fachliche Verarbeitung bis zum Datenzugriff verfolgen.",
+    "after": "Hier lässt sich der Aufruf von der Benutzeroberfläche über die Schnittstelle und die fachliche Verarbeitung bis zum Datenzugriff verfolgen."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 106,
+    "before": "        [Darstellung, fachliche Verarbeitung und Datenzugriff am Notenpfad zuordnen.],",
+    "after": "        [Benutzeroberfläche, Geschäftslogik und Datenzugriff am Verarbeitungspfad der Notenverwaltung zuordnen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 108,
+    "before": "        [Unabhängig prüfbare Fachlogik],",
+    "after": "        [Unabhängig prüfbare Geschäftslogik],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 109,
+    "before": "        [Notenverarbeitung ohne Bedienung der Oberfläche testen.],",
+    "after": "        [Geschäftslogik der Notenverwaltung ohne Bedienung der Benutzeroberfläche testen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 112,
+    "before": "        [Kommunikation zwischen Oberfläche und lokaler Verarbeitung nachvollziehen.],",
+    "after": "        [Kommunikation zwischen Benutzeroberfläche und lokaler Verarbeitung nachvollziehen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 115,
+    "before": "        [Erhaltene Bestandteile und notwendige Änderungen mit dem Ausgangsartefakt vergleichen.],",
+    "after": "        [Erhaltene Bestandteile und notwendige Änderungen mit dem Webprototyp vergleichen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 116,
+    "before": "        [Oberflächenkomponenten, fachliche Berechnungen und der API-Vertrag blieben als Grundlage erhalten. Laufzeit, Routing, Aufruftransport und Datenbankanbindung wurden angepasst.],",
+    "after": "        [Oberflächenkomponenten, fachliche Berechnungen und der OpenAPI-Vertrag blieben als Grundlage erhalten. Laufzeit, Routing, Aufruftransport und Datenbankanbindung wurden angepasst.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 123,
+    "before": "Die Ergebnisse bestätigen die geforderte Trennung der Verantwortlichkeiten und die Prüfbarkeit der fachlichen Verarbeitung.",
+    "after": "Die Ergebnisse bestätigen die geforderte Trennung der Verantwortlichkeiten und die Prüfbarkeit der Geschäftslogik."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 129,
+    "before": "=== Einseitige Übernahme von Studiengangsdaten",
+    "after": "=== Einseitige Datenübernahme aus dem Studiengangskatalog"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 153,
+    "before": "        [Der Abruffehler wurde gemeldet; vorhandene Studiengänge und Kurse blieben verfügbar.],",
+    "after": "        [Der Abruffehler wurde gemeldet; vorhandene Studiengänge und Module blieben verfügbar.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 189,
+    "before": "        [Während einer bestehenden Sitzung die Verbindung trennen, eine Aufgabe anlegen und die Ansicht erneut öffnen.],",
+    "after": "        [Während einer bestehenden Supabase-Kollaborationssitzung die Verbindung trennen, eine gemeinsame Gruppenaufgabe anlegen und die Ansicht erneut öffnen.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 206,
+    "before": "Aufgaben können während einer bestehenden Kollaborationssitzung ohne Verbindung bearbeitet werden.",
+    "after": "Aufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 207,
+    "before": "Nach einem Anwendungsneustart ist eine erneute entfernte Anmeldung erforderlich; anschließend stehen die gespeicherten Änderungen wieder zur Verfügung und werden übertragen.",
+    "after": "Nach einem Anwendungsneustart ist eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich; anschließend stehen die gespeicherten Änderungen wieder zur Verfügung und werden übertragen."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 238,
+    "before": "Die geprüften Verwaltungsaktionen benötigen eine Verbindung, während Aufgabenänderungen zunächst lokal verarbeitet werden.",
+    "after": "Die geprüften Operationen der netzwerkabhängigen Gruppenverwaltung benötigen eine Verbindung, während Aufgabenänderungen zunächst lokal verarbeitet werden."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 245,
+    "before": "Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte Laufzeitversuche ergänzt.",
+    "after": "Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte manuelle Laufzeitversuche ergänzt."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 264,
+    "before": "        [Inhaltsrichtlinie],",
+    "after": "        [CSP],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 266,
+    "before": "        [Die Inhaltsrichtlinie blockierte das Skript; es wurde nicht ausgeführt.],",
+    "after": "        [Die CSP blockierte das Skript; es wurde nicht ausgeführt.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 269,
+    "before": "        [Die Anwendung blieb im vorgesehenen Dokument. Es öffnete sich weder ein zusätzliches App-Fenster noch der Systembrowser.],",
+    "after": "        [Die Anwendung blieb im vorgesehenen Dokument. Es öffnete sich weder ein zusätzliches Anwendungsfenster noch der Systembrowser.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 300,
+    "before": "        [Lokale Datenbearbeitung], [Noten, Kalender und Stundenplan],",
+    "after": "        [Lokale CRUD-Verarbeitung], [Noten, Kalender und Stundenplan],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 301,
+    "before": "        [Oberfläche, fachliche Verarbeitung und Datenzugriff übernehmen getrennte Aufgaben.],",
+    "after": "        [Benutzeroberfläche, Geschäftslogik und Datenzugriff übernehmen getrennte Aufgaben.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 302,
+    "before": "        [Dateiimport], [Kalender- und Notenimport],",
+    "after": "        [Dateiimport], [iCal-Import und CSV-Notenimport],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 306,
+    "before": "        [Kollaborative Synchronisierung], [Gemeinsame Aufgaben],",
+    "after": "        [Kollaborative Synchronisation], [Gemeinsame Gruppenaufgaben],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 308,
+    "before": "        [Unmittelbare Online-Aktion], [Gruppen und Einladungen],",
+    "after": "        [Netzwerkabhängige Gruppenverwaltung], [Studiengruppen und direkte Kontoeinladungen],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 317,
+    "before": "Die Auswahl der Zielumgebung und die lokale Datenhaltung schaffen die Grundlage; begrenzte Schnittstellen und vollständige Bearbeitungsabläufe strukturieren die Migration einzelner Funktionen.",
+    "after": "Die Auswahl der Desktop-Zielumgebung und die lokale Datenhaltung schaffen die Grundlage; begrenzte Schnittstellen und vollständige Bearbeitungsabläufe strukturieren die Migration einzelner Funktionen."
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 339,
+    "before": "        [Lauffähige Desktop-Anwendung],",
+    "after": "        [Lauffähige Electron-Anwendung],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 340,
+    "before": "        [Die gebaute Anwendung startet; die ausgewählten Benutzerabläufe funktionieren.],",
+    "after": "        [Die installierte Electron-Anwendung startet; die ausgewählten Benutzerabläufe funktionieren.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 342,
+    "before": "        [Darstellung, Fachlogik und Datenzugriff sind getrennt. Die Notenverarbeitung ist ohne Oberfläche prüfbar.],",
+    "after": "        [Benutzeroberfläche, Geschäftslogik und Datenzugriff sind getrennt. Die Geschäftslogik der Notenverwaltung ist ohne Benutzeroberfläche prüfbar.],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 343,
+    "before": "        [Weiterverwendung des Ausgangsartefakts],",
+    "after": "        [Weiterverwendung des Webprototyps],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 349,
+    "before": "        [Kollaborative Synchronisierung],",
+    "after": "        [Kollaborative Synchronisation],"
+  },
+  {
+    "file": "content/06-evaluation.typ",
+    "line": 352,
+    "before": "        [Alle Empfehlungen sind auf Anwendbarkeit, Umsetzung und Prüfung eingeordnet. Die ausgewählten Sicherheitsversuche verliefen erfolgreich; die genannte Prüfgrenze bleibt bestehen.],",
+    "after": "        [Alle Empfehlungen sind auf Anwendbarkeit, Umsetzung und Prüfung eingeordnet. Die ausgewählten manuellen Laufzeitversuche verliefen erfolgreich; die genannte Prüfgrenze bleibt bestehen.],"
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 5,
+    "before": "Die Migration des KI-generierten Studienplaners von Replit zu einer lokal nutzbaren Electron-App gelang im festgelegten Umfang.",
+    "after": "Die Migration des KI-generierten Studienplaners von Replit zu einer lokal nutzbaren Electron-Anwendung gelang im festgelegten Umfang."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 6,
+    "before": "Die geprüften persönlichen Features funktionieren offline, und gespeicherte Daten bleiben nach einem Neustart verfügbar.",
+    "after": "Die geprüften persönlichen Funktionsbereiche funktionieren offline, und gespeicherte Daten bleiben nach einem Neustart verfügbar."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 7,
+    "before": "Gemeinsame Aufgaben lassen sich während einer bestehenden Sitzung offline bearbeiten und später abgleichen.",
+    "after": "Gemeinsame Gruppenaufgaben lassen sich während einer bestehenden Supabase-Kollaborationssitzung offline bearbeiten und später synchronisieren."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 9,
+    "before": "Die Sicherheitsprüfung in @sec:security-evaluation zeigt, dass die Electron Security Guidelines im festgelegten Prüfumfang eingehalten wurden.",
+    "after": "Die Sicherheitsprüfung in @sec:security-evaluation zeigt, dass die Electron-Sicherheitsrichtlinien im festgelegten Prüfumfang eingehalten wurden."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 16,
+    "before": "Teile des TypeScript-Backends konnten übernommen werden, weil sowohl der Web-Prototyp als auch Electron eine Node.js-Laufzeit bereitstellen.",
+    "after": "Teile des TypeScript-Backends konnten übernommen werden, weil sowohl der Webprototyp als auch Electron eine Node.js-Laufzeit bereitstellen."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 19,
+    "before": "Pro Feature ist zu klären, wo seine Verarbeitung bisher stattfindet und welche Schritte künftig auf dem Gerät laufen müssen.",
+    "after": "Pro Funktionsbereich ist zu klären, wo seine Verarbeitung bisher stattfindet und welche Schritte künftig auf dem Gerät laufen müssen."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 21,
+    "before": "Im Vorversuch änderte die KI bei der Migration unbeabsichtigt das Verhalten einzelner Features.",
+    "after": "Im ersten Migrationsversuch änderte die KI bei der Migration unbeabsichtigt das Verhalten einzelner Funktionsbereiche."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 22,
+    "before": "Aus den Erfahrungen des Vorversuchs entstand das Ziel, vorhandene Features möglichst unverändert zu übernehmen und notwendige Anpassungen ausdrücklich zu begründen.",
+    "after": "Aus den Erfahrungen des ersten Migrationsversuchs entstand das Ziel, vorhandene Funktionsbereiche möglichst unverändert zu übernehmen und notwendige Anpassungen ausdrücklich zu begründen."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 27,
+    "before": "Der Wechsel zur Desktop-App eröffnete Entscheidungen, die im ursprünglichen Web-Prototyp noch nicht anstanden.",
+    "after": "Der Wechsel zur Electron-Anwendung eröffnete Entscheidungen, die im ursprünglichen Webprototyp noch nicht anstanden."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 28,
+    "before": "Bei Gruppeneinladungen wurde der Einladungslink durch die Auswahl eines Kontos in der App ersetzt.",
+    "after": "Bei Gruppeneinladungen wurde die linkbasierte Gruppeneinladung durch die direkte Kontoeinladung eines vorhandenen Supabase-Benutzerkontos ersetzt."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 31,
+    "before": "Die direkte Einladung eines vorhandenen Kontos wurde gewählt, um den Ablauf innerhalb der App abzuwickeln; die gemeinsame Verwaltung von Einladungen und Mitgliedschaften bleibt beim entfernten Backend.",
+    "after": "Die direkte Kontoeinladung wurde gewählt, um den Ablauf innerhalb der Electron-Anwendung abzuwickeln; die gemeinsame Verwaltung von Einladungen und Mitgliedschaften bleibt beim entfernten Backend."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 32,
+    "before": "Das Feature blieb erhalten, während sich der Bedienungsablauf bewusst änderte.",
+    "after": "Der Funktionsbereich blieb erhalten, während sich der Bedienungsablauf bewusst änderte."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 33,
+    "before": "Auch die erneute Online-Anmeldung nach dem Schließen der App folgt einer Entscheidung.",
+    "after": "Auch die erneute Anmeldung mit dem Supabase-Benutzerkonto nach dem Schließen der Electron-Anwendung folgt einer Entscheidung."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 34,
+    "before": "Die entfernte Sitzung bleibt nur für die Laufzeit der App bestehen.",
+    "after": "Die Supabase-Kollaborationssitzung bleibt nur für die Laufzeit der Electron-Anwendung bestehen."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 37,
+    "before": "Die Synchronisierung wurde zunächst für gemeinsame Gruppenaufgaben eingeführt.",
+    "after": "Die Synchronisation wurde zunächst für gemeinsame Gruppenaufgaben eingeführt."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 38,
+    "before": "So konnten Noten, Kalender und Stundenplan ihre bisherige lokale Datenbank weiterverwenden.",
+    "after": "So konnten Noten, Kalender und Stundenplan ihre bisherige lokale Kerndatenbank weiterverwenden."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 39,
+    "before": "Die zweite lokale Datenbank begrenzte den Umfang der Umstellung, brachte aber zusätzlichen Pflegeaufwand mit sich.",
+    "after": "Die zusätzliche lokale Kollaborationsdatenbank begrenzte den Umfang der Umstellung, brachte aber zusätzlichen Pflegeaufwand mit sich."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 41,
+    "before": "Der eigene Generator hält Typen, Eingabeprüfungen und Aufrufe auf demselben Stand, muss dafür aber selbst gepflegt werden.",
+    "after": "Der IPC-Codegenerator hält Typen, Eingabevalidierungen und Aufrufe auf demselben Stand, muss dafür aber selbst gepflegt werden."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 42,
+    "before": "Für den synchronisierten Gruppenbereich kam ein zweiter API-Vertrag hinzu.",
+    "after": "Für die synchronisierten Studiengruppen kam neben dem OpenAPI-Vertrag ein manuell typisierter Kollaborationsvertrag hinzu."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 50,
+    "before": "Für Entwickler macht der Migrationspfad das Vorhaben, eine App außerhalb ihrer ursprünglichen Plattform zu betreiben, planbar.",
+    "after": "Für Entwickler macht der Migrationspfad die Migration einer Webanwendung aus ihrer ursprünglichen Plattform in eine Desktop-Zielumgebung planbar."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 51,
+    "before": "Sie können mit einem Feature beginnen, seine Abhängigkeiten untersuchen und festlegen, welches Verhalten nach der Migration erhalten bleiben soll.",
+    "after": "Sie können mit einem Funktionsbereich beginnen, seine Abhängigkeiten untersuchen und festlegen, welches Verhalten nach der Migration erhalten bleiben soll."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 53,
+    "before": "Bei einem KI-generierten Prototyp kann diese Bestandsaufnahme besonders hilfreich sein, wenn die Oberfläche bereits funktioniert und der Aufbau des Codes noch wenig vertraut ist.",
+    "after": "Bei einem KI-generierten Prototyp kann diese Bestandsaufnahme besonders hilfreich sein, wenn die Benutzeroberfläche bereits funktioniert und der Aufbau des Codes noch wenig vertraut ist."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 57,
+    "before": "Die Arbeit untersucht einen Replit-Prototyp und einen Technologiestack.",
+    "after": "Die Arbeit untersucht einen Webprototyp und einen Technologiestack."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 59,
+    "before": "Auch wurde nicht verglichen, ob das Vorgehen gegenüber anderen Ansätzen Aufwand spart oder ob die im Vorversuch beobachteten Probleme typisch für KI-gestützte Migrationen sind.",
+    "after": "Auch wurde nicht verglichen, ob das Vorgehen gegenüber anderen Ansätzen Aufwand spart oder ob die im ersten Migrationsversuch beobachteten Probleme typisch für KI-gestützte Migrationen sind."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 61,
+    "before": "Von den Local-First-Aspekten wurden die autonome Offline-Verfügbarkeit und die Zusammenarbeit mehrerer Nutzer durch Synchronisierung untersucht.",
+    "after": "Von den Local-First-Aspekten wurden die autonome Offline-Verfügbarkeit und die Zusammenarbeit mehrerer Nutzer durch Synchronisation untersucht."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 63,
+    "before": "Die Ergebnisse beziehen sich damit auf diese beiden Schwerpunkte und erlauben keine abschließende Bewertung der App anhand des gesamten Local-First-Paradigmas.",
+    "after": "Die Ergebnisse beziehen sich damit auf diese beiden Schwerpunkte und erlauben keine abschließende Bewertung der Electron-Anwendung anhand des gesamten Local-First-Paradigmas."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 64,
+    "before": "Die Wahl von PowerSync bezog sich auf gemeinsame Aufgaben mehrerer Personen.",
+    "after": "Die Wahl von PowerSync bezog sich auf gemeinsame Gruppenaufgaben mehrerer Personen."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 72,
+    "before": "Ein Vergleich ausgewählter Features vor und nach der Migration würde zeigen, ob die Automatisierung Aufwand spart und das vorgesehene Verhalten erhält.",
+    "after": "Ein Vergleich ausgewählter Funktionsbereiche vor und nach der Migration würde zeigen, ob die Automatisierung Aufwand spart und das vorgesehene Verhalten erhält."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 74,
+    "before": "Für die Weiterentwicklung der App bietet sich ein Test über zwei Versionen hinweg an.",
+    "after": "Für die Weiterentwicklung der Electron-Anwendung bietet sich ein Test über zwei Versionen hinweg an."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 80,
+    "before": "Die beiden lokalen Datenbanken könnten in einer weiteren Entwicklungsphase zusammengeführt werden.",
+    "after": "Die lokale Kerndatenbank und die lokale Kollaborationsdatenbank könnten in einer weiteren Entwicklungsphase zusammengeführt werden."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 82,
+    "before": "Für die Zusammenarbeit könnte die App außerdem eine Registrierung für entfernte Konten erhalten, einschließlich Kontobestätigung und Zuordnung zur lokalen Anmeldung.",
+    "after": "Für die Zusammenarbeit könnte die Electron-Anwendung außerdem eine Registrierung für Supabase-Benutzerkonten erhalten, einschließlich Kontobestätigung und einer ausdrücklichen Verknüpfung mit dem lokalen Benutzerkonto."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 84,
+    "before": "Ein gemeinsamer API-Vertrag könnte schließlich die Aufrufe für persönliche Features und die Zusammenarbeit aus derselben Quelle beschreiben und generieren.",
+    "after": "Ein gemeinsamer API-Vertrag könnte schließlich die Aufrufe für persönliche Funktionsbereiche und die Zusammenarbeit aus derselben Quelle beschreiben und generieren."
+  },
+  {
+    "file": "content/07-discussion.typ",
+    "line": 85,
+    "before": "Dabei müssten die jeweiligen Prüfungen für lokale und entfernte Sitzungen erhalten bleiben.",
+    "after": "Dabei müssten die jeweiligen Prüfungen für lokale Anwendungssitzungen und Supabase-Kollaborationssitzungen erhalten bleiben."
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">Ein gemeinsamer OpenAPI-Vertrag bildet die Ausgangsbasis. Im Web-Prototyp erzeugt Orval Client, React-Query-Hooks und Zod-Schemata. Im Electron-Projekt übernehmen eigene TypeScript-Skripte diese Generierung. Links erfolgt der Aufruf von React per HTTP an einen Express-Route-Handler und PostgreSQL. Rechts ruft der Renderer über eine begrenzte Preload-Bridge den IPC-Dispatcher im Main-Prozess auf. Dieser validiert Anfragen und Ergebnisse und leitet an Handler, Services und Repositories mit SQLite weiter. Gestrichelte Pfeile zeigen Generierung und Einbindung, durchgezogene Pfeile Laufzeitkommunikation. Spätere Online- und Synchronisierungspfade sind nicht dargestellt.</desc>",
+    "after": "  <desc id=\"description\">Ein gemeinsamer OpenAPI-Vertrag bildet die Ausgangsbasis. Im Webprototyp erzeugt Orval Client, React-Query-Hooks und Zod-Laufzeitschemata. Im Electron-Projekt übernehmen eigene TypeScript-Skripte diese Generierung. Links erfolgt der Aufruf von React per HTTP an einen Express-Route-Handler und PostgreSQL. Rechts ruft der Renderer über eine begrenzte Preload-Schnittstelle den API-Dispatcher im Main-Prozess auf. Dieser validiert Anfragen und Ergebnisse und leitet an Handler, Services und Repositories mit SQLite weiter. Gestrichelte Pfeile zeigen Generierung und Einbindung, durchgezogene Pfeile Laufzeitkommunikation. Spätere Online- und Synchronisationspfade sind nicht dargestellt.</desc>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 19,
+    "before": "  <text x=\"660\" y=\"38\" class=\"heading\">API-Vertrag als gemeinsame Ausgangsbasis</text>",
+    "after": "  <text x=\"660\" y=\"38\" class=\"heading\">OpenAPI-Vertrag als gemeinsame Ausgangsbasis</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 22,
+    "before": "  <text x=\"660\" y=\"122\" class=\"note\">Operationskennungen, Parameter und Datenschemata</text>",
+    "after": "  <text x=\"660\" y=\"122\" class=\"note\" style=\"font-size: 23px\">Operationskennungen, Parameter und Datenschemata</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 26,
+    "before": "  <text x=\"330\" y=\"196\" class=\"heading\">Web-Prototyp</text>",
+    "after": "  <text x=\"330\" y=\"196\" class=\"heading\">Webprototyp</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 27,
+    "before": "  <text x=\"990\" y=\"196\" class=\"heading\">Electron-Kernanwendung</text>",
+    "after": "  <text x=\"990\" y=\"196\" class=\"heading\">Offline-Kernanwendung</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 40,
+    "before": "  <text x=\"475\" y=\"325\" class=\"note\">Typen und</text><text x=\"475\" y=\"350\" class=\"note\">Zod-Schemata</text>",
+    "after": "  <text x=\"475\" y=\"325\" class=\"note\">Typen und</text><text x=\"475\" y=\"350\" class=\"note\" style=\"font-size: 22px\">Zod-Laufzeitschemata</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 42,
+    "before": "  <text x=\"1135\" y=\"325\" class=\"note\">Gemeinsame Typen</text><text x=\"1135\" y=\"350\" class=\"note\">und Zod-Verträge</text>",
+    "after": "  <text x=\"1135\" y=\"325\" class=\"note\">Gemeinsame Typen</text><text x=\"1135\" y=\"350\" class=\"note\" style=\"font-size: 22px\">Zod-Laufzeitschemata</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 66,
+    "before": "  <text x=\"990\" y=\"620\" class=\"heading\">Preload-Bridge</text>",
+    "after": "  <text x=\"990\" y=\"620\" class=\"heading\">Preload-Schnittstelle</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 77,
+    "before": "  <text x=\"330\" y=\"905\" class=\"note\">Fachliche Logik und Datenzugriff</text>",
+    "after": "  <text x=\"330\" y=\"905\" class=\"note\">Geschäftslogik und Datenzugriff</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 87,
+    "before": "  <text x=\"990\" y=\"927\">Handler / Controller</text>",
+    "after": "  <text x=\"990\" y=\"927\">Handler</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 91,
+    "before": "  <text x=\"990\" y=\"1040\" class=\"note\">Fachlogik und Drizzle-Datenzugriff</text>",
+    "after": "  <text x=\"990\" y=\"1040\" class=\"note\">Geschäftslogik und Drizzle-Datenzugriff</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 94,
+    "before": "  <text x=\"486\" y=\"1082\" class=\"note\">Drizzle / pg</text>",
+    "after": "  <text x=\"486\" y=\"1082\" class=\"note\">Drizzle ORM / pg</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 96,
+    "before": "  <text x=\"1140\" y=\"1120\" class=\"note\">Drizzle / libSQL</text>",
+    "after": "  <text x=\"1140\" y=\"1120\" class=\"note\">Drizzle ORM / libSQL</text>"
+  },
+  {
+    "file": "figures/api-interface-migration.svg",
+    "line": 102,
+    "before": "  <text x=\"990\" y=\"1210\" class=\"heading\">Lokale SQLite-Datei</text>",
+    "after": "  <text x=\"990\" y=\"1210\" class=\"heading\">Lokale Kerndatenbank</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">Zwei fachliche IPC-Pfade führen aus dem Renderer durch begrenzte Preload-Funktionen in den Main-Prozess. Die lokale Kernanwendung nutzt API-Dispatcher, Handler, Services und Repositories mit libSQL. Der Kollaborationspfad nutzt einen eigenen IPC-Handler und CollaborationRuntime. Repositories greifen über database.ts und einen Drizzle-Wrapper auf die PowerSync-Datenbank mit better-sqlite3 zu. schema.ts liefert das Client-Schema. Ein Online-Gateway ruft Supabase-RPCs auf; der Connector liefert JWT-Anmeldetoken und lädt Aufgabenänderungen hoch. PowerSync verteilt Backend-Änderungen anhand der Sync Streams. Die Paketierung bindet einen eigenen Worker ein und entpackt native Pakete aus ASAR.</desc>",
+    "after": "  <desc id=\"description\">Zwei fachliche IPC-Pfade führen aus dem Renderer durch begrenzte Preload-Funktionen in den Main-Prozess. Die Offline-Kernanwendung nutzt API-Dispatcher, Handler, Services und Repositories mit libSQL. Der Kollaborationspfad nutzt einen eigenen IPC-Handler und CollaborationRuntime. Repositories greifen über database.ts und einen Drizzle-Wrapper auf die PowerSync-Datenbank mit better-sqlite3 zu. schema.ts liefert das Client-Schema. Ein Online-Gateway ruft Supabase-RPCs auf; der Connector liefert JWT-Anmeldetoken und lädt Aufgabenänderungen hoch. PowerSync verteilt Backend-Änderungen anhand der Sync Streams. Die Paketierung bindet einen eigenen Worker ein und entpackt native Pakete aus ASAR.</desc>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 42,
+    "before": "  <text x=\"240\" y=\"490\" class=\"note\">Generierter API-Vertrag</text>",
+    "after": "  <text x=\"240\" y=\"490\" class=\"note\">Generierter OpenAPI-Vertrag</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 49,
+    "before": "  <text x=\"240\" y=\"811\">Repositories / Drizzle</text>",
+    "after": "  <text x=\"240\" y=\"811\" style=\"font-size: 25px\">Repositories / Drizzle ORM</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 53,
+    "before": "  <text x=\"240\" y=\"981\" class=\"heading\">Persönliches SQLite</text>",
+    "after": "  <text x=\"240\" y=\"981\" class=\"heading\">Lokale Kerndatenbank</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 55,
+    "before": "  <text x=\"240\" y=\"1142\" class=\"note\">Drizzle-Kit-Migrationen</text>",
+    "after": "  <text x=\"240\" y=\"1142\" class=\"note\">SQL-Migrationsdateien</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 59,
+    "before": "  <text x=\"880\" y=\"490\" class=\"note\">Eigener Modulvertrag, Zod-Prüfung und lokale Sitzung</text>",
+    "after": "  <text x=\"880\" y=\"490\" class=\"note\">Kollaborationsvertrag und Supabase-Kollaborationssitzung</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 63,
+    "before": "  <text x=\"880\" y=\"635\" class=\"note\">Sitzung, Lebenszyklus und Fachlogik</text>",
+    "after": "  <text x=\"880\" y=\"635\" class=\"note\">Sitzung, Lebenszyklus und Geschäftslogik</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 77,
+    "before": "  <text x=\"675\" y=\"997\">PowerSync / SQLite</text>",
+    "after": "  <text x=\"675\" y=\"997\" style=\"font-size: 21px\">Lokale Kollaborationsdatenbank</text>"
+  },
+  {
+    "file": "figures/collaboration-modules.svg",
+    "line": 85,
+    "before": "  <text x=\"890\" y=\"970\" class=\"note\">Queue</text>",
+    "after": "  <path d=\"M 890 1000 V 1055\" stroke=\"#9ba5ac\" stroke-width=\"1.5\" stroke-dasharray=\"4 3\"/><text x=\"890\" y=\"1080\" class=\"note\" style=\"font-size: 23px\">Upload-Warteschlange</text>"
+  },
+  {
+    "file": "figures/electron-architecture-comparison.svg",
+    "line": 19,
+    "before": "  <text x=\"270\" y=\"35\" class=\"heading\">Isolierte Architektur</text>",
+    "after": "  <text x=\"270\" y=\"35\" class=\"heading\">Isolierte Konfiguration</text>"
+  },
+  {
+    "file": "figures/electron-architecture-comparison.svg",
+    "line": 20,
+    "before": "  <text x=\"830\" y=\"35\" class=\"heading\">Monolithische Architektur</text>",
+    "after": "  <text x=\"830\" y=\"35\" class=\"heading\">Offene Konfiguration</text>"
+  },
+  {
+    "file": "figures/electron-architecture-comparison.svg",
+    "line": 40,
+    "before": "  <text x=\"270\" y=\"353\" class=\"note\">Context Isolation / contextBridge</text>",
+    "after": "  <text x=\"270\" y=\"353\" class=\"note\">Kontextisolation</text>"
+  },
+  {
+    "file": "figures/grades-crud-flow.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">Das Formular ruft einen generierten Hook auf. Über API-Client, Preload und IPC erreicht die Anfrage den Dispatcher im Main-Prozess. Nach der Vertragsvalidierung folgen authentifizierter Handler, Service, Repository und SQLite. Das Ergebnis durchläuft dieselben Schichten zurück zum Hook. Anschließend werden Notenliste und Statistik aktualisiert. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg.</desc>",
+    "after": "  <desc id=\"description\">Das Formular ruft einen generierten Hook auf. Über API-Client, Preload und IPC erreicht die Anfrage den API-Dispatcher im Main-Prozess. Nach der Vertragsvalidierung folgen authentifizierter Handler, Service, Repository und SQLite. Das Ergebnis durchläuft dieselben Schichten zurück zum Hook. Anschließend werden Notenliste und Statistik aktualisiert. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg.</desc>"
+  },
+  {
+    "file": "figures/grades-crud-flow.svg",
+    "line": 31,
+    "before": "  <text x=\"240\" y=\"490\" class=\"note\">Begrenzte Bridge</text>",
+    "after": "  <text x=\"240\" y=\"490\" class=\"note\">Preload-Schnittstelle</text>"
+  },
+  {
+    "file": "figures/grades-crud-flow.svg",
+    "line": 39,
+    "before": "  <text x=\"830\" y=\"124\" class=\"heading\">Dispatcher</text>",
+    "after": "  <text x=\"830\" y=\"124\" class=\"heading\">API-Dispatcher</text>"
+  },
+  {
+    "file": "figures/grades-crud-flow.svg",
+    "line": 71,
+    "before": "  <text x=\"240\" y=\"667\" class=\"heading\">Oberfläche aktualisieren</text>",
+    "after": "  <text x=\"240\" y=\"667\" class=\"heading\" style=\"font-size: 24px\">Benutzeroberfläche aktualisieren</text>"
+  },
+  {
+    "file": "figures/ipc-dispatcher-flow.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">React Query ruft den API-Client im Renderer auf. Die Preload-Bridge ergänzt eine Request-ID und übergibt die Operation über den festen Kanal api:invoke an ipcMain.handle. Der Dispatcher prüft Absender und Nachrichtenformat, löst den Operationsvertrag auf, validiert die Eingabe, ruft den registrierten Handler auf und prüft Rückgabe oder Fehler. Das ApiResult gelangt über dieselben Schnittstellen zurück zum Client, der Nutzdaten oder einen ApiClientError an React Query weitergibt.</desc>",
+    "after": "  <desc id=\"description\">React Query ruft den API-Client im Renderer auf. Die Preload-Schnittstelle ergänzt eine Request-ID und übergibt die Operation über den festen Kanal api:invoke an ipcMain.handle. Der API-Dispatcher prüft Absender und Nachrichtenformat, löst den Operationsvertrag auf, validiert die Eingabe, ruft den registrierten Handler auf und prüft Rückgabe oder Fehler. Das ApiResult gelangt über dieselben Schnittstellen zurück zum Client, der Nutzdaten oder einen ApiClientError an React Query weitergibt.</desc>"
+  },
+  {
+    "file": "figures/ipc-dispatcher-flow.svg",
+    "line": 32,
+    "before": "  <text x=\"240\" y=\"470\" class=\"heading\">Preload-Bridge</text>",
+    "after": "  <text x=\"240\" y=\"470\" class=\"heading\">API-Preload-Schnittstelle</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">Die React-Oberfläche ruft über Preload und IPC den Main-Prozess auf. Dort bestehen getrennte Zugriffe auf die persönliche SQLite-Datenbank, auf unmittelbare Supabase-Online-Operationen und auf die lokale PowerSync-Datenbank. Aufgabenänderungen werden aus einer Warteschlange über den Upload-Connector an Supabase gesendet. Der PowerSync-Dienst empfängt Änderungen aus PostgreSQL und lädt anhand der Sync Streams ausgewählte Daten zum SDK herunter. Persönliche Daten und ursprüngliche lokale Gruppen sind im gezeigten Stand nicht synchronisiert.</desc>",
+    "after": "  <desc id=\"description\">Die React-Benutzeroberfläche ruft über Preload und IPC den Main-Prozess auf. Dort bestehen getrennte Zugriffe auf die persönliche SQLite-Datenbank, auf unmittelbare Supabase-Online-Operationen und auf die lokale PowerSync-Datenbank. Aufgabenänderungen werden aus einer Warteschlange über den Upload-Connector an Supabase gesendet. Der PowerSync-Dienst empfängt Änderungen aus PostgreSQL und lädt anhand der Sync Streams ausgewählte Daten zum SDK herunter. Persönliche Daten und ursprüngliche lokale Gruppen sind im gezeigten Stand nicht synchronisiert.</desc>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 22,
+    "before": "  <text x=\"600\" y=\"101\">React-Oberfläche und generierte Hooks</text>",
+    "after": "  <text x=\"600\" y=\"101\">React-Benutzeroberfläche und generierte Hooks</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 31,
+    "before": "  <text x=\"600\" y=\"377\">IPC-Dispatcher / Handler</text>",
+    "after": "  <text x=\"600\" y=\"377\">API-Dispatcher / Handler</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 39,
+    "before": "  <text x=\"230\" y=\"572\" class=\"note\">Drizzle / libSQL</text>",
+    "after": "  <text x=\"230\" y=\"572\" class=\"note\">Drizzle ORM / libSQL</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 45,
+    "before": "  <text x=\"970\" y=\"572\" class=\"note\">Drizzle / PowerSync</text>",
+    "after": "  <text x=\"970\" y=\"572\" class=\"note\">Drizzle ORM / PowerSync</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 50,
+    "before": "  <text x=\"230\" y=\"686\" class=\"heading\">SQLite aus Phase 1</text>",
+    "after": "  <text x=\"230\" y=\"686\" class=\"heading\" style=\"font-size: 25px\">Lokale Kerndatenbank</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 54,
+    "before": "  <text x=\"970\" y=\"686\" class=\"heading\">PowerSync / SQLite</text>",
+    "after": "  <text x=\"970\" y=\"680\" class=\"heading\" style=\"font-size: 24px\"><tspan x=\"970\">Lokale</tspan><tspan x=\"970\" dy=\"28\">Kollaborationsdatenbank</tspan></text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 55,
+    "before": "  <text x=\"970\" y=\"722\">Lokaler Gruppenbestand</text>",
+    "after": "  <text x=\"970\" y=\"735\" style=\"font-size: 18px\">Lokaler Kollaborationsdatenbestand</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 56,
+    "before": "  <text x=\"970\" y=\"754\" class=\"note\">Datei je entfernter Identität</text>",
+    "after": "  <text x=\"970\" y=\"756\" class=\"note\" style=\"font-size: 18px\">Datei je Supabase-Benutzerkonto</text>"
+  },
+  {
+    "file": "figures/local-first-architecture.svg",
+    "line": 58,
+    "before": "  <text x=\"230\" y=\"831\" class=\"note\">Drizzle-Kit-Migrationen</text>",
+    "after": "  <text x=\"230\" y=\"831\" class=\"note\">SQL-Migrationsdateien</text>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">OpenAPI und Orval erzeugen den React-Query-Client und die Zod-Schemata. Zur Laufzeit kommuniziert die React-Oberfläche per HTTP mit dem Express-API-Server. Dessen Route-Handler verbinden HTTP-Verarbeitung, fachliche Logik und Drizzle-Abfragen auf PostgreSQL. Gestrichelte Pfeile zeigen Codegenerierung und Einbindung; durchgezogene Pfeile zeigen Laufzeitkommunikation.</desc>",
+    "after": "  <desc id=\"description\">OpenAPI und Orval erzeugen den React-Query-Client und die Zod-Laufzeitschemata. Zur Laufzeit kommuniziert die React-Benutzeroberfläche per HTTP mit dem Express-API-Server. Dessen Route-Handler verbinden HTTP-Verarbeitung, Geschäftslogik und Drizzle-Abfragen auf PostgreSQL. Gestrichelte Pfeile zeigen Codegenerierung und Einbindung; durchgezogene Pfeile zeigen Laufzeitkommunikation.</desc>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 20,
+    "before": "  <text x=\"550\" y=\"47\" class=\"heading\">API-Vertrag und Codegenerierung · Entwicklungszeit</text>",
+    "after": "  <text x=\"550\" y=\"47\" class=\"heading\">OpenAPI-Vertrag und Codegenerierung · Entwicklungszeit</text>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 35,
+    "before": "  <text x=\"840\" y=\"256\">Zod-Validierungsschemata</text>",
+    "after": "  <text x=\"840\" y=\"256\">Zod-Laufzeitschemata</text>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 46,
+    "before": "  <text x=\"250\" y=\"496\">React-Oberfläche</text>",
+    "after": "  <text x=\"250\" y=\"496\">React-Benutzeroberfläche</text>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 48,
+    "before": "  <text x=\"250\" y=\"562\">React-Query-Aufrufhilfen</text>",
+    "after": "  <text x=\"250\" y=\"562\">React-Query-Hooks</text>"
+  },
+  {
+    "file": "figures/original-web-architecture.svg",
+    "line": 54,
+    "before": "  <text x=\"840\" y=\"477\" class=\"note\">Authentifizierung · Session · Zod</text>",
+    "after": "  <text x=\"840\" y=\"477\" class=\"note\">Authentifizierung · HTTP-Sitzung · Zod</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 3,
+    "before": "  <desc id=\"description\">Die Benutzeroberfläche liest und schreibt lokal in SQLite. Schreiboperationen werden in der Upload Queue erfasst und bei bestehender Verbindung über REST oder RPC an das Backend übertragen. Nach Validierung schreibt das Backend in die zentrale Datenbank. Deren Änderungen gelangen über logische Replikation zum PowerSync Service und von dort gefiltert zurück in die lokale SQLite-Datenbank der autorisierten Clients.</desc>",
+    "after": "  <desc id=\"description\">Die Benutzeroberfläche liest und schreibt lokal in SQLite. Schreiboperationen werden in der Upload-Warteschlange erfasst und bei bestehender Verbindung über REST oder RPC an das Backend übertragen. Nach Validierung schreibt das Backend in die zentrale Datenbank. Deren Änderungen gelangen über logische Replikation zum PowerSync-Dienst und von dort gefiltert zurück in die lokale SQLite-Datenbank der autorisierten Clients.</desc>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 23,
+    "before": "  <text x=\"550\" y=\"67\" class=\"heading\">Lokale Persistenzschicht (Client)</text>",
+    "after": "  <text x=\"550\" y=\"67\" class=\"heading\">Lokale Datenhaltung (Client)</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 29,
+    "before": "  <text x=\"530\" y=\"198\" class=\"note\">Lokale Persistierung</text>",
+    "after": "  <text x=\"530\" y=\"198\" class=\"note\">Lokale Speicherung</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 31,
+    "before": "  <text x=\"925\" y=\"166\" class=\"label\">Upload Queue</text>",
+    "after": "  <text x=\"925\" y=\"166\" class=\"label\">Upload-Warteschlange</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 57,
+    "before": "  <text x=\"257\" y=\"570\" class=\"label\">PowerSync Service</text>",
+    "after": "  <text x=\"257\" y=\"570\" class=\"label\">PowerSync-Dienst</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 59,
+    "before": "  <text x=\"257\" y=\"649\">Sync Rules: Datenpartitionen filtern</text>",
+    "after": "  <text x=\"257\" y=\"649\">Sync Streams: Datenpartitionen filtern</text>"
+  },
+  {
+    "file": "figures/powersync-replication-flow.svg",
+    "line": 71,
+    "before": "  <text x=\"550\" y=\"790\" class=\"note\">Uploads laufen über die Backend-API; Downloads über den PowerSync Service.</text>",
+    "after": "  <text x=\"550\" y=\"790\" class=\"note\">Uploads laufen über die Backend-API; Downloads über den PowerSync-Dienst.</text>"
+  }
+]

@@ -8,7 +8,7 @@
 
 #show: thesis.with(
   type: "bachelor",
-  title: [Systematische Transformation KI-generierter Web-Architekturen in sichere, lokale Desktop-Anwendungen unter Anwendung des Local-First-Paradigmas],
+  title: [Systematische Migration KI-generierter Web-Architekturen in sichere, lokale Desktop-Anwendungen unter Anwendung des Local-First-Paradigmas],
   author: "Joshua Ohans",
   student-id: none,
   lang: "de",

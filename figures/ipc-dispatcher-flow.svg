@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="850" viewBox="0 0 1100 850" role="img" aria-labelledby="title description">
   <title id="title">IPC-Aufrufweg und Verarbeitung im API-Dispatcher</title>
-  <desc id="description">React Query ruft den API-Client im Renderer auf. Die Preload-Bridge ergänzt eine Request-ID und übergibt die Operation über den festen Kanal api:invoke an ipcMain.handle. Der Dispatcher prüft Absender und Nachrichtenformat, löst den Operationsvertrag auf, validiert die Eingabe, ruft den registrierten Handler auf und prüft Rückgabe oder Fehler. Das ApiResult gelangt über dieselben Schnittstellen zurück zum Client, der Nutzdaten oder einen ApiClientError an React Query weitergibt.</desc>
+  <desc id="description">React Query ruft den API-Client im Renderer auf. Die Preload-Schnittstelle ergänzt eine Request-ID und übergibt die Operation über den festen Kanal api:invoke an ipcMain.handle. Der API-Dispatcher prüft Absender und Nachrichtenformat, löst den Operationsvertrag auf, validiert die Eingabe, ruft den registrierten Handler auf und prüft Rückgabe oder Fehler. Das ApiResult gelangt über dieselben Schnittstellen zurück zum Client, der Nutzdaten oder einen ApiClientError an React Query weitergibt.</desc>
   <defs>
     <marker id="request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
     <marker id="response" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#68737b"/></marker>
@@ -29,7 +29,7 @@
   <path d="M70 330 V430" class="call"/>
   <text x="240" y="386" class="note">window.apiTransport.invoke(...)</text>
   <rect x="20" y="430" width="440" height="160" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2"/>
-  <text x="240" y="470" class="heading">Preload-Bridge</text>
+  <text x="240" y="470" class="heading">API-Preload-Schnittstelle</text>
   <text x="240" y="505" class="note">requestId ergänzen</text>
   <text x="240" y="538" class="note">ipcRenderer.invoke('api:invoke', …)</text>
   <text x="240" y="571" class="note">Fester Kanal zum Main-Prozess</text>

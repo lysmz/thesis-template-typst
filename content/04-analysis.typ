@@ -5,7 +5,7 @@
 == Vom übergeordneten Ziel zur Fallauswahl <sec:method-case-selection>
 
 Die in Kapitel 1 formulierte Forschungsfrage nimmt einen frameworkagnostischen Migrationsansatz als Ausgangsziel auf.
-Für dessen Bearbeitung ist zunächst zu bestimmen, welche Architekturmerkmale des Ausgangsartefakts die Transformation beeinflussen.
+Für dessen Bearbeitung ist zunächst zu bestimmen, welche Architekturmerkmale des Webprototyps die Migration beeinflussen.
 Entscheidend ist nicht allein das verwendete Frontend-Framework, sondern die Beschaffenheit der gesamten Anwendung samt ihrer Abhängigkeiten – insbesondere wo Geschäftslogik, Datenhaltung und Authentifizierung ausgeführt werden und welche dieser Bestandteile im verfügbaren Quellcode enthalten sind.
 @tab:platform-comparison stellt die dokumentierten Backend-Strukturen von Replit und Lovable und die daraus abgeleiteten Ausgangslagen für die Migration gegenüber.
 
@@ -27,23 +27,23 @@ Entscheidend ist nicht allein das verwendete Frontend-Framework, sondern die Bes
       [API-Routen, Datenbank und serverseitige Anwendungslogik.],
       [Datenbank, Authentifizierung, Dateispeicherung und serverseitige Funktionen als Backend-Dienste.],
       [Ansatzpunkt der Migration],
-      [Soweit serverseitige Logik als eigener Quellcode vorliegt, kann ihre Übernahme und Anpassung an die lokale Laufzeit untersucht werden.],
+      [Soweit serverseitige Logik als eigener Quellcode vorliegt, kann ihre Übernahme und Anpassung an die Electron-Laufzeit untersucht werden.],
       [Vom Dienst übernommene Verantwortlichkeiten müssen identifiziert und für eine lokale Nutzung gegebenenfalls nachgebildet werden.],
     )
   },
   caption: [Gegenüberstellung der dokumentierten Backend-Strukturen nach @ReplitWebApps2026, @LovableCloud2026 und @LovableSupabase2026; Ansatzpunkte der Migration als eigene Einordnung.],
 ) <tab:platform-comparison>
 
-Die Entwicklung und Prüfung eines allgemeinen Leitfadens für beide Fälle würde den Umfang dieser Arbeit überschreiten.
-Die praktische Untersuchung wird daher auf den Replit-Prototyp Studienplaner begrenzt.
-Der resultierende Leitfaden kann potenziell übertragbare Prinzipien aufzeigen, wird jedoch nicht als validierte Lösung für beliebige Frameworks oder Plattformen ausgegeben.
+Die Entwicklung und Prüfung eines allgemeinen Migrationspfads für beide Fälle würde den Umfang dieser Arbeit überschreiten.
+Die praktische Untersuchung wird daher auf den Webprototyp Studienplaner begrenzt.
+Der resultierende Migrationspfad kann potenziell übertragbare Prinzipien aufzeigen, wird jedoch nicht als validierte Lösung für beliebige Frameworks oder Plattformen ausgegeben.
 
-== Funktionen und Architektur des Ausgangsartefakts <sec:starting-artifact>
+== Funktionen und Architektur des Webprototyps <sec:starting-artifact>
 
-=== Funktionsumfang des Ausgangsartefakts <sec:functional-scope>
+=== Funktionsumfang des Webprototyps <sec:functional-scope>
 
 Der Funktionsumfang der Webanwendung ergibt sich aus den ursprünglichen Erstellungs-Prompts zur persönlichen Studienorganisation und zur Zusammenarbeit in Studiengruppen.
-@tab:feature-scope gibt einen Überblick über die Features des Ausgangsartefakts und ihre Funktionen.
+@tab:feature-scope gibt einen Überblick über die Funktionsbereiche des Webprototyps und ihre Funktionen.
 
 #figure(
   {
@@ -57,33 +57,33 @@ Der Funktionsumfang der Webanwendung ergibt sich aus den ursprünglichen Erstell
     [Dashboard],
     [Notendurchschnitt, gesammelte ECTS-Punkte, anstehende Fristen, Schnellzugriffe sowie letzte Aktivitäten und nächste Termine.],
     [Kalender],
-    [Monatsansicht mit Tages-Popover, Termindetails und Löschen, farbliche Kennzeichnung der Terminarten, iCal-/ICS-Import, mehrtägige Termine und nach Priorität filterbare Listenansicht.],
+    [Monatsansicht mit Tages-Popover, Termindetails und Löschen, farbliche Kennzeichnung der Terminarten, iCal-Import (ICS-Dateien), mehrtägige Termine und nach Priorität filterbare Listenansicht.],
     [Noten],
     [Semesterweise gruppierte Kurs-, Noten- und ECTS-Tabelle; Anlegen, Lesen, Bearbeiten und Löschen; CSV-Import mit Spaltenerkennung; ECTS-gewichteter Notendurchschnitt und Prüfung der Kurszugehörigkeit zum Studiengang.],
     [Stundenplan],
     [Raster mit fünf Wochentagen und sechs festen Hochschulzeitblöcken, Auswahl vorbereiteter Hochschulpläne, Hinzufügen und Entfernen von Kursen, visuelle Unterscheidung vorgeschlagener und eigener Einträge sowie Leeren des Plans mit Bestätigung.],
-    [Authentifizierung],
+    [Kontoverwaltung],
     [Registrierung, Anmeldung und Abmeldung sowie die Zuordnung persönlicher Daten zur jeweiligen Identität.],
     [Studiengänge],
     [Abruf und Anzeige der angebotenen Studiengänge und der ihnen zugeordneten Module über das Backend.],
     [Studiengruppen],
-    [Anlegen benannter Gruppen und Einladen weiterer Mitglieder; gemeinsame Aufgaben mit Fälligkeit, zuständiger Person und Status „offen“ beziehungsweise „erledigt“. Kommentare, gemeinsame Kalendertermine sowie zusätzliche Gruppeninhalte wie Links und Notizen],
+    [Anlegen benannter Gruppen und Einladen weiterer Mitglieder; gemeinsame Gruppenaufgaben mit Fälligkeit, zuständiger Person und Status „offen“ beziehungsweise „erledigt“. Kommentare, gemeinsame Termine sowie zusätzliche Gruppeninhalte wie Links und Notizen],
     )
   },
-  caption: [Funktionsumfang des Ausgangsartefakts auf Grundlage der ursprünglichen Erstellungs-Prompts.],
+  caption: [Funktionsumfang des Webprototyps auf Grundlage der ursprünglichen Erstellungs-Prompts.],
 ) <tab:feature-scope>
 
-Zu den Online-Anbindungen der Webanwendung gehören die Bereitstellung der Studiengänge und zugehörigen Module über das Backend sowie die gemeinsame Nutzung von Aufgaben und weiteren Inhalten im Feature Studiengruppen.
+Zu den Online-Anbindungen der Webanwendung gehören die Bereitstellung der Studiengänge und zugehörigen Module über das Backend sowie die gemeinsame Nutzung von Aufgaben und weiteren Inhalten im Funktionsbereich Studiengruppen.
 
 === Technische Komponenten und Repository-Struktur
 
-Eine Übersicht der Verzeichnisse und zentralen Dateien des Ausgangsartefakts zeigt der Dateibaum in @app:web-prototype-filetree.
+Eine Übersicht der Verzeichnisse und zentralen Dateien des Webprototyps zeigt der Dateibaum in @app:web-prototype-filetree.
 
 @fig:original-web-architecture stellt die Komponenten und ihre Beziehungen dar.
 
 #figure(
   image("../figures/original-web-architecture.svg", width: 100%),
-  caption: [Ursprüngliche Webarchitektur des Studienplaners mit Laufzeitkommunikation und OpenAPI-basierter Codegenerierung; eigene Darstellung auf Grundlage des Ausgangsartefakts.],
+  caption: [Ursprüngliche Webarchitektur des Studienplaners mit Laufzeitkommunikation und OpenAPI-basierter Codegenerierung; eigene Darstellung auf Grundlage des Webprototyps.],
 ) <fig:original-web-architecture>
 
 Das in @lst:dashboard-upcoming gezeigte Beispiel veranschaulicht das im API-Server verwendete Verarbeitungsmuster innerhalb eines Route-Handlers.
@@ -101,7 +101,7 @@ Das in @lst:dashboard-upcoming gezeigte Beispiel veranschaulicht das im API-Serv
   ),
   kind: raw,
   supplement: [Quellcode],
-  caption: [Exemplarischer Express-Route-Handler für die Abfrage anstehender Termine im Ausgangsartefakt.],
+  caption: [Exemplarischer Express-Route-Handler für die Abfrage anstehender Termine im Webprototyp.],
 ) <lst:dashboard-upcoming>
 
 Der exemplarische Route-Handler verbindet HTTP-Verarbeitung, fachliche Auswahl und Datenzugriff innerhalb einer Funktion.
@@ -109,37 +109,37 @@ Der exemplarische Route-Handler verbindet HTTP-Verarbeitung, fachliche Auswahl u
 === Lokale Funktionen und exemplarische Online-Anbindungen
 
 Für die Untersuchung werden Funktionen mit vergleichbaren Verarbeitungspfaden gemeinsam betrachtet.
-Die Features Noten, Kalender und Stundenplan beruhen im Kern auf dem Anlegen, Lesen, Ändern und Löschen persistenter Anwendungsdaten und werden deshalb als CRUD-Verarbeitung zusammengefasst.
+Die Funktionsbereiche Noten, Kalender und Stundenplan beruhen im Kern auf dem Anlegen, Lesen, Ändern und Löschen persistenter Anwendungsdaten und werden deshalb als lokale CRUD-Verarbeitung zusammengefasst.
 Für diese Funktionen wird bei der Migration eine lokale Verarbeitung vorgesehen.
-CSV- und iCal-/ICS-Importe bilden eine weitere Gruppe, da sie jeweils das Einlesen, Parsen, Validieren und Speichern externer Dateien erfordern.
+CSV- und iCal-Importe bilden eine weitere Gruppe, da sie jeweils das Einlesen, Parsen, Validieren und Speichern externer Dateien erfordern.
 
-Bei den Online-Anbindungen werden zwei unterschiedliche Verarbeitungspfade untersucht.
-Das Feature Studiengänge dient als Beispiel für die einseitige Übernahme externer Referenzdaten in die lokale Datenhaltung.
-Im Feature Studiengruppen wird anhand gemeinsamer Aufgaben die kollaborative Synchronisation betrachtet, bei der lokale Änderungen übertragen und entfernte Änderungen übernommen werden.
-Gruppenerstellung und Einladungen werden dabei als unmittelbar netzwerkabhängige Verwaltungsoperationen eingeordnet.
+Bei den Online-Anbindungen werden zwei unterschiedliche Verarbeitungsmuster untersucht.
+Der Funktionsbereich Studiengänge dient als Beispiel für die einseitige Datenübernahme von Katalogdaten in die lokale Datenhaltung.
+Im Funktionsbereich Studiengruppen wird anhand gemeinsamer Gruppenaufgaben die kollaborative Synchronisation betrachtet, bei der lokale Änderungen übertragen und entfernte Änderungen übernommen werden.
+Gruppenerstellung und direkte Kontoeinladungen werden dabei als Operationen der netzwerkabhängigen Gruppenverwaltung eingeordnet.
 
-Die Migration wird anhand dieser wiederkehrenden Verarbeitungsmuster beschrieben, sodass gleichartige Abläufe nicht für jedes Feature erneut erläutert werden müssen.
+Die Migration wird anhand dieser wiederkehrenden Verarbeitungsmuster beschrieben, sodass gleichartige Abläufe nicht für jeden Funktionsbereich erneut erläutert werden müssen.
 
 == Zielarchitektur und Sicherheitsbegriff <sec:target-architecture>
 
 Die in @ch:intro beschriebene Problemstellung liegt darin, dass die sichtbare Funktionsfähigkeit einer KI-generierten Webanwendung ihre Eignung für eine lokale Desktop-Laufzeit nicht gewährleistet.
 Insbesondere können bestehende Schwachstellen durch den erweiterten Zugriff auf Dateien und Systemressourcen zusätzliche Auswirkungen erhalten.
-Die Zielarchitektur muss deshalb die Vertrauensgrenzen und Zugriffsmöglichkeiten an die lokale Laufzeit anpassen und zugleich einen sinnvoll nutzbaren Kernumfang des Ausgangsartefakts erhalten.
+Die Zielarchitektur muss deshalb die Vertrauensgrenzen und Zugriffsmöglichkeiten an die Electron-Laufzeit anpassen und zugleich einen sinnvoll nutzbaren Kernumfang des Webprototyps erhalten.
 Vorhandene Oberflächenbestandteile und fachliche Regeln sollen soweit möglich weiterverwendet werden.
-Dadurch bleibt der Prototyp die Grundlage der Transformation, und die Änderungen können auf die Anforderungen der neuen Umgebung konzentriert werden.
+Dadurch bleibt der Prototyp die Grundlage der Migration, und die Änderungen können auf die Anforderungen der neuen Umgebung konzentriert werden.
 Architektur- und Sicherheitsanforderungen haben dabei Vorrang vor der unveränderten Übernahme bestehender Komponenten.
 
 Die Dreischichtenarchitektur wird gewählt, um migrationsbedingte Änderungen an Kommunikation und Datenhaltung von der Darstellung und den fachlichen Regeln zu trennen.
-Darstellung, Geschäftslogik und Datenzugriff sollen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe werden entsprechend in Controller, Services und Repositories gegliedert.
+Benutzeroberfläche, Geschäftslogik und Datenzugriff sollen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe werden entsprechend in Handler, Services und Repositories gegliedert. Die Handler übernehmen dabei die Rolle der Controller an der Schnittstelle.
 
 Die lokale Datenhaltung bildet die Grundlage für die autonome Offline-Verfügbarkeit des Local-First-Paradigmas.
 Persönliche Änderungen sollen ohne Verbindung verarbeitet werden können und nach einem Neustart erhalten bleiben.
-Die kollaborative Synchronisation im Feature Studiengruppen soll die gleichzeitige Zusammenarbeit unterstützen @Kleppmann2019.
+Die kollaborative Synchronisation im Funktionsbereich Studiengruppen soll die gleichzeitige Zusammenarbeit unterstützen @Kleppmann2019.
 
-Unter einer gehärteten Electron-Anwendung versteht diese Arbeit die Umsetzung der anwendbaren Electron Security Guidelines im festgelegten Prüfumfang.
-Dazu zählen insbesondere Renderer-Isolation, begrenzte privilegierte Schnittstellen, die Prüfung von IPC-Absendern und Eingaben sowie Beschränkungen für nachgeladene Inhalte, Navigation und zusätzliche Fenster @ElectronSecurity2026.
+Unter einer gehärteten Electron-Anwendung versteht diese Arbeit die Umsetzung der anwendbaren Electron-Sicherheitsrichtlinien im festgelegten Prüfumfang.
+Dazu zählen insbesondere Sandboxing und Kontextisolation des Renderers bei deaktivierter Node.js-Integration, begrenzte privilegierte Schnittstellen, die IPC-Absenderprüfung und Eingabevalidierung sowie Beschränkungen für nachgeladene Inhalte, Navigation und zusätzliche Fenster @ElectronSecurity2026.
 
-Aus der Umsetzung wird ein Migrationsleitfaden abgeleitet.
+Aus der Umsetzung wird ein Migrationspfad abgeleitet.
 
 == Anforderungskatalog <sec:requirements>
 
@@ -147,20 +147,20 @@ Die Anforderungen konkretisieren die beschriebenen Ziele und Entwurfsentscheidun
 Ihre Kennungen dienen der Zuordnung zu den Migrationsschritten und der späteren Evaluation.
 Die folgenden Bewertungsansätze bestimmen die erforderlichen Nachweise.
 
-=== A1: Lauffähige Desktop-Anwendung
+=== A1: Lauffähige Electron-Anwendung
 
-Das Ausgangsartefakt muss in eine lauffähige Electron-Anwendung überführt werden.
-Bewertet werden der Start eines gebauten Pakets und die Ausführbarkeit der Funktionen, die den zuvor beschriebenen Verarbeitungspfaden zugeordnet sind.
+Der Webprototyp muss in eine lauffähige Electron-Anwendung migriert werden.
+Bewertet werden der Start der installierten Electron-Anwendung und die Ausführbarkeit der Funktionen, die den zuvor beschriebenen Verarbeitungsmustern zugeordnet sind.
 
 === A2: Dreischichtenarchitektur
 
-Darstellung, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichkeiten besitzen.
+Benutzeroberfläche, Geschäftslogik und Datenzugriff müssen getrennte Verantwortlichkeiten besitzen.
 Die Geschäftslogik muss unabhängig von Darstellung und Kommunikation prüfbar sein.
 Der Nachweis erfolgt durch den Abgleich der tatsächlichen Module mit der Zielarchitektur und einen beispielhaften fachlichen Verarbeitungspfad.
 
-=== A3: Weiterverwendung des Ausgangsartefakts
+=== A3: Weiterverwendung des Webprototyps
 
-Bestandteile des Ausgangsartefakts sollen soweit möglich weiterverwendet werden.
+Bestandteile des Webprototyps sollen soweit möglich weiterverwendet werden.
 Notwendige Anpassungen und Ersetzungen sind nach Komponenten beziehungsweise Schichten zu dokumentieren und zu begründen.
 Bewertet wird die Nachvollziehbarkeit der Eingriffe; ein global minimaler Entwicklungsaufwand oder eine gemessene Zeitersparnis wird nicht verlangt.
 
@@ -173,18 +173,18 @@ Der Nachweis beschreibt den tatsächlichen Aufrufweg und zeigt, dass hierfür ke
 
 === A5: Lokale Datenhaltung und autonome Offline-Verfügbarkeit
 
-Die zur lokalen Verarbeitung vorgesehenen persönlichen Funktionen sowie die lokale Identitätsverwaltung im Feature Authentifizierung müssen die autonome Offline-Verfügbarkeit gewährleisten.
-Für das Feature Studiengänge wird ein bereits lokal verfügbarer Datenbestand vorausgesetzt.
+Die zur lokalen Verarbeitung vorgesehenen persönlichen Funktionen sowie die lokale Kontoverwaltung müssen die autonome Offline-Verfügbarkeit gewährleisten.
+Für den Funktionsbereich Studiengänge wird ein bereits lokal verfügbarer Katalogbestand vorausgesetzt.
 Der Nachweis umfasst die lokale Verarbeitung ohne Netzwerkverbindung und das erneute Lesen der gespeicherten Daten nach einem Anwendungsneustart.
 
-=== A6: Kollaborative Synchronisation im Feature Studiengruppen
+=== A6: Kollaborative Synchronisation im Funktionsbereich Studiengruppen
 
-Gemeinsame Aufgaben werden als exemplarischer Synchronisationsfall gewählt, da mehrere Beteiligte denselben Datenbestand bearbeiten und Änderungen auch ohne unmittelbare Netzwerkverbindung lokal erfassen können sollen.
+Gemeinsame Gruppenaufgaben werden als exemplarischer Synchronisationsfall gewählt, da mehrere Beteiligte denselben Datenbestand bearbeiten und Änderungen auch ohne unmittelbare Netzwerkverbindung lokal erfassen können sollen.
 Aufgabenänderungen müssen lokal verarbeitet und bei vorhandener Verbindung synchronisiert werden können.
 Lokale Speicherung, anschließende Übermittlung und die Übernahme entfernter Änderungen sind getrennt nachzuweisen.
 Gruppenerstellung und Einladungen gehören zum Kernumfang; ihre Online-Voraussetzungen sind auszuweisen.
 
-=== A7: Härtung gemäß Electron Security Guidelines
+=== A7: Härtung gemäß Electron-Sicherheitsrichtlinien
 
 Die Sicherheitscheckliste muss vollständig auf Anwendbarkeit geprüft werden.
 Für anwendbare Empfehlungen sind Umsetzung, Beleg und Nachweisebene zu dokumentieren.
@@ -193,14 +193,14 @@ Fehlende oder begrenzte Nachweise müssen ausdrücklich erkennbar bleiben.
 
 === A8: Abdeckung wiederkehrender Verarbeitungsmuster und Erweiterbarkeit
 
-Der Demonstrator muss die beschriebenen Verarbeitungspfade für CRUD-Verarbeitung, Dateiimporte, einseitige Datenübernahme und kollaborative Synchronisation abdecken.
-Unmittelbar netzwerkabhängige Verwaltungsoperationen werden gesondert ausgewiesen.
-Der Nachweis ordnet den Verarbeitungspfaden konkrete Funktionen sowie die angewendeten Architektur- und Sicherheitsmuster zu.
-Er muss zeigen, wie weitere Funktionen mit vergleichbaren Verarbeitungspfaden auf diesen Mustern aufbauen können.
+Die Electron-Anwendung muss die beschriebenen Verarbeitungsmuster für lokale CRUD-Verarbeitung, Dateiimporte, einseitige Datenübernahme und kollaborative Synchronisation abdecken.
+Die netzwerkabhängige Gruppenverwaltung wird gesondert ausgewiesen.
+Der Nachweis ordnet den Verarbeitungsmustern konkrete Funktionen sowie die angewendeten Architektur- und Sicherheitsmuster zu.
+Er muss zeigen, wie weitere Funktionen mit vergleichbaren Verarbeitungsmustern auf diesen Mustern aufbauen können.
 
 === A9: Dokumentation und Zuordnung der Migrationsschritte
 
-Der Leitfaden muss Voraussetzungen, Reihenfolge, Änderungen, Entscheidungen und Kontrollpunkte beschreiben.
+Der Migrationspfad muss Voraussetzungen, Reihenfolge, Änderungen, Entscheidungen und Kontrollpunkte beschreiben.
 Seine Schritte müssen den beschriebenen Verarbeitungsmustern und ihrer Umsetzung im Demonstrator zugeordnet werden können.
 Bewertet werden die Nachvollziehbarkeit dieser Zuordnung und die Kennzeichnung des Geltungsbereichs der Empfehlungen.
 
@@ -215,5 +215,5 @@ Die Verschlüsselung der Datenbankdatei und ihr Schutz vor anderen Betriebssyste
 
 Die Verifikation konzentriert sich auf die festgelegten Architektur- und Sicherheitsanforderungen.
 Frontend-Unit-Tests und automatisierte End-to-End-Tests werden im verfügbaren Arbeitsumfang nicht durchgeführt.
-Ein umfassender Sicherheitsvergleich zwischen Web- und Desktop-Laufzeit sowie ein unabhängiger Reproduktionsdurchlauf des Migrationsleitfadens würden zusätzliche Untersuchungen erfordern.
+Ein umfassender Sicherheitsvergleich zwischen Web- und Desktop-Laufzeit sowie ein unabhängiger Reproduktionsdurchlauf des Migrationspfads würden zusätzliche Untersuchungen erfordern.
 Aussagen zur Sicherheit und Übertragbarkeit bleiben daher auf die durchgeführten Prüfungen und dokumentierten Nachweise begrenzt.

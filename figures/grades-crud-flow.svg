@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="820" viewBox="0 0 1100 820" role="img" aria-labelledby="title description">
   <title id="title">Lokaler CRUD-Aufrufweg am Beispiel der Notenerfassung</title>
-  <desc id="description">Das Formular ruft einen generierten Hook auf. Über API-Client, Preload und IPC erreicht die Anfrage den Dispatcher im Main-Prozess. Nach der Vertragsvalidierung folgen authentifizierter Handler, Service, Repository und SQLite. Das Ergebnis durchläuft dieselben Schichten zurück zum Hook. Anschließend werden Notenliste und Statistik aktualisiert. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg.</desc>
+  <desc id="description">Das Formular ruft einen generierten Hook auf. Über API-Client, Preload und IPC erreicht die Anfrage den API-Dispatcher im Main-Prozess. Nach der Vertragsvalidierung folgen authentifizierter Handler, Service, Repository und SQLite. Das Ergebnis durchläuft dieselben Schichten zurück zum Hook. Anschließend werden Notenliste und Statistik aktualisiert. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile den Rückweg.</desc>
   <defs>
     <marker id="request" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
     <marker id="response" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#68737b"/></marker>
@@ -28,7 +28,7 @@
 
   <rect x="20" y="420" width="440" height="120" rx="10" fill="#fafafa" stroke="#9ba5ac" stroke-width="2"/>
   <text x="240" y="457" class="heading">Preload / IPC</text>
-  <text x="240" y="490" class="note">Begrenzte Bridge</text>
+  <text x="240" y="490" class="note">Preload-Schnittstelle</text>
   <text x="240" y="519" class="note">Aufruf an den Main-Prozess</text>
   <path d="M170 355 V420" class="call"/>
   <path d="M310 420 V355" class="return"/>
@@ -36,7 +36,7 @@
   <rect x="580" y="20" width="500" height="715" rx="10" fill="#f3f7fa" stroke="#9ba5ac" stroke-width="2"/>
   <text x="830" y="63" class="heading">Main-Prozess</text>
   <rect x="610" y="90" width="440" height="85" rx="8" class="box"/>
-  <text x="830" y="124" class="heading">Dispatcher</text>
+  <text x="830" y="124" class="heading">API-Dispatcher</text>
   <text x="830" y="154" class="note">Vertrag prüfen, Operation zuordnen</text>
   <path d="M460 480 H505 V120 H610" class="call"/>
   <path d="M610 150 H545 V510 H460" class="return"/>
@@ -68,7 +68,7 @@
   <path d="M85 355 V400 H5 V600 H85 V630" class="return"/>
   <text x="260" y="594" class="note">Nach erfolgreicher Mutation</text>
   <rect x="20" y="630" width="440" height="105" rx="8" class="box"/>
-  <text x="240" y="667" class="heading">Oberfläche aktualisieren</text>
+  <text x="240" y="667" class="heading" style="font-size: 24px">Benutzeroberfläche aktualisieren</text>
   <text x="240" y="698" class="note">Abfragen für Notenliste</text>
   <text x="240" y="725" class="note">und Statistik aktualisieren</text>
 

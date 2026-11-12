@@ -16,8 +16,8 @@
       .open-flow { fill: none; stroke: #8a4935; stroke-width: 3; marker-end: url(#open-arrow); }
     </style>
   </defs>
-  <text x="270" y="35" class="heading">Isolierte Architektur</text>
-  <text x="830" y="35" class="heading">Monolithische Architektur</text>
+  <text x="270" y="35" class="heading">Isolierte Konfiguration</text>
+  <text x="830" y="35" class="heading">Offene Konfiguration</text>
   <path d="M550 65 V795" stroke="#d5dce0" stroke-width="2"/>
 
   <rect x="30" y="70" width="480" height="75" rx="8" class="box"/>
@@ -37,7 +37,7 @@
   <text x="270" y="295" class="note">nodeIntegration: false · sandbox: true</text>
   <path d="M50 347 H490" stroke="#6d7f8b" stroke-width="2" stroke-dasharray="7 5"/>
   <rect x="99" y="330" width="342" height="32" fill="#fff"/>
-  <text x="270" y="353" class="note">Context Isolation / contextBridge</text>
+  <text x="270" y="353" class="note">Kontextisolation</text>
   <path d="M270 310 V328 M270 365 V389" class="flow"/>
   <rect x="50" y="395" width="440" height="50" rx="6" class="box"/>
   <text x="270" y="427">Preload: freigegebene Funktionen</text>

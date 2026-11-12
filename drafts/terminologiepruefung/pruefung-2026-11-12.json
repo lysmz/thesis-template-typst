@@ -1,0 +1,222 @@
+{
+  "date": "2026-11-12",
+  "checks": [
+    {
+      "file": "content/01-intro.typ",
+      "sha256": "35e2b09f8c30da72678789086a78a1abda7f1c52e00ec22df172195f002d4b6d",
+      "lines": 54,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/02-basics.typ",
+      "sha256": "a958bba7394d8b46279d3cc333143789fd6168479c58dec98a3c9dc7ff73d2e9",
+      "lines": 147,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/03-method.typ",
+      "sha256": "9208b3d116eaedcd526f0fc79cae34e79323a7db388fdd32b74ab37effd0313e",
+      "lines": 105,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/04-analysis.typ",
+      "sha256": "925b828836df241231162cc4c03951ca97b9223d8a2f5537d732dec962f2de1d",
+      "lines": 220,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/05-migration.typ",
+      "sha256": "cefd81f29b593c7a8b2f91e74e51c5a9e29c3e3ce026875d0aa896681b879b3d",
+      "lines": 1125,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/06-evaluation.typ",
+      "sha256": "1fa3eed27b9e8a931914f1f1c19d17f4d27037bbad9234f6096c6e9fb6a1ac7b",
+      "lines": 362,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "content/07-discussion.typ",
+      "sha256": "6fa0b282824b5bcc4e305534d8f65780a305dba9e798986364f71a4ad75b85f2",
+      "lines": 86,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/api-interface-migration.svg",
+      "sha256": "8d1ba44df2718e9c45e3beb2b8826b6cbe947d0b02323349538fa5d9da6a9f15",
+      "lines": 109,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/collaboration-modules.svg",
+      "sha256": "2921f53e0970c57c8268820fb2203a575f78272332d2dc60c673d20edf1d9a6f",
+      "lines": 107,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/electron-architecture-comparison.svg",
+      "sha256": "0a924a8fd3c651f7441f189c6bfa04c4f7baa8572dce32315c8af6ace82a650c",
+      "lines": 75,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/grades-crud-flow.svg",
+      "sha256": "fe08925138b6fdd3d81d4395639f60d892cefb2c71733806a4654155d9438e3d",
+      "lines": 80,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/ipc-dispatcher-flow.svg",
+      "sha256": "a55bc990d1f5b32e123338087ee715e5245b26082126dca5c3207c966253ef8b",
+      "lines": 73,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/local-file-import-flow.svg",
+      "sha256": "7289da2f739160a1a79b239098442cbe72bafac7344777d89bb2e403da0f812b",
+      "lines": 52,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/local-first-architecture.svg",
+      "sha256": "a3f95a8b320748759a0b663c51c506f15ad103c9d5954e00a77ad9f91edf32af",
+      "lines": 87,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/original-web-architecture.svg",
+      "sha256": "402cc8c1be4f26ea93e26375763a5732ed19beac649401d21c9c45e9763e9cfe",
+      "lines": 79,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/powersync-replication-flow.svg",
+      "sha256": "b49adb21674e5e610accfd94ad11586f874247f34c2a22db5387be2bfb31d2ee",
+      "lines": 73,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    },
+    {
+      "file": "figures/sync-schema-deployment.svg",
+      "sha256": "563bf0820cbd26bbff92016ac4336be5e6cfbff210ce01e24e02dec80f459838",
+      "lines": 35,
+      "codeBlocksUnchanged": true,
+      "anchorsUnchanged": true,
+      "resourcePathsUnchanged": true
+    }
+  ],
+  "changedLines": 452,
+  "changedFiles": [
+    "content/01-intro.typ",
+    "content/02-basics.typ",
+    "content/03-method.typ",
+    "content/04-analysis.typ",
+    "content/05-migration.typ",
+    "content/06-evaluation.typ",
+    "content/07-discussion.typ",
+    "figures/api-interface-migration.svg",
+    "figures/collaboration-modules.svg",
+    "figures/electron-architecture-comparison.svg",
+    "figures/grades-crud-flow.svg",
+    "figures/ipc-dispatcher-flow.svg",
+    "figures/local-first-architecture.svg",
+    "figures/original-web-architecture.svg",
+    "figures/powersync-replication-flow.svg"
+  ],
+  "manualReviewPending": "T69",
+  "reviewLocations": [
+    [
+      "content/01-intro.typ",
+      22,
+      "Sandbox der Erstellungsplattform",
+      "Der Betriebskontext der KI-Plattform wird von der Desktop-Zielumgebung abgegrenzt."
+    ],
+    [
+      "content/02-basics.typ",
+      34,
+      "Drei unterschiedliche Schutzmechanismen",
+      "Prozesstrennung, Sandboxing und Kontextisolation werden einzeln benannt."
+    ],
+    [
+      "content/02-basics.typ",
+      37,
+      "Prozesstrennung und verfügbare APIs",
+      "Der Text beschreibt nun ausdrücklich die Verfügbarkeit von Node.js-APIs im Renderer."
+    ],
+    [
+      "content/02-basics.typ",
+      45,
+      "Sandboxing und mögliche Codeausführung",
+      "Wichtigster Punkt: Der alte Satz setzte fehlende Prozesstrennung mit dem Wegfall der Sandbox gleich. Der neue Vorschlag benennt die aktivierte Node.js-Integration und die dadurch deaktivierte Renderer-Sandbox."
+    ],
+    [
+      "content/02-basics.typ",
+      48,
+      "Sandboxing und Kontextisolation erklären",
+      "Die beiden Mechanismen werden getrennt erklärt; CSP und IPC-Prüfungen bleiben eigenständige Maßnahmen."
+    ],
+    [
+      "content/04-analysis.typ",
+      140,
+      "Konkrete Maßnahmen statt Renderer-Isolation",
+      "Der Sammelbegriff wird durch Sandboxing, Kontextisolation und deaktivierte Node.js-Integration präzisiert."
+    ],
+    [
+      "content/05-migration.typ",
+      845,
+      "Prüffrage zu den Einstellungen",
+      "Die Leitfrage nennt die konkret zu prüfenden Einstellungen."
+    ],
+    [
+      "figures/electron-architecture-comparison.svg",
+      19,
+      "Isolierte Konfiguration",
+      "Die Beschriftung beschreibt eine Konfiguration und vermeidet eine zusätzliche Architekturklasse."
+    ],
+    [
+      "figures/electron-architecture-comparison.svg",
+      20,
+      "Offene Konfiguration",
+      "„Monolithisch“ wird vermieden: Der Main-Prozess bleibt auch in der offenen Konfiguration vorhanden."
+    ],
+    [
+      "figures/electron-architecture-comparison.svg",
+      40,
+      "Kontextisolation in der Abbildung",
+      "Die Beschriftung benennt den Mechanismus. Das API-Mittel contextBridge wird dadurch nicht als Synonym eingeführt."
+    ]
+  ]
+}

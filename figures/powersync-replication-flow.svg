@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1100" height="810" viewBox="0 0 1100 810" role="img" aria-labelledby="title description">
   <title id="title">Lokale Schreiboperationen und Replikation mit PowerSync</title>
-  <desc id="description">Die Benutzeroberfläche liest und schreibt lokal in SQLite. Schreiboperationen werden in der Upload Queue erfasst und bei bestehender Verbindung über REST oder RPC an das Backend übertragen. Nach Validierung schreibt das Backend in die zentrale Datenbank. Deren Änderungen gelangen über logische Replikation zum PowerSync Service und von dort gefiltert zurück in die lokale SQLite-Datenbank der autorisierten Clients.</desc>
+  <desc id="description">Die Benutzeroberfläche liest und schreibt lokal in SQLite. Schreiboperationen werden in der Upload-Warteschlange erfasst und bei bestehender Verbindung über REST oder RPC an das Backend übertragen. Nach Validierung schreibt das Backend in die zentrale Datenbank. Deren Änderungen gelangen über logische Replikation zum PowerSync-Dienst und von dort gefiltert zurück in die lokale SQLite-Datenbank der autorisierten Clients.</desc>
   <defs>
     <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#234d68"/></marker>
     <marker id="sync-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10 Z" fill="#356451"/></marker>
@@ -20,15 +20,15 @@
   </defs>
 
   <rect x="25" y="25" width="1050" height="255" rx="10" class="group"/>
-  <text x="550" y="67" class="heading">Lokale Persistenzschicht (Client)</text>
+  <text x="550" y="67" class="heading">Lokale Datenhaltung (Client)</text>
   <rect x="50" y="120" width="230" height="105" rx="8" class="box"/>
   <text x="165" y="166" class="label">Benutzeroberfläche</text>
   <text x="165" y="198" class="note">Lokale Bedienung</text>
   <rect x="400" y="120" width="260" height="105" rx="8" class="box"/>
   <text x="530" y="166" class="label">SQLite</text>
-  <text x="530" y="198" class="note">Lokale Persistierung</text>
+  <text x="530" y="198" class="note">Lokale Speicherung</text>
   <rect x="800" y="120" width="250" height="105" rx="8" class="queue"/>
-  <text x="925" y="166" class="label">Upload Queue</text>
+  <text x="925" y="166" class="label">Upload-Warteschlange</text>
   <text x="925" y="198" class="note">Ausstehende Änderungen</text>
   <path d="M280 176 H395" class="flow"/>
   <text x="340" y="141" class="small">1. SQL / ORM</text>
@@ -54,9 +54,9 @@
   <rect x="25" y="450" width="465" height="295" rx="10" class="group"/>
   <text x="257" y="485" class="heading">Synchronisationsdienst</text>
   <rect x="50" y="525" width="415" height="195" rx="8" class="sync-box"/>
-  <text x="257" y="570" class="label">PowerSync Service</text>
+  <text x="257" y="570" class="label">PowerSync-Dienst</text>
   <text x="257" y="611">Änderungen aus der Datenbank erfassen</text>
-  <text x="257" y="649">Sync Rules: Datenpartitionen filtern</text>
+  <text x="257" y="649">Sync Streams: Datenpartitionen filtern</text>
   <text x="257" y="687" class="note">Selektive Replikation je Client</text>
 
   <path d="M675 685 H470" class="sync-flow"/>
@@ -68,5 +68,5 @@
   <text x="325" y="315" class="label">6. Gefilterter Datenstrom</text>
   <text x="325" y="342" class="note">An autorisierte Clients</text>
 
-  <text x="550" y="790" class="note">Uploads laufen über die Backend-API; Downloads über den PowerSync Service.</text>
+  <text x="550" y="790" class="note">Uploads laufen über die Backend-API; Downloads über den PowerSync-Dienst.</text>
 </svg>

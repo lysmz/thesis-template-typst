@@ -1,25 +1,25 @@
 //---------------------------------------------------------------------
-= Evaluation des Demonstrators und des Migrationsleitfadens <ch:experiments>
+= Evaluation des Demonstrators und des Migrationspfads <ch:experiments>
 //---------------------------------------------------------------------
 
 Die Evaluation prüft die in @sec:requirements festgelegten Kriterien anhand der entstandenen Anwendung.
-Im Mittelpunkt stehen die lokale Nutzbarkeit, die Architektur, die Weiterverwendung des Ausgangsartefakts, die Online-Anbindungen und die Sicherheitsmaßnahmen.
-Die Ergebnisse bilden zugleich die Grundlage für die Bewertung des in @sec:migration-recommendations beschriebenen Leitfadens.
+Im Mittelpunkt stehen die lokale Nutzbarkeit, die Architektur, die Weiterverwendung des Webprototyps, die Online-Anbindungen und die Sicherheitsmaßnahmen.
+Die Ergebnisse bilden zugleich die Grundlage für die Bewertung des in @sec:migration-recommendations beschriebenen Migrationspfads.
 
 == Vorgehen der Prüfung <sec:evaluation-evidence>
 
-Die Funktionsprüfung folgt typischen Benutzerabläufen: Anwendung starten, Daten bearbeiten, die Verbindung unterbrechen und gespeicherte Änderungen nach einem Neustart erneut öffnen.
-Für die Kollaboration werden Aufgaben zwischen zwei Konten ausgetauscht sowie Gruppen und Einladungen geprüft.
+Die Funktionsprüfung folgt typischen Benutzerabläufen: installierte Electron-Anwendung starten, Daten bearbeiten, die Verbindung unterbrechen und gespeicherte Änderungen nach einem Neustart erneut öffnen.
+Für die synchronisierten Studiengruppen werden gemeinsame Gruppenaufgaben zwischen zwei Supabase-Benutzerkonten ausgetauscht sowie Gruppen und direkte Kontoeinladungen geprüft.
 Ergänzend werden die Aufteilung der Anwendung und die Wirkung ausgewählter Sicherheitsmaßnahmen betrachtet.
 
-Manuelle Versuche prüfen die Bedienung der gebauten Anwendung.
+Manuelle Funktionsprüfungen untersuchen die Bedienung der installierten Electron-Anwendung.
 Automatisierte Tests ergänzen sie um fachliche Regeln und gezielt erzeugte Fehlerfälle.
 Die folgenden Übersichten zeigen jeweils die durchgeführte Prüfung und das beobachtete Ergebnis.
 Für jeden Prüffall wird das zuletzt vorliegende Ergebnis verwendet.
 
-== Nutzbarkeit der lokalen Desktop-Anwendung <sec:local-feature-evaluation>
+== Nutzbarkeit der Electron-Anwendung <sec:local-feature-evaluation>
 
-Die lokale Kernanwendung soll ohne Internetverbindung starten und persönliche Daten dauerhaft speichern.
+Die Offline-Kernanwendung soll ohne Internetverbindung starten und persönliche Daten dauerhaft speichern.
 Geprüft wurden die lokale Anmeldung, Notenverwaltung, Kalender und Stundenplan.
 Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneustart, damit auch der Erhalt der Änderungen geprüft wird.
 
@@ -35,10 +35,10 @@ Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneusta
         align: left,
         table.header([*Prüfschritt*], [*Durchführung*], [*Ergebnis*]),
         [Start und Anmeldung],
-        [Verbindung trennen, Anwendung starten und mit einem vorhandenen lokalen Konto anmelden.],
+        [Verbindung trennen, installierte Electron-Anwendung starten und mit einem vorhandenen lokalen Benutzerkonto anmelden.],
         [Start und Anmeldung gelangen. Die persönlichen Ansichten waren ohne anhaltende Ladezustände erreichbar.],
         [Persönliche Daten bearbeiten],
-        [Noten, Kalendereinträge und Stundenplaneinträge ohne Verbindung anlegen beziehungsweise bearbeiten und erneut öffnen.],
+        [Noten, Termine und Stundenplaneinträge ohne Verbindung anlegen beziehungsweise bearbeiten und erneut öffnen.],
         [Die vorgesehenen Bearbeitungen funktionierten; die Änderungen wurden angezeigt.],
         [Daten nach Neustart lesen],
         [Anwendung vollständig beenden und weiterhin ohne Verbindung neu starten.],
@@ -47,7 +47,7 @@ Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneusta
         [Testeinträge offline löschen und die Anwendung erneut starten.],
         [Die gelöschten Einträge erschienen nicht erneut.],
         [Lokale Konten wechseln],
-        [Zu einem anderen lokalen Konto und anschließend zum ursprünglichen Konto wechseln.],
+        [Zu einem anderen lokalen Benutzerkonto und anschließend zum ursprünglichen Konto wechseln.],
         [Persönliche Einträge waren nur dem zugehörigen Konto zugeordnet und nach dem Rückwechsel wieder verfügbar.],
       )
     },
@@ -56,11 +56,11 @@ Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneusta
 ]
 
 Damit sind die lokale Anmeldung und die untersuchten persönlichen Funktionen auch ohne Verbindung nutzbar.
-Ihre Nutzung setzt keine Anmeldung am entfernten Kollaborationsdienst voraus.
+Ihre Nutzung setzt keine Anmeldung mit einem Supabase-Benutzerkonto voraus.
 
-Kalender- und Notenimport wurden gemeinsam als Dateiimport geprüft.
+Der iCal-Import und der CSV-Notenimport wurden gemeinsam als Dateiimporte geprüft.
 Die fachliche Funktion der Web-Anwendung blieb dabei erhalten: Ausgewählte Dateien werden geprüft und geeignete Einträge in den jeweiligen Bestand übernommen.
-Die Desktop-Anpassung betrifft insbesondere die lokale Dateiauswahl.
+Die Desktop-Anpassung betrifft insbesondere die native Dateiauswahl.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -72,7 +72,7 @@ Die Desktop-Anpassung betrifft insbesondere die lokale Dateiauswahl.
         columns: (1.1fr, 3.3fr),
         inset: 5pt,
         align: left,
-        table.header([*Prüffall*], [*Ergebnis bei Kalender- und Notenimport*]),
+        table.header([*Prüffall*], [*Ergebnis beim iCal-Import und CSV-Notenimport*]),
         [Gültige Daten],
         [Die Einträge wurden übernommen und in der jeweiligen Ansicht korrekt angezeigt.],
         [Ungeeignete Inhalte],
@@ -81,15 +81,15 @@ Die Desktop-Anpassung betrifft insbesondere die lokale Dateiauswahl.
         [Der Dialog schloss sich ohne Änderung des Datenbestands.],
       )
     },
-    caption: [Ergebnisse der Kalender- und Notenimporte.],
+    caption: [Ergebnisse des iCal-Imports und des CSV-Notenimports.],
   )
 ]
 
-== Architektur und Weiterverwendung des Ausgangsartefakts <sec:architecture-evaluation>
+== Architektur und Weiterverwendung des Webprototyps <sec:architecture-evaluation>
 
 Für die Architekturprüfung wurde die Zuordnung der vorhandenen Module mit der Zielarchitektur verglichen.
 Als durchgehendes Beispiel dient die Notenverwaltung.
-Hier lässt sich der Aufruf von der Oberfläche über die Schnittstelle und die fachliche Verarbeitung bis zum Datenzugriff verfolgen.
+Hier lässt sich der Aufruf von der Benutzeroberfläche über die Schnittstelle und die fachliche Verarbeitung bis zum Datenzugriff verfolgen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -103,30 +103,30 @@ Hier lässt sich der Aufruf von der Oberfläche über die Schnittstelle und die 
         align: left,
         table.header([*Kriterium*], [*Prüfung*], [*Ergebnis*]),
         [Getrennte Verantwortlichkeiten],
-        [Darstellung, fachliche Verarbeitung und Datenzugriff am Notenpfad zuordnen.],
+        [Benutzeroberfläche, Geschäftslogik und Datenzugriff am Verarbeitungspfad der Notenverwaltung zuordnen.],
         [Die Aufgaben sind auf Oberflächenkomponenten, Services und Repositories verteilt.],
-        [Unabhängig prüfbare Fachlogik],
-        [Notenverarbeitung ohne Bedienung der Oberfläche testen.],
+        [Unabhängig prüfbare Geschäftslogik],
+        [Geschäftslogik der Notenverwaltung ohne Bedienung der Benutzeroberfläche testen.],
         [Alle acht Tests bestanden, unter anderem zu Notenwerten, gewichteter Statistik, Benutzerzuordnung und Import.],
         [Lokaler Aufrufweg],
-        [Kommunikation zwischen Oberfläche und lokaler Verarbeitung nachvollziehen.],
+        [Kommunikation zwischen Benutzeroberfläche und lokaler Verarbeitung nachvollziehen.],
         [Die Aufrufe erfolgen über begrenzte Preload-Schnittstellen und IPC. Ein lokaler HTTP-Server ist dafür nicht erforderlich.],
         [Weiterverwendung],
-        [Erhaltene Bestandteile und notwendige Änderungen mit dem Ausgangsartefakt vergleichen.],
-        [Oberflächenkomponenten, fachliche Berechnungen und der API-Vertrag blieben als Grundlage erhalten. Laufzeit, Routing, Aufruftransport und Datenbankanbindung wurden angepasst.],
+        [Erhaltene Bestandteile und notwendige Änderungen mit dem Webprototyp vergleichen.],
+        [Oberflächenkomponenten, fachliche Berechnungen und der OpenAPI-Vertrag blieben als Grundlage erhalten. Laufzeit, Routing, Aufruftransport und Datenbankanbindung wurden angepasst.],
       )
     },
     caption: [Abgleich der Architektur und der Weiterverwendung am Beispiel der Notenverwaltung.],
   )
 ]
 
-Die Ergebnisse bestätigen die geforderte Trennung der Verantwortlichkeiten und die Prüfbarkeit der fachlichen Verarbeitung.
+Die Ergebnisse bestätigen die geforderte Trennung der Verantwortlichkeiten und die Prüfbarkeit der Geschäftslogik.
 Die in Kapitel 5 beschriebenen Eingriffe machen außerdem nachvollziehbar, welche Bestandteile weiterverwendet wurden und weshalb andere angepasst werden mussten.
 Die Bewertung der Weiterverwendung bezieht sich auf diese begründete Zuordnung.
 
 == Online-Anbindungen und Fehlerverhalten <sec:collaboration-evaluation>
 
-=== Einseitige Übernahme von Studiengangsdaten
+=== Einseitige Datenübernahme aus dem Studiengangskatalog
 
 Beim Studiengangskatalog wurde geprüft, ob externe Daten übernommen werden und anschließend lokal verfügbar bleiben.
 Neben dem erfolgreichen Abruf wurden wiederholte Aktualisierungen, Verbindungsfehler und ungeeignete Antworten betrachtet.
@@ -150,7 +150,7 @@ Neben dem erfolgreichen Abruf wurden wiederholte Aktualisierungen, Verbindungsfe
         [Es entstanden keine zusätzlichen identischen Einträge.],
         [Verbindung unterbrechen],
         [Ohne Verbindung einen Abruf versuchen.],
-        [Der Abruffehler wurde gemeldet; vorhandene Studiengänge und Kurse blieben verfügbar.],
+        [Der Abruffehler wurde gemeldet; vorhandene Studiengänge und Module blieben verfügbar.],
         [Offline neu starten],
         [Anwendung ohne Verbindung neu starten und zuvor übernommene Daten öffnen.],
         [Die Daten waren weiterhin nutzbar.],
@@ -186,7 +186,7 @@ Ergänzend wurden die Online-Abläufe für Gruppen und Einladungen durchgespielt
         align: left,
         table.header([*Prüfschritt*], [*Durchführung*], [*Ergebnis*]),
         [Aufgabe offline speichern],
-        [Während einer bestehenden Sitzung die Verbindung trennen, eine Aufgabe anlegen und die Ansicht erneut öffnen.],
+        [Während einer bestehenden Supabase-Kollaborationssitzung die Verbindung trennen, eine gemeinsame Gruppenaufgabe anlegen und die Ansicht erneut öffnen.],
         [Die Aufgabe wurde lokal gespeichert und erneut angezeigt.],
         [Änderung übertragen],
         [Verbindung wiederherstellen und die Aufgaben beim anderen Konto prüfen.],
@@ -203,8 +203,8 @@ Ergänzend wurden die Online-Abläufe für Gruppen und Einladungen durchgespielt
   )
 ]
 
-Aufgaben können während einer bestehenden Kollaborationssitzung ohne Verbindung bearbeitet werden.
-Nach einem Anwendungsneustart ist eine erneute entfernte Anmeldung erforderlich; anschließend stehen die gespeicherten Änderungen wieder zur Verfügung und werden übertragen.
+Aufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden.
+Nach einem Anwendungsneustart ist eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich; anschließend stehen die gespeicherten Änderungen wieder zur Verfügung und werden übertragen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -235,14 +235,14 @@ Nach einem Anwendungsneustart ist eine erneute entfernte Anmeldung erforderlich;
   )
 ]
 
-Die geprüften Verwaltungsaktionen benötigen eine Verbindung, während Aufgabenänderungen zunächst lokal verarbeitet werden.
+Die geprüften Operationen der netzwerkabhängigen Gruppenverwaltung benötigen eine Verbindung, während Aufgabenänderungen zunächst lokal verarbeitet werden.
 Diese Unterscheidung wird durch die beobachteten Abläufe und Rückmeldungen nachvollziehbar.
 
 == Wirkung der Sicherheitsmaßnahmen <sec:security-evaluation>
 
 Die Sicherheitsprüfung folgt der in Kapitel 4 festgelegten Anforderung und der in @sec:app-hardening beschriebenen Checkliste.
 Alle 20 Empfehlungen wurden auf ihre Anwendbarkeit geprüft.
-Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte Laufzeitversuche ergänzt.
+Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte manuelle Laufzeitversuche ergänzt.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -261,12 +261,12 @@ Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte 
         [Textdarstellung],
         [Einen Aufgabentitel mit HTML-artigem Inhalt speichern und erneut öffnen.],
         [Der Inhalt wurde weiterhin als Text dargestellt; der enthaltene Code wurde nicht ausgeführt.],
-        [Inhaltsrichtlinie],
+        [CSP],
         [Das Laden eines Skripts aus einer unerlaubten Quelle versuchen.],
-        [Die Inhaltsrichtlinie blockierte das Skript; es wurde nicht ausgeführt.],
+        [Die CSP blockierte das Skript; es wurde nicht ausgeführt.],
         [Navigation und Fenster],
         [Ein fremdes Navigationsziel und ein zusätzliches Fenster öffnen lassen.],
-        [Die Anwendung blieb im vorgesehenen Dokument. Es öffnete sich weder ein zusätzliches App-Fenster noch der Systembrowser.],
+        [Die Anwendung blieb im vorgesehenen Dokument. Es öffnete sich weder ein zusätzliches Anwendungsfenster noch der Systembrowser.],
         [Gebautes Anwendungspaket],
         [Ausgewählte Startoptionen und den Integritätsschutz des Anwendungspakets kontrollieren.],
         [Die vorgesehenen Optionen waren gesetzt; die Integritätsprüfung war erfolgreich.],
@@ -281,7 +281,7 @@ Zwei Empfehlungen zu Webviews sind wegen deren fehlender Nutzung nicht anwendbar
 Die Empfehlung zu sicheren externen Verbindungen ist im festgelegten Umfang erfüllt; die interne Redirectbehandlung des PowerSync-SDK wurde nicht praktisch geprüft.
 Damit sind Umsetzung und Prüfgrenze für alle Empfehlungen eingeordnet.
 
-== Abdeckung der Verarbeitungsmuster und Bewertung des Leitfadens <sec:guide-evaluation>
+== Abdeckung der Verarbeitungsmuster und Bewertung des Migrationspfads <sec:guide-evaluation>
 
 Die geprüften Funktionen decken die in Kapitel 4 ausgewählten Verarbeitungsmuster ab.
 Aus ihrer Umsetzung lassen sich zugleich die Ansatzpunkte für weitere Funktionen ableiten.
@@ -297,15 +297,15 @@ Aus ihrer Umsetzung lassen sich zugleich die Ansatzpunkte für weitere Funktione
         inset: 5pt,
         align: left,
         table.header([*Verarbeitungsmuster*], [*Geprüftes Beispiel*], [*Ansatz für weitere Funktionen*]),
-        [Lokale Datenbearbeitung], [Noten, Kalender und Stundenplan],
-        [Oberfläche, fachliche Verarbeitung und Datenzugriff übernehmen getrennte Aufgaben.],
-        [Dateiimport], [Kalender- und Notenimport],
+        [Lokale CRUD-Verarbeitung], [Noten, Kalender und Stundenplan],
+        [Benutzeroberfläche, Geschäftslogik und Datenzugriff übernehmen getrennte Aufgaben.],
+        [Dateiimport], [iCal-Import und CSV-Notenimport],
         [Dateiauswahl, Prüfung und Übernahme können auf weitere Eingabeformate übertragen werden.],
         [Einseitige Datenübernahme], [Studiengangskatalog],
         [Externe Aktualisierung und lokale Verwendung werden getrennt; Fehler erhalten den bisherigen Bestand.],
-        [Kollaborative Synchronisierung], [Gemeinsame Aufgaben],
+        [Kollaborative Synchronisation], [Gemeinsame Gruppenaufgaben],
         [Lokale Änderungen werden gespeichert und anschließend übertragen; Speicherung und Abgleich werden getrennt geprüft.],
-        [Unmittelbare Online-Aktion], [Gruppen und Einladungen],
+        [Netzwerkabhängige Gruppenverwaltung], [Studiengruppen und direkte Kontoeinladungen],
         [Netzwerkabhängige Aktionen werden ausdrücklich ausgewiesen und geben Verbindungsfehler zurück.],
       )
     },
@@ -313,13 +313,13 @@ Aus ihrer Umsetzung lassen sich zugleich die Ansatzpunkte für weitere Funktione
   ) <tab:functional-evaluation>
 ]
 
-Die Empfehlungen des Leitfadens lassen sich diesen Umsetzungsschritten zuordnen.
-Die Auswahl der Zielumgebung und die lokale Datenhaltung schaffen die Grundlage; begrenzte Schnittstellen und vollständige Bearbeitungsabläufe strukturieren die Migration einzelner Funktionen.
+Die Empfehlungen des Migrationspfads lassen sich diesen Umsetzungsschritten zuordnen.
+Die Auswahl der Desktop-Zielumgebung und die lokale Datenhaltung schaffen die Grundlage; begrenzte Schnittstellen und vollständige Bearbeitungsabläufe strukturieren die Migration einzelner Funktionen.
 Dateiimporte, externe Datenübernahme und Kollaboration ergänzen die jeweiligen Verarbeitungsmuster.
 Die Härtung führt die Sicherheitsmaßnahmen und ihre Kontrolle zusammen.
 
 Voraussetzungen, Entscheidungen und Kontrollpunkte sind damit am Demonstrator nachvollziehbar.
-Der Leitfaden beschreibt ein aus dieser Fallstudie abgeleitetes Vorgehen für vergleichbare Ausgangsartefakte.
+Der Migrationspfad beschreibt ein aus dieser Fallstudie abgeleitetes Vorgehen für vergleichbare Ausgangsartefakte.
 
 == Gesamtbewertung <sec:requirements-evaluation>
 
@@ -336,23 +336,23 @@ Die folgende Übersicht führt die Ergebnisse auf die Kriterien aus Kapitel 4 zu
         inset: 5pt,
         align: left,
         table.header([*Kriterium*], [*Ergebnis der Bewertung*]),
-        [Lauffähige Desktop-Anwendung],
-        [Die gebaute Anwendung startet; die ausgewählten Benutzerabläufe funktionieren.],
+        [Lauffähige Electron-Anwendung],
+        [Die installierte Electron-Anwendung startet; die ausgewählten Benutzerabläufe funktionieren.],
         [Dreischichtenarchitektur],
-        [Darstellung, Fachlogik und Datenzugriff sind getrennt. Die Notenverarbeitung ist ohne Oberfläche prüfbar.],
-        [Weiterverwendung des Ausgangsartefakts],
+        [Benutzeroberfläche, Geschäftslogik und Datenzugriff sind getrennt. Die Geschäftslogik der Notenverwaltung ist ohne Benutzeroberfläche prüfbar.],
+        [Weiterverwendung des Webprototyps],
         [Erhaltene Bestandteile und notwendige Anpassungen sind zugeordnet und begründet.],
         [Lokale Kommunikation],
         [Lokale Aufrufe verwenden begrenzte Preload-Schnittstellen und IPC. Ein lokaler HTTP-Server wird nicht benötigt.],
         [Offline-Verfügbarkeit],
         [Lokale Anmeldung und persönliche Datenbearbeitung funktionieren ohne Verbindung. Gespeicherte Daten bleiben nach einem Neustart erhalten; ein vorhandener Katalog ist offline nutzbar.],
-        [Kollaborative Synchronisierung],
+        [Kollaborative Synchronisation],
         [Lokale Aufgabenänderungen bleiben erhalten und werden nach Wiederverbindung für das andere Konto verfügbar. Gruppen und Einladungen setzen eine Verbindung voraus.],
         [Härtung der Anwendung],
-        [Alle Empfehlungen sind auf Anwendbarkeit, Umsetzung und Prüfung eingeordnet. Die ausgewählten Sicherheitsversuche verliefen erfolgreich; die genannte Prüfgrenze bleibt bestehen.],
+        [Alle Empfehlungen sind auf Anwendbarkeit, Umsetzung und Prüfung eingeordnet. Die ausgewählten manuellen Laufzeitversuche verliefen erfolgreich; die genannte Prüfgrenze bleibt bestehen.],
         [Verarbeitungsmuster und Erweiterbarkeit],
         [Die ausgewählten Muster sind durch geprüfte Funktionen abgedeckt und bieten Ansatzpunkte für vergleichbare Erweiterungen.],
-        [Nachvollziehbarer Migrationsleitfaden],
+        [Nachvollziehbarer Migrationspfad],
         [Voraussetzungen, Reihenfolge, Änderungen und Kontrollpunkte sind der Umsetzung im Demonstrator zugeordnet.],
       )
     },
