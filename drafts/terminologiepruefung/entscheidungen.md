@@ -3,7 +3,7 @@
 ## Weiteres Vorgehen
 
 - Die übrigen Vorschläge zur Terminologie sind vom Nutzer grundsätzlich angenommen.
-- Alle P-Einträge wurden einzeln besprochen. Die vorgemerkten Vorschläge wurden am 12. November 2026 umgesetzt. Die gemeinsame fachliche Nachschärfung von T69 bleibt ausdrücklich offen; die Stellen stehen gesondert in sicherheitsbegriffe-nachschaerfen.md.
+- Alle P-Einträge wurden einzeln besprochen. Die vorgemerkten Vorschläge wurden am 12. November 2026 umgesetzt. Die gesondert vorgelegten Sicherheitsformulierungen zu T69 wurden nach dem Sicherungscommit a86bcc7 vom Nutzer freigegeben.
 
 ## T07: Desktop-Zielumgebung und Electron-Laufzeit – geklärt und terminologisch umgesetzt
 
@@ -18,7 +18,7 @@
 - Die zuvor vorgeschlagene Dreiteilung in „Forschungsansatz“, „Forschungsrahmen“ und „Prozessmodell“ war vom Nutzer nicht als begriffliche Abstufung beabsichtigt.
 - **Design Science Research (DSR)** wird als zentrale Bezeichnung verwendet. Das **Modell nach Peffers et al.** beschreibt die zur Strukturierung eingeplanten Forschungsaktivitäten; deren konkrete Bedeutung für die Arbeit soll verständlich erklärt werden.
 - Die bewusste Planung der Forschungsaktivitäten ist von den schrittweise entstandenen technischen Entscheidungen und Anpassungen während der Migration zu unterscheiden. Sie bedeutet nicht, dass alle technischen Schritte von Anfang an feststanden.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T15: Webprototyp, Electron-Anwendung und Migrationspfad – geklärt und terminologisch umgesetzt
 
@@ -26,7 +26,7 @@
 - **Electron-Anwendung** bezeichnet die migrierte Software. Der Nutzer bestätigt ihre Rolle als **technischer Demonstrator**.
 - **Migrationspfad** bezeichnet das abgeleitete Vorgehen mit Empfehlungen und Kontrollpunkten. Der Nutzer bestätigt ihn als **zentrales wissenschaftliches Ergebnis**.
 - „Artefakt“ soll bei konkreten Bezügen durch die eindeutige Bezeichnung des jeweiligen Gegenstands präzisiert werden. Allgemeine methodische Aussagen können den Oberbegriff weiterhin verwenden.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T16: Erster Migrationsversuch und Spike-Tests – geklärt und terminologisch umgesetzt
 
@@ -34,7 +34,7 @@
 - **Spike-Tests** bezeichnet die späteren technischen Erprobungen der Synchronisationsintegration aus Kapitel 5. Der Nutzer erläutert, dass diese innerhalb eines Worktrees durchgeführt wurden.
 - Die beiden Untersuchungen werden begrifflich getrennt. Die vorgeschlagenen deutschen Bezeichnungen „Migrationsvorversuch“ und „technische Vorprüfung der Synchronisationsintegration“ werden nicht als Leitbegriffe übernommen.
 - Bei der Einführung der Spike-Tests kurz den konkret erprobten Zweck erklären; vertraute technische Begriffe beibehalten.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T23: Module und Kurse sind getrennte Fachobjekte – geklärt und terminologisch umgesetzt
 
@@ -44,7 +44,7 @@
 - `0002_seed-timetable-presets.sql` hinterlegt die **Kurse** für das Stundenplan-Feature.
 - „Module“, „Kurse“ und „Lehrveranstaltungen“ dürfen nicht global als Synonyme behandelt werden. Bei konkreten Fachobjekten sind „Module“ bzw. „Kurse“ entsprechend dem Feature zu verwenden; technische Softwaremodule bleiben davon getrennt.
 - Kapitel 5, Zeile 143, soll die beiden Seed-Dateien und ihre jeweils unterschiedlichen Fachobjekte ausdrücklich zuordnen. Die übrigen Bezüge auf „Lehrveranstaltungen“ und „Kurse“ beim Studiengangskatalog sind anhand ihres tatsächlichen Features zu präzisieren.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T24: Studiengruppen in zwei Migrationsständen – geklärt und terminologisch umgesetzt
 
@@ -55,7 +55,7 @@
 - **Synchronisierte Studiengruppen** bzw. **synchronisiertes Studiengruppen-Feature** bezeichnet die um Synchronisation erweiterte Implementierung unter `/gruppen-sync`.
 - „Studiengruppen“ bleibt der Oberbegriff. „Kollaborationsbereich“ soll bei konkretem Feature-Bezug entsprechend präzisiert werden; Bezüge auf technische Komponenten und Datenhaltungsbereiche sind im Kontext zu prüfen.
 - Die Darstellung soll den schrittweisen Ausbau desselben ursprünglichen Features und das vorübergehende Nebeneinander der Implementierungen deutlich machen.
-- Der Nutzer stimmt diesen Bezeichnungen zu. Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Der Nutzer stimmt diesen Bezeichnungen zu. Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T56: Lokales Benutzerkonto und Supabase-Benutzerkonto – geklärt und terminologisch umgesetzt
 
@@ -64,7 +64,7 @@
 - **Supabase-Benutzerkonto** bezeichnet das separate Konto für die synchronisierten Studiengruppen.
 - Eine automatische Verknüpfung oder gemeinsame Identität darf im Text nicht vorausgesetzt werden.
 - „Profil“ bezeichnet weiterhin den zusätzlichen anwendungsbezogenen Datensatz und wird nicht als Synonym für das Benutzerkonto verwendet.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T58: Gruppeneinladungen – geklärt und terminologisch umgesetzt
 
@@ -73,7 +73,7 @@
 - **Linkbasierte Gruppeneinladung** bezeichnet den ursprünglichen Ablauf.
 - **Direkte Kontoeinladung** bezeichnet den Ablauf der synchronisierten Studiengruppen.
 - „Einladungslink“, „Einladungstoken“ und „Einladungsseite“ sind technische Bestandteile und keine Synonyme des gesamten Einladungsablaufs.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T60: Sync Streams – geklärt und terminologisch umgesetzt
 
@@ -83,13 +83,13 @@
 - „Replikationsregeln“ kann als allgemeine Erklärung der Auswahl zu übertragender Daten verwendet werden, soll aber kein zweites technisches Konfigurationsmodell nahelegen.
 - Thesis-Text und Abbildung wurden am 12. November 2026 entsprechend angepasst.
 
-## T69: Prozesstrennung, Sandboxing und Kontextisolation – Klärung mit gesonderter Nachschärfung
+## T69: Prozesstrennung, Sandboxing und Kontextisolation – gesondert vorgelegt und freigegeben
 
 - Prozesstrennung, Sandboxing und Kontextisolation werden als unterschiedliche Mechanismen gezielt benannt; die Sandbox der KI-Entwicklungsplattform ist davon getrennt zu kennzeichnen.
 - Der unscharfe Sammelbegriff „Renderer-Isolation“ ist anhand der konkret gemeinten Schutzmaßnahmen zu präzisieren.
 - **Ausdrücklicher Nutzerwunsch:** Bei der späteren Umsetzung jede betroffene bzw. geänderte Stelle mit Kapitel und Zeile gesondert vorlegen und den Nutzer ausdrücklich an die gemeinsame fachliche Nachschärfung erinnern. Diesen Punkt nicht allein mit einer pauschalen Abschlussmeldung als erledigt behandeln.
 - Besonders zu prüfen: K2 Z.34 (Prozessisolierung), K2 Z.45 (behaupteter Zusammenhang zwischen Prozesstrennung und Schutzwirkung der Chromium-Sandbox), K2 Z.48 (Kontextisolation und Sandboxing), K4 Z.140 (Renderer-Isolation), K5 Z.845 (Abgrenzung der Sicherheitseinstellungen), K1 Z.22 (Sandbox der KI-Entwicklungsplattform). Zeilennummern beziehen sich auf den bisherigen Quelltextstand und sind bei Umsetzung erneut zu kontrollieren.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T70: Paketierung und getestete Anwendung – geklärt und terminologisch umgesetzt
 
@@ -97,7 +97,7 @@
 - **Paketierung** bezeichnet den Erstellungsprozess; **Anwendungspaket** die gebaute Anwendung; **Installationspaket** den Installer; **ASAR-Archiv** die Datei `app.asar` innerhalb der Anwendung.
 - Die Beschreibung der betreffenden Laufzeitprüfungen soll ausdrücklich die **installierte Anwendung** benennen, statt offen zwischen Installer, Anwendungspaket und direkt aus dem Ausgabeordner gestarteter Anwendung zu wechseln.
 - Diese Bestätigung betrifft den Start und Test der installierten Anwendung. Für separate automatisierte Paketprüfungen weiterhin die jeweils dokumentierten Artefakte und Prüforte beachten.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T76: Schemadefinition und lokaler Datenbestand – geklärt und terminologisch umgesetzt
 
@@ -105,7 +105,7 @@
 - **Zentrale Schemadefinition** bezeichnet beim Drizzle-Schema die zentrale Definition der Tabellen und Datentypen.
 - **Primärer lokaler Datenbestand** bezeichnet im Local-First-Kontext den Datenbestand, auf dem die Anwendung lokal arbeitet.
 - Der englische Ausdruck soll an diesen Stellen durch die jeweils konkrete Bezeichnung ersetzt werden. „Datensouveränität“ bleibt als gesonderte Eigenschaft benannt und ist kein Synonym für einen Datenbestand.
-- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst. Für T69 bleibt die gemeinsame fachliche Durchsicht der gesondert dokumentierten Vorschläge offen.
+- Die Terminologie wurde am 12. November 2026 im Quelltext angepasst.
 
 ## T77: Kontoverwaltung, Anmeldung und Zugriffskontrolle – geklärt und umgesetzt
 
@@ -141,4 +141,8 @@
 
 ## Umsetzung am 12. November 2026
 
-Details und Prüfungen stehen in umsetzungsbericht.md. Die separate Prüf-PDF wurde erfolgreich erstellt und visuell kontrolliert; der Paketdownloadfehler aus den früheren Arbeitsschritten konnte behoben werden. Die bestehende thesis.pdf bleibt unverändert. T69 ist ausdrücklich zur gemeinsamen Nachschärfung vorgemerkt.
+Details und Prüfungen stehen in umsetzungsbericht.md. Die separate Prüf-PDF wurde erfolgreich erstellt und visuell kontrolliert; der Paketdownloadfehler aus den früheren Arbeitsschritten konnte behoben werden. Die bestehende thesis.pdf bleibt unverändert. T69 wurde nach dem Sicherungscommit a86bcc7 vom Nutzer freigegeben.
+
+## Freigabe nach Sicherungscommit a86bcc7
+
+Der Nutzer bestätigt die gesondert vorgelegten Sicherheitsformulierungen zur Übernahme. Auf seinen ausdrücklichen Wunsch wurde vor der Aktualisierung des Freigabestatus zunächst Commit a86bcc7 erstellt. Die Formulierungen waren bereits im Quelltext enthalten; deshalb war keine erneute inhaltliche Ersetzung nötig. Der Freigabevermerk ist eine nachfolgende, noch nicht committete Änderung.

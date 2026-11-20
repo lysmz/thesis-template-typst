@@ -2,7 +2,7 @@
 
 Stand: 12. November 2026. Die nach T01–T03 vorgemerkten Begriffe wurden unter Berücksichtigung aller P-Klärungen in den sieben Kapiteldateien umgesetzt. 8 SVG-Abbildungen wurden sprachlich angepasst; bei längeren Beschriftungen wurden Schriftgrößen bzw. Zeilenaufteilung korrigiert.
 
-**Offen bleibt die ausdrücklich gewünschte gemeinsame fachliche Nachschärfung von T69.** Die einzelnen Stellen mit Vorher-/Nachher-Text stehen in sicherheitsbegriffe-nachschaerfen.md. Diese Vorschläge sind nicht als gemeinsam abschließend freigegeben zu behandeln.
+**T69 wurde nach gesonderter Vorlage vom Nutzer zur Übernahme freigegeben.** Auf seinen Wunsch wurde vor der Aktualisierung des Freigabestatus der Sicherungscommit a86bcc7 erstellt. Die Vorher-/Nachher-Texte bleiben in sicherheitsbegriffe-nachschaerfen.md dokumentiert.
 
 ## Wesentliche Entscheidungen
 
@@ -104,7 +104,7 @@ Die Tabelle dokumentiert die Durchsicht aller 84 Familien der ursprünglichen Ar
 | T66 | Content Security Policy | Im Kontext geprüft und präzisiert |
 | T67 | Kontextisolation | Im Kontext geprüft und präzisiert |
 | T68 | Node.js-Integration | Im Kontext geprüft und präzisiert |
-| T69 | Sandbox / Prozessisolierung | Formulierungsvorschläge umgesetzt; gemeinsame Nachschärfung offen |
+| T69 | Sandbox / Prozessisolierung | Formulierungen umgesetzt, gesondert vorgelegt und vom Nutzer freigegeben |
 | T70 | Paketierung / Paket / Archiv | Im Kontext geprüft und präzisiert |
 | T71 | ASAR-Archiv | Im Kontext geprüft und präzisiert |
 | T72 | Electron Fuses | Im Kontext geprüft und präzisiert |

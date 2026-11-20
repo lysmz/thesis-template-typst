@@ -1,6 +1,6 @@
 # Gesonderte Nachschärfung: Prozesstrennung, Sandboxing und Kontextisolation
 
-Stand: 12. November 2026. **Wie ausdrücklich vereinbart, sind die folgenden Stellen zur gemeinsamen fachlichen Durchsicht vorgemerkt.** Die aufgeführten Formulierungsvorschläge stehen bereits im Quelltext und in der separaten Prüf-PDF; die gemeinsame Nachschärfung ist noch offen. Alle Zeilen beziehen sich auf den aktuellen Quelltext.
+Stand: 12. November 2026. **Die nachfolgend gesondert vorgelegten Formulierungen wurden vom Nutzer zur Übernahme freigegeben.** Vor der Aktualisierung dieses Freigabestatus wurde auf seinen Wunsch der Sicherungscommit a86bcc7 erstellt. Die Formulierungen standen bereits im Quelltext und in der separaten Prüf-PDF. Die Gegenüberstellungen bleiben als Änderungsnachweis erhalten.
 
 Die wichtigste Stelle ist K2 Z.45. Prozesstrennung beschreibt die Aufteilung auf Prozesse; Sandboxing begrenzt Systemzugriffe; Kontextisolation trennt JavaScript-Kontexte. Diese Mechanismen dürfen nicht als austauschbare Bezeichnungen behandelt werden.
 
@@ -90,7 +90,7 @@ Der Sammelbegriff wird durch Sandboxing, Kontextisolation und deaktivierte Node.
 
 ## Prüffrage zu den Einstellungen
 
-[K5 Z.845](<C:/Users/Joshua/Desktop/Desktop App prototype/thesis-template-typst/content/05-migration.typ:845>)
+[K5 Z.846](<C:/Users/Joshua/Desktop/Desktop App prototype/thesis-template-typst/content/05-migration.typ:846>)
 
 Die Leitfrage nennt die konkret zu prüfenden Einstellungen.
 
@@ -148,4 +148,4 @@ Die Beschriftung benennt den Mechanismus. Das API-Mittel contextBridge wird dadu
 
 Die Electron-Dokumentation erläutert, dass aktivierte Node.js-Integration die Renderer-Sandbox deaktiviert: [Process Sandboxing](https://www.electronjs.org/docs/latest/tutorial/sandbox). Die Trennung der JavaScript-Kontexte von Webseite und Preload-Skript wird separat erklärt: [Context Isolation](https://www.electronjs.org/docs/latest/tutorial/context-isolation).
 
-Bei der gemeinsamen Durchsicht prüfen wir jeweils die technische Aussage, ihre Verständlichkeit und die Übereinstimmung mit der beschriebenen Konfiguration des Demonstrators. Die Darstellung ist kein zusätzlicher Sicherheitsnachweis der Anwendung.
+Die gesonderte Durchsicht und anschließende Freigabe betreffen die hier aufgeführten Formulierungen. Die Darstellung ist kein zusätzlicher Sicherheitsnachweis der Anwendung.
