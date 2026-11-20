@@ -1,0 +1,87 @@
+{
+  "result": "pass",
+  "checks": [
+    {
+      "name": "read synchronized group graph while offline",
+      "status": "pass",
+      "evidence": {
+        "groups": 1,
+        "members": 2,
+        "invitations": 1
+      }
+    },
+    {
+      "name": "offline group task durability",
+      "status": "pass",
+      "evidence": {
+        "taskId": "38bb8ccf-c9ab-4bea-9656-67df59137c62",
+        "queuedBeforeRestart": 8,
+        "queuedAfterRestart": 8
+      }
+    },
+    {
+      "name": "online-only invitation boundary",
+      "status": "pass",
+      "evidence": {
+        "offlineInvitationRejected": true
+      }
+    },
+    {
+      "name": "Q1/Q4/Q6/Q7: journal write failure, dependency preservation and account-isolated restart",
+      "status": "pass",
+      "evidence": {
+        "rejected": 3,
+        "pending": 0,
+        "pendingDuringJournalFailure": 4,
+        "validTaskUploaded": true,
+        "replicaStable": true,
+        "journalEnqueuedWrites": 0,
+        "deletedSnapshotPreserved": true
+      }
+    },
+    {
+      "name": "Z1: real PATCH for a missing server task retains the edit",
+      "status": "pass",
+      "evidence": {
+        "durableRejection": true,
+        "pending": 0
+      }
+    },
+    {
+      "name": "Q2: transient failure preserves the real queue across restart",
+      "status": "pass",
+      "evidence": {
+        "pendingDuringFailure": 1,
+        "pendingAfterRecovery": 0
+      }
+    },
+    {
+      "name": "R1: real multi-operation transaction safely replays partial success",
+      "status": "pass",
+      "evidence": {
+        "transactionOperations": 2,
+        "bobEditPreserved": true,
+        "pending": 0
+      }
+    },
+    {
+      "name": "Q4/Q5: forced exit after journal commit recovers before acknowledgement",
+      "status": "pass",
+      "evidence": {
+        "rejectedAfterRestart": 1,
+        "pendingAfterRestart": 2,
+        "rejectedAfterRecovery": 1,
+        "pendingAfterRecovery": 0
+      }
+    },
+    {
+      "name": "R5: queue identities differ by replica and remain stable across restart",
+      "status": "pass",
+      "evidence": {
+        "equalSequences": true,
+        "differentReplicas": true,
+        "identityStableAfterRestart": true
+      }
+    }
+  ]
+}

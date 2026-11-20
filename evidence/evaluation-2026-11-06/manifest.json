@@ -1,0 +1,27 @@
+[
+  {
+    "source": "studyplan/dist/evaluation-2026-11-05/import-testdateien/README_Testanleitung.md",
+    "copy": "README_Testanleitung.md",
+    "sha256": "896972a13e14ab00d859e307fbd857f1270fafb9bb20f3987dd55acf902479db"
+  },
+  {
+    "source": "studyplan/dist/evaluation-2026-11-05/import-testdateien/README_Weitere_Manuelle_Tests.md",
+    "copy": "README_Weitere_Manuelle_Tests.md",
+    "sha256": "3386020c58eb54e4d9412ae3b715848de5d73c3d06ae431f313cd59f1760905c"
+  },
+  {
+    "source": "studyplan/dist/evaluation-2026-11-05/build-info.json",
+    "copy": "build-info.json",
+    "sha256": "bc37b3b6a4a24c0a6ef35efeab8b4131d62d16676c44856cc05a06905bba4348"
+  },
+  {
+    "source": "studyplan/dist/evaluation-2026-11-05/package-check.json",
+    "copy": "package-check.json",
+    "sha256": "a361a618c32d83d14e196917871dec95e9d8138dc0e6284b8097eff9668c4629"
+  },
+  {
+    "source": "studyplan/dist/evaluation-2026-11-05/native-smoke.json",
+    "copy": "native-smoke.json",
+    "sha256": "6a5b7d1c1d215ddbbd91b1c51d97440cdfa2419717c74fe5cbfd020a51695c4b"
+  }
+]

@@ -1,0 +1,39 @@
+{
+  "version": "2.0.0",
+  "purpose": "Chapter 6 manual evaluation with bundled public remote configuration",
+  "verifiedDate": "2026-11-06",
+  "sourceCommit": "d9624b36ef1c7fc055146596b563e11fe39358e4",
+  "sourceChanges": [
+    {
+      "file": "electron.vite.config.ts",
+      "sha256": "b581472295ec755d9f1f6427ae28fcf8d963926ae1423d51973810836d70e1b6"
+    },
+    {
+      "file": "src/main/index.ts",
+      "sha256": "9d38d47231525c0ca44199ca45a763fb7f7ae25c710843caf00b7be01a3869ad"
+    }
+  ],
+  "installer": {
+    "file": "studyplan-2.0.0-setup.exe",
+    "sha256": "1a3b40e675578ab4ae3e59b3378c8afc2f59314b2075e473b5ceb14822208ae0",
+    "bytes": 136685721
+  },
+  "executableSha256": "6e62013cab653cde67f007401ba7d49572c309eab1f0489b80a454a42d2cb3f4",
+  "asarSha256": "5b2a2b18bd48d80c835598d7849e45ea5629e9630bd116a1b94d09c43eb09fcf",
+  "bundledPublicFields": [
+    "POWERSYNC_SPIKE_ENDPOINT",
+    "SUPABASE_URL",
+    "SUPABASE_PUBLISHABLE_KEY"
+  ],
+  "accountCredentialsBundled": false,
+  "checks": {
+    "productionBuild": "pass",
+    "collaborationTests": "22/22 pass",
+    "securityTests": "13/13 pass (outside sandbox)",
+    "packageIntegrity": "pass",
+    "packagedNativeTests": "9 pass",
+    "supabaseAuthSettings": "HTTP 200",
+    "studyCatalog": "HTTP 200"
+  },
+  "manualGuiEvaluation": "Not performed; intended for user evaluation"
+}
