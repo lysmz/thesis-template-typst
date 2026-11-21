@@ -937,6 +937,7 @@ Ergänzend wurde die Funktion der nativen Datenbankmodule und des PowerSync-Work
 
 Die manuellen Laufzeitversuche wurden in der installierten Electron-Anwendung auf Windows mithilfe der DevTools ausgelöst und im bestehenden Renderer beobachtet. 
 Dabei wurde der korrigierte Paketstand verwendet.
+@app:devtools-pruefungen zeigt gekürzte Ausschnitte der DevTools-Befehle und die zugehörigen Konsolenausgaben für die Prüffälle P1 bis P3.
 @tab:security-runtime-procedure fasst Durchführung und Prüfkriterien zusammen; die beobachteten Ergebnisse werden in @sec:security-evaluation ausgewertet.
 
 #block[
@@ -969,7 +970,6 @@ Dabei wurde der korrigierte Paketstand verwendet.
 ]
 
 Dateihashes binden die finalen Paket- und Laufzeitprotokolle an dieselbe EXE und dasselbe ASAR-Archiv.
-Die Sicherheitsmatrix vom 6. Oktober 2026 fasst die eigenen Paket- und Laufzeitprüfungen vom 4. Oktober zusammen. 
 @tab:security-runtime-results weist die im Rahmen der Evaluation betrachteten Ergebnisse aus.
 
 == Handlungsempfehlungen des Migrationspfads <sec:migration-recommendations>
