@@ -333,7 +333,6 @@ Zur Laufzeit vermittelt ein typisierter RPC-Aufruf zwischen Renderer und Main-Pr
 
 Die Preload-Schnittstelle stellt über `contextBridge.exposeInMainWorld` ausschließlich `window.apiTransport.invoke` bereit; 
 das vollständige `ipcRenderer`-Modul und frei wählbare Kanalnamen bleiben dem Renderer vorenthalten @ElectronContextBridge2026 @ElectronIpc2026.
-
 Die Deklaration in `src/preload/index.d.ts` ergänzt das globale `Window`-Interface für die statische Typprüfung.
 
 Unbekannte Operationskennungen und ungültige Eingaben werden abgewiesen.
@@ -364,7 +363,6 @@ Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw
 Das Tailwind-Plug-in wurde gemäß der Vite-Installationsanleitung über `tailwindcss()` registriert @TailwindVite2026. 
 Die Vite-Typreferenz wurde in `src/renderer/src/env.d.ts` hinterlegt.
 Die Vorlagenstile assets/main.css und assets/base.css wurden samt Beispielkomponenten gelöscht.
-
 Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt.
 
 === Anbindung der Seiten und Navigation
@@ -492,6 +490,8 @@ Den lokalen Importablauf zeigt @fig:local-file-import-flow.
 image("../figures/local-file-import-flow.svg", width: 100%),
 caption: [Lokaler iCal-Import mit nativer Dateiauswahl und getrenntem Abbruchpfad.],
 ) <fig:local-file-import-flow>
+
+
 Für die Dateiauswahl wurde `NativeIcalFilePicker` ergänzt, der `dialog.showOpenDialog` mit einem ICS-Filter modal an das anfragende Fenster bindet.
 Da die Dateiannahme über Multer entfällt, übernimmt die lokale Implementierung auch die bisherige Größenobergrenze von 10 MiB.
 Sie prüft die Endung `.ics`, den regulären Dateityp und die Größe vor und nach dem Einlesen; anschließend wird der Inhalt als UTF-8-Text verarbeitet.
@@ -547,6 +547,7 @@ Betrachtet wurden PowerSync und Turso; @tab:sync-tool-options stellt ihre Integr
   },
   caption: [Vergleich der Integrationsansätze für die Local-First-Synchronisation.],
 ) <tab:sync-tool-options>
+
 === Entscheidung für PowerSync und Supabase
 
 Für den Demonstrator wurde die Kombination aus Supabase und PowerSync gewählt.
