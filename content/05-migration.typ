@@ -220,19 +220,19 @@ Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt de
 Die Codegenerierung übersetzt den OpenAPI-Vertrag während der Entwicklung schrittweise in TypeScript-Module.
 Der Ablauf gliedert sich in drei aufeinander aufbauende Phasen: das Einlesen und Strukturieren des Dokuments, das programmatische Zusammensetzen der Quelltext-Zeichenketten sowie die Formatierung und Ausgabe der Dateien.
 
-Die Orchestrierung übernimmt buildGeneratedFiles.
-Die Funktion liest die Spezifikation mit readFile ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft collectOperations alle Pfade und HTTP-Methoden:
+Die Orchestrierung übernimmt `buildGeneratedFiles`.
+Die Funktion liest die Spezifikation mit `readFile` ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft `collectOperations` alle Pfade und HTTP-Methoden:
 
-Für jede Operation entsteht ein Datensatz mit Operationskennung, primärem Tag, Parametern, Antwortschemata sowie der Klassifikation als Query (get) oder Mutation (post, put, delete).
+Für jede Operation entsteht ein Datensatz mit Operationskennung, primärem Tag, Parametern, Antwortschemata sowie der Klassifikation als Query (`get`) oder Mutation (`post`, `put`, `delete`).
 
 Fehlende oder mehrfach vergebene Operationskennungen werden strikt zurückgewiesen.
 
-operationInputSchema konsolidiert Pfad- und Query-Parameter sowie den Request-Body in die festen Eingabegruppen path, query und body.
+`operationInputSchema` konsolidiert Pfad- und Query-Parameter sowie den Request-Body in die festen Eingabegruppen `path`, `query` und `body`.
 
-Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion zodSchema.
-Sie übersetzt einzelne Schemadefinitionen in Zod-Ausdrücke. Für zusammengesetzte Objekte fügt zodSchema die Feldzeilen zusammen und ergänzt für nicht in required geführte Eigenschaften .optional().
+Die eigentliche Transformation in Laufzeitschemata erfolgt über die rekursive Funktion `zodSchema`.
+Sie übersetzt einzelne Schemadefinitionen in Zod-Ausdrücke. Für zusammengesetzte Objekte fügt `zodSchema` die Feldzeilen zusammen und ergänzt für nicht in `required` geführte Eigenschaften `.optional()`.
 
-Die Generatorfunktion contractSource bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über z.infer den passenden TypeScript-Typ ab.
+Die Generatorfunktion `contractSource` bettet diesen Ausdruck schließlich in eine exportierte Schemadeklaration ein und leitet über `z.infer` den passenden TypeScript-Typ ab.
 @lst:generator-event-example stellt diese Transformation am Beispiel von Termindaten gegenüber.
 
 #figure(
@@ -278,8 +278,8 @@ kind: raw,
 supplement: [Quellcode],
 caption: [Codeauszug zur Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ.],
 ) <lst:generator-event-example>
-Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge.
-contractSource erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt operationContracts zusammen.
+Für komplexere Schemastrukturen löst `orderSchemas` Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge.
+`contractSource` erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt `operationContracts` zusammen.
 
 Die Abbildung der Vertragsbestandteile auf die generierten Zielbausteine fasst @tab:api-generator-mapping zusammen.
 
@@ -296,33 +296,33 @@ table.header(
 [Generatorfunktion],
 [Erzeugtes Element],
 ),
-[Array mit `$ref` auf Event],
-[zodSchema],
-[z.array(EventSchema)],
-[Optionaler Query-Parameter month],
-[operationInputSchema],
-[Eingabefeld query.month mit z.number().int()],
-[Request-Body mit Verweis auf EventInput],
-[operationInputSchema / contractSource],
-[Eingabefeld body: EventInputSchema],
-[operationId: listEvents, tags: [events]],
-[collectOperations / clientSource],
-[Client-Methode api.events.listEvents(...)],
-[Methode get bzw. post],
-[collectOperations / rendererReactQuerySource],
-[Hook useListEvents (Query) bzw. useCreateEvent (Mutation)],
+[Array mit `$ref` auf `Event`],
+[`zodSchema`],
+[`z.array(EventSchema)`],
+[Optionaler Query-Parameter `month`],
+[`operationInputSchema`],
+[Eingabefeld `query.month` mit `z.number().int()`],
+[Request-Body mit Verweis auf `EventInput`],
+[`operationInputSchema` / `contractSource`],
+[Eingabefeld `body: EventInputSchema`],
+[`operationId: listEvents`, `tags: [events]`],
+[`collectOperations` / `clientSource`],
+[Client-Methode `api.events.listEvents(...)`],
+[Methode `get` bzw. `post`],
+[`collectOperations` / `rendererReactQuerySource`],
+[Hook `useListEvents` (Query) bzw. `useCreateEvent` (Mutation)],
 [2xx-Antwort und Fehlerdefinitionen],
-[collectOperations / contractSource],
+[`collectOperations` / `contractSource`],
 [Rückgabeschema und typisierte Fehlervereinigung],
 )
 },
 caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module.],
 ) <tab:api-generator-mapping>
-Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Abfrageschlüssel (Query Keys).
+Aufbauend auf diesen Schemata erzeugt `clientSource` die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen `operationId` an den Transport weiter. `rendererReactQuerySource` generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Abfrageschlüssel (Query Keys).
 
 Im letzten Schritt formatiert der IPC-Codegenerator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser.
-Das Skript scripts/openapi-ipc/generate.ts legt die Zielverzeichnisse an und speichert contract.generated.ts, client.generated.ts, react-query.generated.ts sowie die Exportmodule als UTF-8-Dateien ab.
-Über das package.json-Skript api:generate wird dieser Ablauf manuell oder im Build angestoßen; api:check (--check) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der openapi.yaml entsprechen.
+Das Skript `scripts/openapi-ipc/generate.ts` legt die Zielverzeichnisse an und speichert `contract.generated.ts`, `client.generated.ts`, `react-query.generated.ts` sowie die Exportmodule als UTF-8-Dateien ab.
+Über das `package.json`-Skript `api:generate` wird dieser Ablauf manuell oder im Build angestoßen; `api:check` (`--check`) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der `openapi.yaml` entsprechen.
 === IPC-Transport, Preload-Schnittstelle und API-Dispatcher
 
 Zur Laufzeit vermittelt ein typisierter RPC-Aufruf zwischen Renderer und Main-Prozess.
@@ -347,35 +347,35 @@ Der IPC-Codegenerator verwendet OpenAPI als Vertragsformat für IPC, obwohl die 
 HTTP-Methoden und URI-Pfade dienen dabei als Metadaten; Fehler werden über `ApiResult` statt über HTTP-Antworten übertragen.
 
 Der IPC-Codegenerator deckt bewusst nur den im Demonstrator tatsächlich benötigten Funktionsumfang der Spezifikation ab.
-Komplexere OpenAPI-Konstrukte, wie rekursive Schemadefinitionen oder tief verschachtelte oneOf-Vereinigungen, werden vom Parser nicht aufgelöst, sondern zur Generierungszeit als Fehler abgewiesen.
+Komplexere OpenAPI-Konstrukte, wie rekursive Schemadefinitionen oder tief verschachtelte `oneOf`-Vereinigungen, werden vom Parser nicht aufgelöst, sondern zur Generierungszeit als Fehler abgewiesen.
 
 Die gemeinsame Ableitung von Typen, Validierung und Client vermeidet deren manuelle Synchronisation.
 Dafür wurde eine eigene Toolchain für den IPC-Codegenerator entwickelt, die bei Änderungen der unterstützten Spezifikation oder der Zielbibliotheken mitgepflegt werden muss.
 
 === Übernahme der React-Oberfläche in den Renderer <sec:frontend-migration>
-Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert.
+Die React-Oberfläche aus `artifacts/studienplaner/` wurde zu `src/renderer/src/` migriert.
 
-Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt.
-Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf src/renderer/index.html zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, BASE_PATH und Replit-Plugins des Ausgangsprojekts ersatzlos.
+Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (`package.json`, `vite.config.ts`, `tsconfig.json`, `components.json` und die redundante `index.html`) wurden entfernt.
+Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf `src/renderer/index.html` zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, `BASE_PATH` und Replit-Plugins des Ausgangsprojekts ersatzlos.
 
-Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt.
+Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in `electron.vite.config.ts` auf `src/renderer/src` abgebildet und parallel in `tsconfig.web.json` für `@/*` hinterlegt.
 Der synchrone Eintrag in beiden Dateien stellt sicher, dass Vite die Pfade beim Bündeln auflöst und TypeScript sie bei der Typprüfung korrekt zuordnet @TypeScriptPaths2026.
 
-Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein.
+Die übernommene `index.css` definiert Theme-Variablen und bindet Tailwind CSS, `tw-animate-css` sowie das Typografie-Plugin ein.
 Das Tailwind-Plug-in wurde gemäß der Vite-Installationsanleitung über `tailwindcss()` registriert @TailwindVite2026. 
 Die Vite-Typreferenz wurde in `src/renderer/src/env.d.ts` hinterlegt.
-Die Vorlagenstile assets/main.css und assets/base.css wurden samt Beispielkomponenten gelöscht.
-Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt.
+Die Vorlagenstile `assets/main.css` und `assets/base.css` wurden samt Beispielkomponenten gelöscht.
+Die `package.json` des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt.
 
 === Anbindung der Seiten und Navigation
 
 Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert.
-Da der IPC-Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt.
+Da der IPC-Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie `useListEvents(monthParams)` oder Mutationen mit `{ data: ... }` syntaktisch intakt.
 
 Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt.
 
 Für die Navigation nutzt die Anwendung weiterhin wouter.
-Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) wurde der Router über useHashLocation aus wouter/use-hash-location eingebunden (`<WouterRouter hook="{useHashLocation}">`).
+Anstelle des webbasierten Basispfads (`import.meta.env.BASE_URL`) wurde der Router über `useHashLocation` aus `wouter/use-hash-location` eingebunden (`<WouterRouter hook="{useHashLocation}">`).
 Wie in @sec:hash-routing ausgeführt, steuert das Adressfragment (z. B. `#/kalender`) den internen Seitenwechsel, ohne den Dateipfad der geladenen Renderer-Ressource im Electron-Kontext zu verändern.
 
 === Lokale Anmeldung als erster vollständiger Verarbeitungspfad
@@ -934,7 +934,7 @@ Für die automatisierten Prüfungen wurden vorhandene API-Dispatcher-, Service-,
 Die Security-Suite umfasste sechs Senderfälle: einen erlaubten Hauptframe, ein fremdes Fenster, einen Unterframe, einen fehlenden Frame, eine falsche Dokumentadresse und ein zerstörtes Fenster.
 Dafür wurden Electron-Objekte nachgebildet.
 Hinzu kamen Prüfungen von Ressourcenpfaden und Protokollhandlern sowie ungültigen HTTPS-Konfigurationen.
-Ein Test von HTTP-Weiterleitungen verwendete Node-Fetch mit einem lokalen Testserver.
+Ein Test von HTTP-Weiterleitungen verwendete die in Node.js integrierte Funktion `fetch` mit einem lokalen Testserver.
 
 Am gebauten Windows-Paket wurden die Fuse-Werte ausgelesen und die eingebetteten Integritätsmetadaten mit dem tatsächlichen ASAR-Header verglichen.
 Ergänzend wurde die Funktion der nativen Datenbankmodule und des PowerSync-Workers im Paket geprüft.
