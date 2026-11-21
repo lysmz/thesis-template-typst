@@ -228,6 +228,10 @@
   }
 
   set table(stroke: none)
+  show figure.where(kind: table): set table(
+    stroke: 0.5pt + luma(180),
+    fill: (x, y) => if y == 0 { luma(235) } else if x == 0 { luma(247) } else { white },
+  )
   set table.hline(stroke: 0.75pt)
 
   // Alphanumeric is a citation style, not a bibliography style.

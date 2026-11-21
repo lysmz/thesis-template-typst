@@ -17,8 +17,6 @@ Entscheidend ist nicht allein das verwendete Frontend-Framework, sondern die Bes
       columns: (1.1fr, 2fr, 2fr),
       inset: 7pt,
       align: left,
-      stroke: 0.5pt + luma(180),
-      fill: (x, y) => if y == 0 { luma(235) } else if x == 0 { luma(247) } else { white },
       table.header([*Vergleichsaspekt*], [*Replit*], [*Lovable*]),
       [Backend-Struktur],
       [Full-Stack-Anwendung mit Frontend und Backend; Einrichtung nach dem Bedarf der Anwendung.],
