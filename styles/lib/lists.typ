@@ -16,7 +16,7 @@
     set block(above: 2em)
     it
   }
-  block(above: 0em, outline(title: none, depth: 3))
+  block(above: 0em, outline(title: none, depth: 2))
 }
 
 #let outline-loX(..args) = {

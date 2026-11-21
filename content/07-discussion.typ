@@ -25,7 +25,8 @@ Die schrittweise Migration sollte helfen, die Auswirkungen einzelner Änderungen
 == Entscheidungen und Abwägungen während der Migration
 
 Der Wechsel zur Electron-Anwendung eröffnete Entscheidungen, die im ursprünglichen Webprototyp noch nicht anstanden.
-Bei Gruppeneinladungen wurde die linkbasierte Gruppeneinladung durch die direkte Kontoeinladung eines vorhandenen Supabase-Benutzerkontos ersetzt.
+Bei Gruppeneinladungen wurde die linkbasierte Gruppeneinladung durch die direkte Kontoeinladung eines vorhandenen Supabase-Benutzerkontos ersetzt. 
+@sec:collaboration-invitations dokumentiert beide Abläufe.
 Der ursprüngliche Link führte zur gemeinsam erreichbaren Web-Anwendung, deren Backend die Einladung prüfte und die Mitgliedschaft anlegte.
 Die lokale Desktop-Oberfläche bietet diese gemeinsame Webadresse nicht mehr.
 Die direkte Kontoeinladung wurde gewählt, um den Ablauf innerhalb der Electron-Anwendung abzuwickeln; die gemeinsame Verwaltung von Einladungen und Mitgliedschaften bleibt beim entfernten Backend.

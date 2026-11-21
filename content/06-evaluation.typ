@@ -14,14 +14,15 @@ Ergänzend werden die Aufteilung der Anwendung und die Wirkung ausgewählter Sic
 
 Manuelle Funktionsprüfungen untersuchen die Bedienung der installierten Electron-Anwendung.
 Automatisierte Tests ergänzen sie um fachliche Regeln und gezielt erzeugte Fehlerfälle.
-Die folgenden Übersichten zeigen jeweils die durchgeführte Prüfung und das beobachtete Ergebnis.
 Für jeden Prüffall wird das zuletzt vorliegende Ergebnis verwendet.
+Die lokale Nutzbarkeit und die Architektur werden in @sec:local-feature-evaluation und @sec:architecture-evaluation geprüft. @sec:collaboration-evaluation und @sec:security-evaluation untersuchen die Online-Anbindungen und die Härtung. @sec:guide-evaluation ordnet die Ergebnisse dem Migrationspfad zu. @sec:requirements-evaluation fasst die Bewertung anhand des Anforderungskatalogs zusammen.
 
 == Nutzbarkeit der Electron-Anwendung <sec:local-feature-evaluation>
 
 Die Offline-Kernanwendung soll ohne Internetverbindung starten und persönliche Daten dauerhaft speichern.
 Geprüft wurden die lokale Anmeldung, Notenverwaltung, Kalender und Stundenplan.
 Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneustart, damit auch der Erhalt der Änderungen geprüft wird.
+@tab:local-usage-results fasst die Prüfschritte zur lokalen Nutzung und die beobachteten Ergebnisse zusammen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -52,7 +53,7 @@ Die Abläufe verbinden die Bearbeitung mit einem vollständigen Anwendungsneusta
       )
     },
     caption: [Prüfung der lokalen Nutzung und der Speicherung über einen Anwendungsneustart hinaus.],
-  )
+  ) <tab:local-usage-results>
 ]
 
 Damit sind die lokale Anmeldung und die untersuchten persönlichen Funktionen auch ohne Verbindung nutzbar.
@@ -61,6 +62,7 @@ Ihre Nutzung setzt keine Anmeldung mit einem Supabase-Benutzerkonto voraus.
 Der iCal-Import und der CSV-Notenimport wurden gemeinsam als Dateiimporte geprüft.
 Die fachliche Funktion der Web-Anwendung blieb dabei erhalten: Ausgewählte Dateien werden geprüft und geeignete Einträge in den jeweiligen Bestand übernommen.
 Die Desktop-Anpassung betrifft insbesondere die native Dateiauswahl.
+@tab:file-import-results zeigt, wie beide Importe mit gültigen und ungeeigneten Dateien sowie beim Abbruch der Dateiauswahl umgehen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -82,7 +84,7 @@ Die Desktop-Anpassung betrifft insbesondere die native Dateiauswahl.
       )
     },
     caption: [Ergebnisse des iCal-Imports und des CSV-Notenimports.],
-  )
+  ) <tab:file-import-results>
 ]
 
 == Architektur und Weiterverwendung des Webprototyps <sec:architecture-evaluation>
@@ -90,6 +92,7 @@ Die Desktop-Anpassung betrifft insbesondere die native Dateiauswahl.
 Für die Architekturprüfung wurde die Zuordnung der vorhandenen Module mit der Zielarchitektur verglichen.
 Als durchgehendes Beispiel dient die Notenverwaltung.
 Hier lässt sich der Aufruf von der Benutzeroberfläche über die Schnittstelle und die fachliche Verarbeitung bis zum Datenzugriff verfolgen.
+@tab:architecture-results stellt die Ergebnisse zur Aufteilung der Verantwortlichkeiten, zum lokalen Aufrufweg und zur Weiterverwendung dar.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -117,19 +120,22 @@ Hier lässt sich der Aufruf von der Benutzeroberfläche über die Schnittstelle 
       )
     },
     caption: [Abgleich der Architektur und der Weiterverwendung am Beispiel der Notenverwaltung.],
-  )
+  ) <tab:architecture-results>
 ]
 
 Die Ergebnisse bestätigen die geforderte Trennung der Verantwortlichkeiten und die Prüfbarkeit der Geschäftslogik.
-Die in Kapitel 5 beschriebenen Eingriffe machen außerdem nachvollziehbar, welche Bestandteile weiterverwendet wurden und weshalb andere angepasst werden mussten.
+Die in @ch:migration beschriebenen Eingriffe machen außerdem nachvollziehbar, welche Bestandteile weiterverwendet wurden und weshalb andere angepasst werden mussten.
 Die Bewertung der Weiterverwendung bezieht sich auf diese begründete Zuordnung.
 
 == Online-Anbindungen und Fehlerverhalten <sec:collaboration-evaluation>
 
-=== Einseitige Datenübernahme aus dem Studiengangskatalog
+Zunächst wird die einseitige Übernahme externer Katalogdaten in @sec:catalog-evaluation untersucht. @sec:collaborative-task-evaluation behandelt anschließend den Abgleich zwischen zwei Konten und die netzwerkabhängigen Gruppenfunktionen.
+
+=== Einseitige Datenübernahme aus dem Studiengangskatalog <sec:catalog-evaluation>
 
 Beim Studiengangskatalog wurde geprüft, ob externe Daten übernommen werden und anschließend lokal verfügbar bleiben.
 Neben dem erfolgreichen Abruf wurden wiederholte Aktualisierungen, Verbindungsfehler und ungeeignete Antworten betrachtet.
+@tab:catalog-results zeigt die Ergebnisse des Abrufs, der Fehlerbehandlung und der anschließenden Offline-Nutzung.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -163,16 +169,16 @@ Neben dem erfolgreichen Abruf wurden wiederholte Aktualisierungen, Verbindungsfe
       )
     },
     caption: [Prüfung des Katalogabrufs und der anschließenden lokalen Nutzung.],
-  )
+  ) <tab:catalog-results>
 ]
 
 Der externe Dienst wird damit für die Aktualisierung benötigt.
 Ein bereits vorhandener Katalogbestand kann unabhängig von seiner Erreichbarkeit verwendet werden.
 
-=== Kollaborative Aufgabenänderungen
+=== Kollaborative Aufgabenänderungen <sec:collaborative-task-evaluation>
 
 Die Aufgabenprüfung unterscheidet lokale Speicherung, spätere Übermittlung und die Anzeige der Änderung beim anderen beteiligten Konto.
-Ergänzend wurden die Online-Abläufe für Gruppen und Einladungen durchgespielt.
+@tab:collaborative-task-results zeigt, welche Aufgabenänderungen lokal erhalten blieben und nach Wiederverbindung beim anderen Konto ankamen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -200,11 +206,14 @@ Ergänzend wurden die Online-Abläufe für Gruppen und Einladungen durchgespielt
       )
     },
     caption: [Ablauf der lokalen Aufgabenbearbeitung und des anschließenden Abgleichs.],
-  )
+  ) <tab:collaborative-task-results>
 ]
 
 Aufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden.
 Nach einem Anwendungsneustart ist eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich; anschließend stehen die gespeicherten Änderungen wieder zur Verfügung und werden übertragen.
+
+Ergänzend wurden die Online-Abläufe für Gruppen und Einladungen geprüft.
+@tab:group-invitation-results zeigt die Ergebnisse der Gruppenerstellung und der Kontoeinladungen sowie das Verhalten bei unterbrochener Verbindung.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -232,7 +241,7 @@ Nach einem Anwendungsneustart ist eine erneute Anmeldung mit dem Supabase-Benutz
       )
     },
     caption: [Ergebnisse der Gruppen- und Einladungsabläufe.],
-  )
+  ) <tab:group-invitation-results>
 ]
 
 Die geprüften Operationen der netzwerkabhängigen Gruppenverwaltung benötigen eine Verbindung, während Aufgabenänderungen zunächst lokal verarbeitet werden.
@@ -240,9 +249,10 @@ Diese Unterscheidung wird durch die beobachteten Abläufe und Rückmeldungen nac
 
 == Wirkung der Sicherheitsmaßnahmen <sec:security-evaluation>
 
-Die Sicherheitsprüfung folgt der in Kapitel 4 festgelegten Anforderung und der in @sec:app-hardening beschriebenen Checkliste.
+Die Sicherheitsprüfung folgt der im @sec:requirements festgelegten Anforderung A7 und der in @sec:app-hardening beschriebenen Checkliste.
 Alle 20 Empfehlungen wurden auf ihre Anwendbarkeit geprüft.
 Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte manuelle Laufzeitversuche ergänzt.
+@tab:security-runtime-results fasst ausgewählte Prüfungen vom Umgang mit Eingaben bis zur Kontrolle des installierten Anwendungspakets zusammen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -283,8 +293,8 @@ Damit sind Umsetzung und Prüfgrenze für alle Empfehlungen eingeordnet.
 
 == Abdeckung der Verarbeitungsmuster und Bewertung des Migrationspfads <sec:guide-evaluation>
 
-Die geprüften Funktionen decken die in Kapitel 4 ausgewählten Verarbeitungsmuster ab.
-Aus ihrer Umsetzung lassen sich zugleich die Ansatzpunkte für weitere Funktionen ableiten.
+Die geprüften Funktionen decken die in @ch:analysis ausgewählten Verarbeitungsmuster ab.
+@tab:functional-evaluation ordnet jedem Muster ein geprüftes Beispiel zu und zeigt, welche Teile der Umsetzung sich für weitere Funktionen verwenden lassen.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)
@@ -323,7 +333,7 @@ Der Migrationspfad beschreibt ein aus dieser Fallstudie abgeleitetes Vorgehen f�
 
 == Gesamtbewertung <sec:requirements-evaluation>
 
-Die folgende Übersicht führt die Ergebnisse auf die Kriterien aus Kapitel 4 zurück.
+@tab:requirements-evaluation ordnet die Ergebnisse den in @sec:requirements definierten Anforderungen A1 bis A9 zu.
 
 #block[
   #show figure.where(kind: table): set block(breakable: true)

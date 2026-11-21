@@ -129,8 +129,10 @@ Vorhandene Oberflächenbestandteile und fachliche Regeln sollen soweit möglich 
 Dadurch bleibt der Prototyp die Grundlage der Migration, und die Änderungen können auf die Anforderungen der neuen Umgebung konzentriert werden.
 Architektur- und Sicherheitsanforderungen haben dabei Vorrang vor der unveränderten Übernahme bestehender Komponenten.
 
-Die Dreischichtenarchitektur wird gewählt, um migrationsbedingte Änderungen an Kommunikation und Datenhaltung von der Darstellung und den fachlichen Regeln zu trennen.
-Benutzeroberfläche, Geschäftslogik und Datenzugriff sollen getrennte Verantwortlichkeiten besitzen; fachliche Aufrufe werden entsprechend in Handler, Services und Repositories gegliedert. Die Handler übernehmen dabei die Rolle der Controller an der Schnittstelle.
+Die Dreischichtenarchitektur wird gewählt, um migrationsbedingte Änderungen an Kommunikation und Datenhaltung von der Darstellung und den fachlichen Regeln zu trennen. 
+Die Schichten bezeichnen logische Verantwortlichkeiten und können innerhalb derselben Anwendung ausgeführt werden @MicrosoftLayers2026.
+Die Handler übernehmen die Rolle der Controller an der Schnittstelle. 
+Services bündeln die fachlichen Operationen @StaffordServiceLayer2003 und Repositories kapseln den Zugriff auf persistente Daten @HieattMeeRepository2003.
 
 Die lokale Datenhaltung bildet die Grundlage für die autonome Offline-Verfügbarkeit des Local-First-Paradigmas.
 Persönliche Änderungen sollen ohne Verbindung verarbeitet werden können und nach einem Neustart erhalten bleiben.

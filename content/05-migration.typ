@@ -35,7 +35,7 @@ Jede Phase endet mit einem Kontrollpunkt; Sicherheitsanforderungen fließen bere
 === Initialisierung des Electron-Projekts und Übernahme der Datenbankmodule
 
 Electron wurde im Sinne von A3 gewählt, um vorhandene Komponenten weiterzuverwenden.
-Das Backend des Webprototyps verwendete TypeScript und Node.js @StudienplanerSource2026.
+Das in @sec:starting-artifact untersuchte Backend des Webprototyps verwendete TypeScript und Node.js.
 Da der Electron-Main-Prozess ebenfalls eine Node.js-Laufzeit bereitstellt, konnten Geschäftslogik und Bibliotheken als Grundlage der lokalen Umsetzung dienen @ElectronProcessModel2026.
 
 Als Alternative wurde Tauri erwogen, dessen privilegierter Core-Prozess auf Rust basiert @TauriProcessModel2026.
@@ -45,17 +45,18 @@ Dieser Weg hätte einen zusätzlichen auszuliefernden Prozess und dessen Kommuni
 Für Electron sprach die unmittelbare Ausführung der übernommenen Backend-Komponenten im Main-Prozess.
 
 Das Zielprojekt wurde mit der `react-ts`-Vorlage von electron-vite initialisiert @ElectronViteGettingStarted2026.
-Damit blieb die im Replit-Frontend verwendete Kombination aus React, TypeScript und Vite erhalten @StudienplanerSource2026.
-Die `react-ts`-Vorlage vereinte die benötigten Technologien unmittelbar; die betrachtete React-TypeScript-Anleitung von Electron Forge verwendet dagegen `webpack-typescript` @ElectronForgeReact2026 @ElectronForgeGettingStarted2026.
+Damit blieb die im Replit-Frontend verwendete Kombination aus React, TypeScript und Vite erhalten.
+Die `react-ts`-Vorlage enthält bereits React und TypeScript. 
+Die React-Anleitung von Electron Forge baut auf der TypeScript-Webpack-Vorlage auf und ergänzt React nachträglich @ElectronForgeReact2026.
 
 Anschließend wurden die Drizzle-Schemadefinitionen für Benutzer, Stundenpläne, Studiengänge, Gruppen, Noten, Termine und das Aktivitätsprotokoll samt Exportmodul nach `src/main/db/schema` übernommen.
 Eine lokale SQLite-Datei bildet die lokale Kerndatenbank und ersetzt die PostgreSQL-Verbindung des Webprototyps; `DATABASE_URL` entfiel für die lokale Datenhaltung.
-Der Main-Prozess übernahm das Anlegen, Öffnen und Migrieren der lokalen Kerndatenbank @StudienplanerSource2026 @StudyPlanDatabase2026.
+Der Main-Prozess übernahm das Anlegen, Öffnen und Migrieren der lokalen Kerndatenbank.
 
 Die Datei wird zur Laufzeit unter dem von Electron bereitgestellten Pfad `userData` angelegt @ElectronAppPaths2026.
 Dieser liegt außerhalb des Projekt- und Installationsverzeichnisses, trennt veränderliche Daten von Programmdateien und vermeidet Schreibzugriffe auf das Installationsverzeichnis.
 Ein Update kann so Programmdateien ersetzen, ohne die lokale Kerndatenbank auszutauschen.
-Ausgeliefert werden die Migrationen zur Einrichtung und Aktualisierung ihres Schemas @StudyPlanDatabase2026.
+Ausgeliefert werden die Migrationen zur Einrichtung und Aktualisierung ihres Schemas.
 
 === Anpassung der Tabellen und Datenbankabhängigkeiten an SQLite
 
@@ -63,8 +64,9 @@ Die Übernahme der bestehenden Schemadefinitionen erforderte Anpassungen, da die
 
 Auf Treiberebene wurde die PostgreSQL-Bibliothek `pg` für die lokale Datenhaltung durch `@libsql/client` abgelöst. Drizzle ORM blieb dabei als einheitliche Abstraktionsschicht für das Schema und den Datenzugriff erhalten.
 
-@tab:postgresql-sqlite-mapping fasst die im Demonstrator verwendeten Abbildungen zusammen.
-Das Stundenplanschema liefert hierbei Beispiele für Kennungen, boolesche Werte und Enums, während das Terminschema die Datumsabbildung ergänzt @StudienplanerSource2026 @StudyPlanDatabase2026.
+@tab:postgresql-sqlite-mapping fasst die im Demonstrator gewählten Typabbildungen zusammen. 
+Das Stundenplanschema liefert Beispiele für Kennungen, boolesche Werte und Enums. 
+Das Terminschema ergänzt die Datumsabbildung.
 
 #figure(
 {
@@ -106,7 +108,7 @@ Für den Demonstrator wurde der generatorbasierte Ansatz gewählt.
 Die im Verzeichnis `drizzle` abgelegten Dateien werden gemeinsam mit dem Quellcode versioniert.
 Damit lassen sich Schemaerweiterungen bei Updates schrittweise auf bestehende lokale Kerndatenbanken anwenden.
 
-Die zugehörige Konfiguration in @lst:drizzle-config definiert den SQLite-Dialekt, den Schema-Einstiegspunkt sowie das Ausgabeverzeichnis der Migrationen @StudyPlanDatabase2026.
+Die zugehörige Konfiguration in @lst:drizzle-config definiert den SQLite-Dialekt, den Schema-Einstiegspunkt sowie das Ausgabeverzeichnis der Migrationen.
 In der `package.json` wurden hierfür die Skripte `db:generate` (`drizzle-kit generate`) und `db:check` (`drizzle-kit check`) eingerichtet.
 
 #figure(
@@ -120,7 +122,7 @@ caption: [Drizzle-Kit-Konfiguration zur Erzeugung der SQL-Migrationsdateien für
 ) <lst:drizzle-config>
 
 Damit die Migrationen auch im Produktivbetrieb ausgeführt werden können, bindet `electron-builder.yml` den Ordner `drizzle` über `extraResources` in das Installationspaket ein (@lst:migration-resources).
-Die Anwendung greift während der Entwicklung direkt auf das Projektverzeichnis zu, im paketierten Zustand hingegen über `process.resourcesPath` @StudyPlanDatabase2026.
+Die Anwendung greift während der Entwicklung direkt auf das Projektverzeichnis zu, im paketierten Zustand hingegen über `process.resourcesPath`.
 
 #figure(
 block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
@@ -132,7 +134,7 @@ supplement: [Quellcode],
 caption: [Auslieferung der SQL-Migrationsdateien über zusätzliche Paketressourcen (Ausschnitt).],
 ) <lst:migration-resources>
 
-Der eigentliche Initialisierungsprozess wird beim Anwendungsstart innerhalb von `app.whenReady()` über `initDatabase()` ausgeführt, bevor Dienste initialisiert oder Fenster geöffnet werden @StudyPlanDatabase2026:
+Der eigentliche Initialisierungsprozess wird beim Anwendungsstart innerhalb von `app.whenReady()` über `initDatabase()` ausgeführt, bevor Dienste initialisiert oder Fenster geöffnet werden:
 
 1. *Speicherort auflösen:* In `src/main/db/index.ts` wird der Pfad aus `app.getPath('userData')` und dem Unterordner `data` gebildet (unter Windows beispielsweise `%APPDATA%\studyplan\data\studyplan.db`, im Entwicklungsbetrieb `studyplan-dev.db`). Der Zielordner wird vor dem Öffnen automatisch angelegt.
 2. *Verbindung und Pragmas:* Der libSQL-Client öffnet die Datei über eine lokale `file:`-URL. Zur Laufzeit werden unmittelbar `PRAGMA foreign_keys = ON` (Aktivierung der referenziellen Integritätsprüfung) und `PRAGMA journal_mode = WAL` (Write-Ahead-Logging) gesetzt @SQLitePragma2026.
@@ -142,18 +144,18 @@ Scheitert dieser Ablauf, bricht der Start mit einer Fehlermeldung ab, bevor die 
 
 Die Datenmigration `0001_seed-study-programs.sql` stellt Studiengänge und ihre Module für den Funktionsbereich Studiengänge bereit. 
 Die Datenmigration `0002_seed-timetable-presets.sql` stellt dagegen Presets mit Kursen für den davon getrennten Funktionsbereich Stundenplan bereit.
-Sie werden während des Migrationsschritts lokal eingefügt und stehen damit bereits beim ersten Start ohne Netzwerkverbindung zur Verfügung @StudyPlanDatabase2026.
+Sie werden während des Migrationsschritts lokal eingefügt und stehen damit bereits beim ersten Start ohne Netzwerkverbindung zur Verfügung.
 
 === Übernahme des OpenAPI-Vertrags und Anpassung der Codegenerierung <sec:api-contract-migration>
 
 Die Schnittstellenmigration ging vom bestehenden OpenAPI-Vertrag unter `lib/api-spec/openapi.yaml` aus, der nach `api/openapi.yaml` in das Desktop-Projekt übernommen wurde.
-Dessen Operationskennungen (`operationId`), Parameter und Datenschemata dienten bereits im Webprototyp als zentrale Spezifikation für Validierung und Client-Generierung @StudienplanerSource2026.
+Dessen Operationskennungen (`operationId`), Parameter und Datenschemata dienten bereits im Webprototyp als zentrale Spezifikation für Validierung und Client-Generierung.
 
 Die Entscheidung, an diesem zentralen Vertrag festzuhalten, resultiert wesentlich aus den Erfahrungen des ersten Migrationsversuchs (@sec:migration-preliminary).
 Die dort beobachteten, schwer nachvollziehbaren Moduländerungen begründeten das Ziel, notwendige Schnittstellenanpassungen strikt von funktionellen Verhaltensänderungen zu trennen.
 
 Als Alternative hätte das bisherige Werkzeug Orval beibehalten und die damit erzeugten React-Query-Hooks, Typen und Zod-Laufzeitschemata manuell für Electron-IPC adaptiert werden können.
-Dies hätte jedoch bedeutet, bei künftigen Schemaänderungen mehrere abhängige Module händisch synchronisieren zu müssen. Um diesen Bruch zu vermeiden, wurde der zentrale OpenAPI-Vertrag beibehalten und deren Übersetzung auf den IPC-Transport über eigene TypeScript-Generatoren unter `scripts/openapi-ipc` automatisiert @StudyPlanApiMigration2026.
+Dies hätte jedoch bedeutet, bei künftigen Schemaänderungen mehrere abhängige Module händisch synchronisieren zu müssen. Um diesen Bruch zu vermeiden, wurde der zentrale OpenAPI-Vertrag beibehalten und deren Übersetzung auf den IPC-Transport über eigene TypeScript-Generatoren unter `scripts/openapi-ipc` automatisiert.
 Das Vorgehen unterstützt die Wiederverwendung nach A3 sowie die Entkopplung nach A8 und A9: Der Vertrag wird zentral gepflegt und Anpassungen propagieren automatisiert in alle abgeleiteten Schnittstellenbausteine.
 
 @fig:api-interface-migration stellt den ursprünglichen HTTP-basierten Aufrufweg der Web-Anwendung der lokalen Electron-Architektur gegenüber.
@@ -207,7 +209,7 @@ table.header(
 caption: [Wiederverwendete Vertragsgrundlage und Änderungen an ihrer Umsetzung.],
 ) <tab:api-interface-changes>
 
-Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt der IPC-Codegenerator aus der `openapi.yaml` gemeinsame Module und Renderer-Module @StudyPlanApiMigration2026:
+Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt der IPC-Codegenerator aus der `openapi.yaml` gemeinsame Module und Renderer-Module:
 
 - *Gemeinsame Module (`src/shared/api/generated`):* Typdefinitionen, Zod-Laufzeitschemata, die Zuordnungstabelle `operationContracts` sowie der Basistransport.
 - *Renderer-Module (`src/renderer/src/api/generated`):* React-Query-Hooks für die Benutzeroberfläche und standardisierte Hilfsfunktionen für Abfrageschlüssel.
@@ -215,7 +217,7 @@ Gesteuert über die Konfigurationsdatei `api/ipc-generator.config.ts` erzeugt de
 === Funktionsweise der OpenAPI-IPC-Codegenerierung <sec:api-generator-concept>
 
 Die Codegenerierung übersetzt den OpenAPI-Vertrag während der Entwicklung schrittweise in TypeScript-Module.
-Der Ablauf gliedert sich in drei aufeinander aufbauende Phasen: das Einlesen und Strukturieren des Dokuments, das programmatische Zusammensetzen der Quelltext-Zeichenketten sowie die Formatierung und Ausgabe der Dateien @StudyPlanApiMigration2026.
+Der Ablauf gliedert sich in drei aufeinander aufbauende Phasen: das Einlesen und Strukturieren des Dokuments, das programmatische Zusammensetzen der Quelltext-Zeichenketten sowie die Formatierung und Ausgabe der Dateien.
 
 Die Orchestrierung übernimmt buildGeneratedFiles.
 Die Funktion liest die Spezifikation mit readFile ein und wandelt sie über den YAML-Parser in einen internen Objektbaum um. Anschließend durchläuft collectOperations alle Pfade und HTTP-Methoden:
@@ -272,10 +274,10 @@ export type EventInput =
 )
 },
 kind: raw,
-caption: [Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ @StudyPlanApiMigration2026.],
+caption: [Codeauszug zur Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ.],
 ) <lst:generator-event-example>
 Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge.
-contractSource erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt operationContracts zusammen @StudyPlanApiMigration2026.
+contractSource erzeugt darüber hinaus die Ein-, Ausgabe- und Fehlerschemata der einzelnen Operationen und fasst diese im zentralen Objekt operationContracts zusammen.
 
 Die Abbildung der Vertragsbestandteile auf die generierten Zielbausteine fasst @tab:api-generator-mapping zusammen.
 
@@ -312,13 +314,13 @@ table.header(
 [Rückgabeschema und typisierte Fehlervereinigung],
 )
 },
-caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module @StudyPlanApiMigration2026.],
+caption: [Ausgewählte Übersetzungen vom OpenAPI-Vertrag in die generierten IPC-Module.],
 ) <tab:api-generator-mapping>
 Aufbauend auf diesen Schemata erzeugt clientSource die typisierten Methoden des Basis-Clients, gegliedert nach dem ersten OpenAPI-Tag. Die Methoden nehmen die Eingaben entgegen und leiten sie zusammen mit der jeweiligen operationId an den Transport weiter. rendererReactQuerySource generiert darauf aufsetzend die React-Query-Hooks samt Hilfsfunktionen für standardisierte Abfrageschlüssel (Query Keys).
 
 Im letzten Schritt formatiert der IPC-Codegenerator die resultierenden Quelltexte programmatisch über Prettier mit dem TypeScript-Parser.
 Das Skript scripts/openapi-ipc/generate.ts legt die Zielverzeichnisse an und speichert contract.generated.ts, client.generated.ts, react-query.generated.ts sowie die Exportmodule als UTF-8-Dateien ab.
-Über das package.json-Skript api:generate wird dieser Ablauf manuell oder im Build angestoßen; api:check (--check) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der openapi.yaml entsprechen @StudyPlanApiMigration2026.
+Über das package.json-Skript api:generate wird dieser Ablauf manuell oder im Build angestoßen; api:check (--check) validiert im Rahmen der CI, ob die im Repository liegenden Dateien exakt dem aktuellen Stand der openapi.yaml entsprechen.
 === IPC-Transport, Preload-Schnittstelle und API-Dispatcher
 
 Zur Laufzeit vermittelt ein typisierter RPC-Aufruf zwischen Renderer und Main-Prozess.
@@ -326,15 +328,17 @@ Zur Laufzeit vermittelt ein typisierter RPC-Aufruf zwischen Renderer und Main-Pr
 
 #figure(
   image("../figures/ipc-dispatcher-flow.svg", width: 100%),
-  caption: [IPC-Aufrufweg und Verarbeitung im API-Dispatcher. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile die Rückgabe über dieselben Schnittstellen. Eigene Darstellung nach @StudyPlanApiMigration2026.],
+  caption: [IPC-Aufrufweg und Verarbeitung im API-Dispatcher. Durchgezogene Pfeile zeigen die Anfrage, gestrichelte Pfeile die Rückgabe über dieselben Schnittstellen.],
 ) <fig:ipc-dispatcher-flow>
 
-Die Preload-Schnittstelle stellt über `contextBridge.exposeInMainWorld` ausschließlich `window.apiTransport.invoke` bereit; das vollständige `ipcRenderer`-Modul und frei wählbare Kanalnamen bleiben dem Renderer vorenthalten @ElectronContextBridge2026 @ElectronIpc2026.
+Die Preload-Schnittstelle stellt über `contextBridge.exposeInMainWorld` ausschließlich `window.apiTransport.invoke` bereit; 
+das vollständige `ipcRenderer`-Modul und frei wählbare Kanalnamen bleiben dem Renderer vorenthalten @ElectronContextBridge2026 @ElectronIpc2026.
+
 Die Deklaration in `src/preload/index.d.ts` ergänzt das globale `Window`-Interface für die statische Typprüfung.
 
 Unbekannte Operationskennungen und ungültige Eingaben werden abgewiesen.
 Für eine im Vertrag definierte Operation ohne registrierten Handler liefert der API-Dispatcher `NOT_IMPLEMENTED`.
-Geschäftslogik, Sitzungsprüfungen und Datenbankzugriffe verbleiben in den Handlern und Services des Main-Prozesses @StudyPlanApiMigration2026.
+Geschäftslogik, Sitzungsprüfungen und Datenbankzugriffe verbleiben in den Handlern und Services des Main-Prozesses.
 
 === Grenzen und kritische Würdigung des IPC-Codegenerators
 
@@ -342,35 +346,36 @@ Der IPC-Codegenerator verwendet OpenAPI als Vertragsformat für IPC, obwohl die 
 HTTP-Methoden und URI-Pfade dienen dabei als Metadaten; Fehler werden über `ApiResult` statt über HTTP-Antworten übertragen.
 
 Der IPC-Codegenerator deckt bewusst nur den im Demonstrator tatsächlich benötigten Funktionsumfang der Spezifikation ab.
-Komplexere OpenAPI-Konstrukte, wie rekursive Schemadefinitionen oder tief verschachtelte oneOf-Vereinigungen, werden vom Parser nicht aufgelöst, sondern zur Generierungszeit als Fehler abgewiesen @StudyPlanApiMigration2026.
+Komplexere OpenAPI-Konstrukte, wie rekursive Schemadefinitionen oder tief verschachtelte oneOf-Vereinigungen, werden vom Parser nicht aufgelöst, sondern zur Generierungszeit als Fehler abgewiesen.
 
 Die gemeinsame Ableitung von Typen, Validierung und Client vermeidet deren manuelle Synchronisation.
-Dafür wurde eine eigene Toolchain für den IPC-Codegenerator entwickelt, die bei Änderungen der unterstützten Spezifikation oder der Zielbibliotheken mitgepflegt werden muss @StudyPlanApiMigration2026.
+Dafür wurde eine eigene Toolchain für den IPC-Codegenerator entwickelt, die bei Änderungen der unterstützten Spezifikation oder der Zielbibliotheken mitgepflegt werden muss.
 
 === Übernahme der React-Oberfläche in den Renderer <sec:frontend-migration>
 Die React-Oberfläche aus artifacts/studienplaner/ wurde zu src/renderer/src/ migriert.
 
 Mitkopierte Web- und Replit-spezifische Konfigurationsdateien (package.json, vite.config.ts, tsconfig.json, components.json und die redundante index.html) wurden entfernt.
-Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf src/renderer/index.html zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, BASE_PATH und Replit-Plugins des Ausgangsprojekts ersatzlos @StudienplanerSource2026 @StudyPlanFrontendMigration2026.
+Da electron-vite den Main-, Preload- und Renderer-Prozess zentral konfiguriert und für den Renderer standardmäßig auf src/renderer/index.html zugreift @ElectronViteConfig2026, entfielen serverspezifische Parameter wie Portvorgaben, BASE_PATH und Replit-Plugins des Ausgangsprojekts ersatzlos.
 
-Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt @StudyPlanFrontendMigration2026.
+Um bestehende Modulpfade wie `@/components/ui/badge` ohne Refaktorisierung beizubehalten, wurde der Pfadalias `@` in electron.vite.config.ts auf src/renderer/src abgebildet und parallel in tsconfig.web.json für `@/*` hinterlegt.
 Der synchrone Eintrag in beiden Dateien stellt sicher, dass Vite die Pfade beim Bündeln auflöst und TypeScript sie bei der Typprüfung korrekt zuordnet @TypeScriptPaths2026.
 
 Die übernommene index.css definiert Theme-Variablen und bindet Tailwind CSS, tw-animate-css sowie das Typografie-Plugin ein.
-`@tailwindcss/vite` wurde über tailwindcss() neben react() registriert und die Vite-Typreferenz in src/renderer/src/env.d.ts hinterlegt @TailwindVite2026 @StudyPlanFrontendMigration2026.
+Das Tailwind-Plug-in wurde gemäß der Vite-Installationsanleitung über `tailwindcss()` registriert @TailwindVite2026. 
+Die Vite-Typreferenz wurde in `src/renderer/src/env.d.ts` hinterlegt.
 Die Vorlagenstile assets/main.css und assets/base.css wurden samt Beispielkomponenten gelöscht.
 
 Die package.json des Electron-Projekts wurde um die Komponenten- und Hilfsbibliotheken ergänzt.
 
 === Anbindung der Seiten und Navigation
 
-Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert @StudyPlanFrontendMigration2026.
+Die bisherigen API-Aufrufe über `@workspace/api-client-react` wurden in den Seiten und im Layout durch `@/api` ersetzt, welches die IPC-basierten Hooks und Typen exportiert.
 Da der IPC-Codegenerator die Schnittstellensignaturen beibehielt (siehe @sec:api-contract-migration), blieben etablierte Aufrufmuster wie useListEvents(monthParams) oder Mutationen mit { data: ... } syntaktisch intakt.
 
 Im selben Zuge wurden ungenutzte Imports, Variablen und Zustände entfernt.
 
 Für die Navigation nutzt die Anwendung weiterhin wouter.
-Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) wurde der Router über useHashLocation aus wouter/use-hash-location eingebunden (`<WouterRouter hook="{useHashLocation}">`) @StudyPlanFrontendMigration2026.
+Anstelle des webbasierten Basispfads (import.meta.env.BASE_URL) wurde der Router über useHashLocation aus wouter/use-hash-location eingebunden (`<WouterRouter hook="{useHashLocation}">`).
 Wie in @sec:hash-routing ausgeführt, steuert das Adressfragment (z. B. `#/kalender`) den internen Seitenwechsel, ohne den Dateipfad der geladenen Renderer-Ressource im Electron-Kontext zu verändern.
 
 === Lokale Anmeldung als erster vollständiger Verarbeitungspfad
@@ -385,30 +390,30 @@ Sie wurde als erste Handlergruppe implementiert, sodass der vorbereitete Aufrufw
 `auth.handlers.ts` ordnet `register`, `login`, `logout` und `getMe` den Service-Aufrufen zu und übersetzt deklarierte Fehler.
 `AuthService` übernimmt Registrierung, Passwortprüfung und Benutzerzuordnung; `UsersRepository` führt die Drizzle-Abfragen aus.
 Nach der Datenbankinitialisierung werden die Module erzeugt und die Handler registriert.
-Damit ist die in A2 geforderte Trennung erstmals für eine vollständige Operationsgruppe umgesetzt @StudyPlanLocalAuth2026.
+Damit ist die in A2 geforderte Trennung erstmals für eine vollständige Operationsgruppe umgesetzt.
 
 Für das Hashen und Vergleichen der Passwörter wurde das bereits im Web-Backend verwendete Paket `bcryptjs` übernommen.
 Passwort-Hashes bleiben im Main-Prozess und in der lokalen Benutzertabelle; die Benutzeroberfläche erhält nur die vorgesehenen Benutzerdaten.
 An die Stelle der HTTP-Sitzung tritt `SessionService`, der die aktuelle Benutzerkennung im Main-Prozess hält.
-Diese lokale Anwendungssitzung liegt im Arbeitsspeicher und endet beim Beenden der Anwendung; die Benutzerdatensätze bleiben dagegen in der lokalen Kerndatenbank gespeichert @StudienplanerSource2026 @StudyPlanLocalAuth2026.
+Diese lokale Anwendungssitzung liegt im Arbeitsspeicher und endet beim Beenden der Anwendung; die Benutzerdatensätze bleiben dagegen in der lokalen Kerndatenbank gespeichert.
 
 Bei erfolgreicher lokaler Anmeldung oder Registrierung leert der Renderer den bisherigen React-Query-Cache, speichert die Benutzerinformation unter dem Abfrageschlüssel von `getMe` und navigiert zur Anwendung.
 `UNAUTHENTICATED` führt zur lokalen Anmeldung und wird von der Query-Wiederholungslogik berücksichtigt.
 Andere Ladefehler erhalten eine Anzeige mit erneuter Abfragemöglichkeit.
-Die Weiterleitung bei bestehender lokaler Anmeldung erfolgt über einen React-Effekt @StudyPlanLocalAuth2026.
+Die Weiterleitung bei bestehender lokaler Anmeldung erfolgt über einen React-Effekt.
 
 === Integration der lokalen lokale CRUD-Verarbeitung am Beispiel der Notenverwaltung <sec:crud-migration>
 
 Nach der Integration der Benutzeroberfläche und der lokalen Anmeldung wurden die weiteren fachlichen Funktionen mit dem vorbereiteten Aufrufweg verbunden.
 Die Migration der CRUD-Operationen wird exemplarisch an der Notenverwaltung beschrieben.
 Die Notenverwaltung wurde integriert, zunächst ohne CSV-Import.
-Als fachliche Vorlage dienten die ursprünglichen Routen aus `artifacts/api-server/src/routes/grades.ts` @StudienplanerSource2026 @StudyPlanGradesMigration2026.
+Als fachliche Vorlage dienten die ursprünglichen Routen aus `artifacts/api-server/src/routes/grades.ts`.
 
 Die Migration bestand darin, die innerhalb der Route verbundenen Aufgaben nach ihren Verantwortlichkeiten aufzuteilen.
 HTTP-spezifische Zugriffe auf `req` und `res` entfielen.
 Der API-Dispatcher übernahm die Eingabevalidierung anhand des OpenAPI-Vertrags.
 Die Verarbeitung der Operationen und ihrer Fehler wurde den Handlern zugeordnet, die fachlichen Regeln dem Service und die Drizzle-Abfragen dem Repository.
-@tab:grade-responsibilities zeigt diese Zuordnung am untersuchten Beispiel @StudyPlanGradesMigration2026.
+@tab:grade-responsibilities zeigt diese Zuordnung am untersuchten Beispiel.
 
 #figure(
   {
@@ -438,21 +443,21 @@ Die Module wurden in `src/main/index.ts` in den Startablauf eingebunden.
 Nach der Datenbankinitialisierung werden `GradesRepository` und `ActivityLogRepository` mit der Datenbankverbindung erzeugt.
 Beide werden an `GradesService` übergeben.
 `createGradesHandlers` verbindet anschließend die Service-Aufrufe mit den vorgesehenen Operationskennungen und der bereits vorhandenen `SessionService`-Instanz.
-Die resultierenden Handler werden in die gemeinsame Registry aufgenommen, die der API-Dispatcher verwendet @StudyPlanGradesMigration2026.
+Die resultierenden Handler werden in die gemeinsame Registry aufgenommen, die der API-Dispatcher verwendet.
 
 Die Benutzerkennung stammt bei diesen Operationen aus der lokalen Anwendungssitzung im Main-Prozess.
 Der gemeinsame Wrapper `authenticated` stellt sie dem Handler bereit.
 Im Repository werden Änderungen und Löschungen anhand der Datensatzkennung und der Benutzerkennung eingeschränkt.
 Findet eine solche Operation keinen passenden Datensatz, meldet der Service einen fachlichen Fehler, den der Handler in `NOT_FOUND` überführt.
-Damit bleibt die persönliche Datenzuordnung Bestandteil des vollständigen Verarbeitungspfads @StudyPlanGradesMigration2026.
+Damit bleibt die persönliche Datenzuordnung Bestandteil des vollständigen Verarbeitungspfads.
 
 Die vorhandenen fachlichen Regeln wurden als Ausgangspunkt beibehalten.
 Dazu gehören optionale Werte, die Erfassung von Aktivitäten, der ECTS-gewichtete Notendurchschnitt und die Auswertung nach Semester.
 Anpassungen ergaben sich aus der lokalen Datenrepräsentation: Note und ECTS werden im SQLite-Schema als numerische Werte verarbeitet, sodass die bisher für PostgreSQL verwendete Umwandlung in Strings beziehungsweise deren Rückkonvertierung entfallen konnte.
-Die Migration übernahm somit die fachlichen Berechnungen und gliederte ihre Ausführung neu @StudienplanerSource2026 @StudyPlanGradesMigration2026.
+Die Migration übernahm somit die fachlichen Berechnungen und gliederte ihre Ausführung neu.
 
 Bei der Notenerfassung übermittelt die vorhandene Seite beispielsweise die Formulardaten über `useCreateGrade` beziehungsweise `useUpdateGrade`.
-Die Benutzeroberfläche aktualisiert anschließend die Abfragen für Notenliste und Statistik @StudyPlanGradesMigration2026.
+Die Benutzeroberfläche aktualisiert anschließend die Abfragen für Notenliste und Statistik.
 
 @fig:grades-crud-flow stellt diesen Ablauf mit den beteiligten Prozessbereichen und dem Rückweg des Ergebnisses dar.
 
@@ -469,7 +474,7 @@ Der direkte API-Dispatcher-Aufruf ersetzt die native IPC-Kommunikation.
 
 Im Webprototyp übermittelte die Kalenderseite die gewählte Datei als `FormData` mit `fetch` an `/api/events/import-ical`.
 Der zugehörige Express-Route-Handler verband die HTTP-Dateiannahme mit dem Parsen, der fachlichen Zuordnung und der Speicherung der Termine.
-@lst:ical-web-upload zeigt den bisherigen Einstieg in diese Verarbeitung @StudienplanerSource2026.
+@lst:ical-web-upload zeigt den bisherigen Einstieg in diese Verarbeitung.
 #figure(
 block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
 set text(size: 8.5pt)
@@ -477,33 +482,32 @@ raw(read("../code/ical-web-upload.ts"), lang: "typescript", block: true)
 }),
 kind: raw,
 supplement: [Quellcode],
-caption: [Dateiannahme und Parseraufruf der ursprünglichen Express-Route (gekürzter Ausschnitt) @StudienplanerSource2026.],
+caption: [Dateiannahme und Parseraufruf der ursprünglichen Express-Route (gekürzter Ausschnitt).],
 ) <lst:ical-web-upload>
 
 In der Electron-Anwendung ersetzt eine native Dateiauswahl den HTTP-Upload.
-Die neue Vertragsoperation `importEventsIcal` ist parameterlos: Der Renderer übergibt weder Dateipfad noch Dateiinhalt und erhält damit keinen frei wählbaren Dateisystemzugriff @ElectronContextBridge2026 @StudyPlanIcalMigration2026.
+Die neue Vertragsoperation `importEventsIcal` ist parameterlos: Der Renderer übergibt weder Dateipfad noch Dateiinhalt und erhält damit keinen frei wählbaren Dateisystemzugriff.
 Den lokalen Importablauf zeigt @fig:local-file-import-flow.
 #figure(
 image("../figures/local-file-import-flow.svg", width: 100%),
 caption: [Lokaler iCal-Import mit nativer Dateiauswahl und getrenntem Abbruchpfad.],
 ) <fig:local-file-import-flow>
-
-Für die Dateiauswahl wurde `NativeIcalFilePicker` ergänzt, der `dialog.showOpenDialog` mit einem ICS-Filter modal an das anfragende Fenster bindet @ElectronDialog2026 @StudyPlanIcalMigration2026.
+Für die Dateiauswahl wurde `NativeIcalFilePicker` ergänzt, der `dialog.showOpenDialog` mit einem ICS-Filter modal an das anfragende Fenster bindet.
 Da die Dateiannahme über Multer entfällt, übernimmt die lokale Implementierung auch die bisherige Größenobergrenze von 10 MiB.
-Sie prüft die Endung `.ics`, den regulären Dateityp und die Größe vor und nach dem Einlesen; anschließend wird der Inhalt als UTF-8-Text verarbeitet @StudienplanerSource2026 @StudyPlanIcalMigration2026.
+Sie prüft die Endung `.ics`, den regulären Dateityp und die Größe vor und nach dem Einlesen; anschließend wird der Inhalt als UTF-8-Text verarbeitet.
 
 Die Bibliothek `node-ical` und die vorhandenen fachlichen Feldzuordnungen wurden beibehalten und in `events-ical.parser.ts` ausgelagert.
 Ergänzt wurden Prüfungen der grundlegenden Kalenderstruktur und gültiger Zeitangaben sowie der Ausschluss von Zeitspannen, deren Ende vor dem Beginn liegt.
 Übersprungene Einträge werden separat gezählt.
-Die übernommenen Termine erhalten die Benutzerkennung, werden gesammelt gespeichert und durch einen Aktivitätseintrag protokolliert @StudyPlanIcalMigration2026.
+Die übernommenen Termine erhalten die Benutzerkennung, werden gesammelt gespeichert und durch einen Aktivitätseintrag protokolliert.
 
 Das neue Ergebnisschema `EventIcalImportResult` unterscheidet den Abbruch (`status: cancelled`, beide Zählwerte 0) vom erfolgreichen Import (`status: imported` mit `importedCount` und `skippedCount`).
 Ein Abbruch verändert den Datenbestand nicht; fehlerhafte Kalenderstrukturen werden als `VALIDATION_ERROR` gemeldet.
-Während der Verarbeitung sind die Importbedienelemente deaktiviert @StudyPlanIcalMigration2026.
+Während der Verarbeitung sind die Importbedienelemente deaktiviert.
 
-Der CSV-Notenimport (`importGradesCsv`) verwendet dasselbe Importmuster mit einem eigenen Parser in `grades-csv.parser.ts` @StudyPlanCsvMigration2026.
+Der CSV-Notenimport (`importGradesCsv`) verwendet dasselbe Importmuster mit einem eigenen Parser in `grades-csv.parser.ts`.
 
-Damit ist die Offline-Kernanwendung einschließlich der Dateiimporte umgesetzt @StudyPlanLocalCore2026.
+Damit ist die Offline-Kernanwendung einschließlich der Dateiimporte umgesetzt.
 Als Kontrollpunkt sind die Kernabläufe ohne Netzwerk auszuführen und gespeicherte Änderungen nach einem Neustart erneut zu lesen (A1, A5).
 
 == Phase 2: Netzwerkanbindungen und Local-First-Synchronisation
@@ -557,14 +561,14 @@ Für die gewählte Kombination sprach die vorhandene Anbindung an Supabase, durc
 
 Vor der Integration in die Anwendung wurden in einem Worktree Spike-Tests mit zwei Prototypen durchgeführt, um die Synchronisationsintegration und anschließend die Drizzle-Anbindung zu erproben.
 Zunächst wurde das PowerSync-Node-SDK im Electron-Main-Prozess eingebunden.
-Dabei wurden die lokale Speicherung einschließlich ausstehender Uploads, Schemaerweiterungen, der Abgleich zwischen Geräten und die Paketierung geprüft @StudyPlanSyncSpikes2026.
+Dabei wurden die lokale Speicherung einschließlich ausstehender Uploads, Schemaerweiterungen, der Abgleich zwischen Geräten und die Paketierung geprüft.
 
 Anschließend wurde die Drizzle-Anbindung ergänzt, um typisierte CRUD-Abfragen und die Abbildung der verwendeten Datentypen zu erproben.
 Dabei ließen sich die vorhandenen Abfragemuster auf den synchronisierten Datenzugriff übertragen.
-Die lokale Speicherung und der geräteübergreifende Abgleich funktionierten auch mit dieser Anbindung @StudyPlanSyncSpikes2026.
+Die lokale Speicherung und der geräteübergreifende Abgleich funktionierten auch mit dieser Anbindung.
 
 Die Weiterverwendung von Drizzle ORM erforderte jedoch Anpassungen des Schemas an PowerSync.
-Clientseitig setzt PowerSync eine Primärschlüsselspalte `id` vom Typ Text voraus; für lokal erzeugte Datensätze wurden im Demonstrator UUIDs verwendet @PowerSyncClientId2026 @StudyPlanSyncSpikes2026.
+Clientseitig setzt PowerSync eine Primärschlüsselspalte `id` vom Typ Text voraus @PowerSyncClientId2026. Für lokal erzeugte Datensätze wurden im Demonstrator UUIDs verwendet.
 Damit änderten sich gegenüber den automatisch erzeugten Integer-Kennungen der Kernanwendung auch die zugehörigen Referenzen.
 
 Für die weitere Migration standen deshalb zwei Vorgehensweisen zur Auswahl: die vollständige Umstellung der bestehenden Schemata und Datenzugriffe auf den lokalen Kollaborationsdatenbestand oder die schrittweise Migration einzelner Funktionsbereiche.
@@ -576,35 +580,35 @@ Dieses Vorgehen folgt dem Grundgedanken des Strangler-Fig-Patterns: Bestehende F
 Während der schrittweisen Migration bleibt die lokale Kerndatenbank aus Phase 1 für persönliche Funktionen und lokale Studiengruppen erhalten.
 Für die synchronisierten Studiengruppen wird eine zusätzliche lokale Kollaborationsdatenbank verwendet.
 Beide Datenbanken werden vom Main-Prozess angesprochen; die Benutzeroberfläche verwendet weiterhin die begrenzten Preload-Schnittstellen und IPC.
-@fig:local-first-architecture zeigt die Aufteilung und die Anbindung der entfernten Dienste @StudyPlanSyncArchitecture2026.
+@fig:local-first-architecture zeigt die Aufteilung und die Anbindung der entfernten Dienste.
 
 Die Benutzeroberfläche führt das zunächst mit seinen grundlegenden CRUD-Interaktionen übernommene lokale Studiengruppen-Feature unter `/gruppen` als „Gruppen“ und die um Synchronisation erweiterte Implementierung unter `/gruppen-sync` als „Gruppen (Sync)“.
-Beide Implementierungen desselben ursprünglichen Studiengruppen-Features bestehen während der Migration nebeneinander; vorhandene lokale Gruppendaten werden nicht automatisch in den lokalen Kollaborationsdatenbestand übertragen @StudyPlanGroupTransition2026.
+Beide Implementierungen desselben ursprünglichen Studiengruppen-Features bestehen während der Migration nebeneinander; vorhandene lokale Gruppendaten werden nicht automatisch in den lokalen Kollaborationsdatenbestand übertragen.
 
 #figure(
   image("../figures/local-first-architecture.svg", width: 100%),
   caption: [Architektur nach Ergänzung der Synchronisation im Funktionsbereich Studiengruppen.
     Dargestellt sind die lokale Kerndatenbank und die lokale Kollaborationsdatenbank sowie direkte Online-Aufrufe, Upload und Download.
     Der separate Datenabruf im Funktionsbereich Studiengänge ist hier nicht dargestellt.
-    Eigene Darstellung nach @StudyPlanSyncArchitecture2026 und @PowerSyncSupabase2026.],
+    Die Anbindung der entfernten Dienste folgt dem dokumentierten Integrationsmodell @PowerSyncSupabase2026.],
 ) <fig:local-first-architecture>
 
 Aufgabenänderungen werden zunächst lokal gespeichert und anschließend an Supabase übermittelt.
 Der Empfang entfernter Änderungen erfolgt über den PowerSync-Dienst.
-Davon getrennt bleibt die netzwerkabhängige Gruppenverwaltung: Ihre Operationen rufen Supabase unmittelbar auf und benötigen deshalb eine Netzwerkverbindung @PowerSyncSupabase2026 @StudyPlanSyncArchitecture2026.
+Davon getrennt bleibt die netzwerkabhängige Gruppenverwaltung: Ihre Operationen rufen Supabase unmittelbar auf und benötigen deshalb eine Netzwerkverbindung.
 
 === Benutzerkonten und Einladungsablauf im synchronisierten Studiengruppen-Feature <sec:collaboration-invitations>
 
 Für die synchronisierten Studiengruppen werden Supabase-Benutzerkonten verwendet. Diese sind von den lokalen Benutzerkonten der Offline-Kernanwendung getrennt und nicht automatisch mit ihnen verknüpft.
 Supabase Auth verwaltet diese Konten; anwendungsbezogene Namen und Kennungen liegen in einer zugeordneten `profiles`-Tabelle @SupabaseUserManagement2026.
 Für die Fallstudie wurden die benötigten Testkonten vorab über das Supabase-Dashboard angelegt.
-Die Electron-Anwendung bietet die Anmeldung mit vorhandenen Supabase-Benutzerkonten über E-Mail-Adresse und Passwort; Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung für diese Konten sind in ihrer Benutzeroberfläche nicht enthalten @StudyPlanSyncArchitecture2026.
+Die Electron-Anwendung bietet die Anmeldung mit vorhandenen Supabase-Benutzerkonten über E-Mail-Adresse und Passwort; Registrierung, E-Mail-Bestätigung und Passwortzurücksetzung für diese Konten sind in ihrer Benutzeroberfläche nicht enthalten.
 
 Der Ausgangsprompt benannte Gruppeneinladungen über Link oder E-Mail.
 Für die linkbasierte Gruppeneinladung im Webprototyp erzeugte die Gruppenroute einen Einladungstoken.
 Die Benutzeroberfläche bildete aus der Adresse der Web-Anwendung und dem Token eine URL und kopierte sie in die Zwischenablage; die Weitergabe erfolgte außerhalb der Anwendung.
 Die Seite `/einladung/:token` ermöglichte das Anzeigen und Annehmen der Einladung.
-Das zentrale Backend prüfte den Token anhand der gespeicherten Gruppe und legte nach der Anmeldung die Mitgliedschaft an @StudienplanerInviteReview2026.
+Das zentrale Backend prüfte den Token anhand der gespeicherten Gruppe und legte nach der Anmeldung die Mitgliedschaft an.
 
 Dieser Ablauf setzt eine für die eingeladenen Personen erreichbare Web-Anwendung mit zugehörigem Backend voraus.
 Nach der Migration wird die Benutzeroberfläche lokal auf dem jeweiligen Gerät geladen; ihre lokale Adresse bietet kein gemeinsames Ziel für einen weitergegebenen Einladungslink.
@@ -614,29 +618,30 @@ Die gemeinsame Prüfung der Einladung und die Vergabe der Mitgliedschaft müsste
 Für die synchronisierten Studiengruppen wurde stattdessen die direkte Kontoeinladung vorhandener Supabase-Benutzerkonten gewählt.
 Damit wird der Ablauf innerhalb der Electron-Anwendung abgewickelt und benötigt keine zusätzliche öffentlich erreichbare Einladungsseite.
 Zur Vereinfachung der Auswahl können Gruppeneigentümer nach Benutzer- oder Anzeigenamen der als auffindbar markierten Profile suchen.
-Die Suche liefert bis zu 20 Treffer mit Kennung, Benutzername und Anzeigename; die eigene Identität, vorhandene Mitglieder und bereits eingeladene Personen werden ausgeschlossen @StudyPlanSyncArchitecture2026.
+Die Suche liefert bis zu 20 Treffer mit Kennung, Benutzername und Anzeigename; die eigene Identität, vorhandene Mitglieder und bereits eingeladene Personen werden ausgeschlossen.
 
 Die Auswahl eines Profils erzeugt eine direkte Kontoeinladung.
 Die eingeladene Person erhält diese durch PowerSync und kann sie annehmen oder ablehnen.
-Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden @StudyPlanSyncArchitecture2026.
+Nach der Annahme entsteht die Mitgliedschaft, anhand derer die Gruppendaten übertragen werden.
 
 === Technische Integration der synchronisierten Studiengruppen <sec:sync-implementation>
 
 ==== Datenmodell und Typabbildung
 
 Die technische Umsetzung begann mit der Anpassung des Datenmodells für die Supabase-PostgreSQL-Datenbank und den lokalen Kollaborationsdatenbestand:
-- *Kennungen:* Die fünf Tabellen des Studiengruppen-Features wurden in Supabase über versionierte SQL-Migrationsdateien mit UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab @StudyPlanSyncIntegration2026.
+- *Kennungen:* Die fünf Tabellen des Studiengruppen-Features wurden in Supabase über versionierte SQL-Migrationsdateien mit UUID-Primärschlüsseln angelegt. Das lokale Drizzle-Schema bildet diese als Zeichenketten (`text`) ab.
 - *Datentypen:* Datums- und Zeitwerte werden lokal als ISO-8601-Zeichenketten abgebildet; boolesche Attribute werden über den nativen SQLite-Ganzzahltyp (`0` bzw. `1`) repräsentiert.
 - *Schemaableitung:* Die zentrale Drizzle-Schemadefinition in `schema.ts` beschreibt den lokalen Kollaborationsdatenbestand und generiert mittels `DrizzleAppSchema` das PowerSync-Client-Schema.
 
 ==== Backend-Anbindung und Sync Streams
 
 Für die zuvor beschriebene Benutzerführung wurden die Backend-Funktionen `search_invitable_profiles`, `send_group_invitation` und `respond_group_invitation` angebunden.
-Sie setzen Profilsuche, Einladungsversand und Annahme beziehungsweise Ablehnung um @StudyPlanSyncArchitecture2026.
+Sie setzen Profilsuche, Einladungsversand und Annahme beziehungsweise Ablehnung um.
 
 Für die Replikation aus dem Backend wurden die Tabellen der PostgreSQL-Publication `powersync` zugewiesen und für die Replikationsrolle freigegeben @PowerSyncSupabase2026.
 
-Die Datenverteilung durch den PowerSync-Dienst wird über Sync Streams in `sync-streams-v4.yaml` konfiguriert. SQL-Abfragen legen fest, welche Teilmengen an die jeweiligen Clients repliziert werden. Die Sync Streams steuern ausschließlich den Download; die Autorisierung von Schreibzugriffen erfolgt im Backend @StudyPlanSyncIntegration2026.
+Die SQL-Abfragen der Sync Streams bestimmen, welche Teilmengen PowerSync an die jeweiligen Clients repliziert @PowerSyncStreams2026. Im Demonstrator sind die Abfragen in `sync-streams-v4.yaml` konfiguriert. 
+Die Berechtigungen für Schreibzugriffe prüft das Backend.
 
 @lst:collaboration-stream illustriert die Definition des Aufgaben-Sync-Streams: Die Pseudofunktion `auth.user_id()` liefert die Identität des authentifizierten Clients. Über eine Unterabfrage (`user_groups`) werden dessen aktive Gruppenmitgliedschaften ermittelt, woraufhin die Replikation auf Aufgaben dieser Gruppen beschränkt wird. Weitere Sync Streams steuern die Verteilung von Gruppenmetadaten, Profilen und Einladungen.
 
@@ -647,7 +652,7 @@ Die Datenverteilung durch den PowerSync-Dienst wird über Sync Streams in `sync-
   }),
   kind: raw,
   supplement: [Quellcode],
-  caption: [Auswahl gemeinsamer Gruppenaufgaben in `sync-streams-v4.yaml` (Auszug) @StudyPlanSyncIntegration2026.],
+  caption: [Auswahl gemeinsamer Gruppenaufgaben in `sync-streams-v4.yaml` (Auszug).],
 ) <lst:collaboration-stream>
 
 Der PowerSync-Dienst überwacht das PostgreSQL-Write-Ahead-Log (WAL).
@@ -657,7 +662,7 @@ Durch `auto_subscribe: true` wird der Sync Stream beim Verbindungsaufbau automat
 
 Die Steuerung des synchronisierten Studiengruppen-Features übernimmt das Modul `CollaborationRuntime`.
 Es kapselt den Zustand der Supabase-Kollaborationssitzung, verwaltet die Verbindungslebenszyklen und steuert den Datenzugriff.
-Für die Anmeldung mit dem Supabase-Benutzerkonto ruft der Connector im Main-Prozess `signInWithPassword` mit den eingegebenen Zugangsdaten auf und authentifiziert damit das Konto @StudyPlanSyncArchitecture2026 @SupabasePasswordSignIn2026.
+Für die Anmeldung per E-Mail und Passwort stellt der Supabase-Client `signInWithPassword` bereit @SupabasePasswordSignIn2026. Der Connector des Demonstrators ruft diese Methode im Main-Prozess auf.
 Nach erfolgreicher Anmeldung mit dem Supabase-Benutzerkonto öffnet die Laufzeit eine nach diesem Konto getrennte lokale Kollaborationsdatenbank und verbindet sie mit PowerSync (@lst:collaboration-connect).
 
 #figure(
@@ -670,14 +675,14 @@ Nach erfolgreicher Anmeldung mit dem Supabase-Benutzerkonto öffnet die Laufzeit
   )
   await database.powerSync.connect(connection.connector)
   ```,
-  caption: [Initialisierung und Verbindung der lokalen Kollaborationsdatenbank je Supabase-Benutzerkonto; Auszug aus `CollaborationRuntime.signIn` @StudyPlanSyncIntegration2026.],
+  caption: [Initialisierung und Verbindung der lokalen Kollaborationsdatenbank je Supabase-Benutzerkonto; Auszug aus `CollaborationRuntime.signIn`.],
 ) <lst:collaboration-connect>
 
 Der Connector stellt über `fetchCredentials` die Anmeldedaten für die PowerSync-Verbindung bereit und übermittelt über `uploadData` die ausstehenden lokalen Änderungen an die Backend-API.
-Das Modul `online-gateway.ts` bündelt dagegen die unmittelbaren Supabase-RPC-Aufrufe für Gruppenerstellung, Profilsuche und Einladungsversand @StudyPlanSyncIntegration2026.
+Das Modul `online-gateway.ts` bündelt dagegen die unmittelbaren Supabase-RPC-Aufrufe für Gruppenerstellung, Profilsuche und Einladungsversand.
 
 Der manuell typisierte Kollaborationsvertrag ist in `src/shared/collaboration/ipc.ts` hinterlegt.
-Zod-Laufzeitschemata prüfen die Eingaben dieses Kollaborationsvertrags im Main-Prozess @StudyPlanSyncIntegration2026.
+Zod-Laufzeitschemata prüfen die Eingaben dieses Kollaborationsvertrags im Main-Prozess.
 Der eigene Kollaborationskanal bildet den getrennten Sitzungs- und Verbindungslebenszyklus dieses Bereichs ab.
 
 @fig:collaboration-modules stellt die resultierende Modulverteilung und die jeweiligen Kommunikationspfade zusammenfassend dar.
@@ -685,8 +690,7 @@ Der eigene Kollaborationskanal bildet den getrennten Sitzungs- und Verbindungsle
 #figure(
   image("../figures/collaboration-modules.svg", width: 100%),
   caption: [Modulaufteilung der Kollaborationsintegration neben der Offline-Kernanwendung.
-    Blaue Pfeile: Lokale Aufrufe und Datenzugriffe; violette Pfeile: Externe Dienstkommunikation; gestrichelter Pfeil: Deklarative Schemaeinbindung.
-    Eigene Darstellung nach @StudyPlanSyncIntegration2026.],
+    Blaue Pfeile: Lokale Aufrufe und Datenzugriffe; violette Pfeile: Externe Dienstkommunikation; gestrichelter Pfeil: Deklarative Schemaeinbindung.],
 ) <fig:collaboration-modules>
 
 ==== Native Abhängigkeiten und Paketierung
@@ -712,14 +716,14 @@ Die Integration des Replikationsmoduls erforderte Anpassungen des Node- und Elec
       [Nativer SQLite-Treiber für die PowerSync-Verbindung.],
     )
   },
-  caption: [Für das synchronisierte Studiengruppen-Feature ergänzte Laufzeitabhängigkeiten @StudyPlanSyncIntegration2026.],
+  caption: [Für das synchronisierte Studiengruppen-Feature ergänzte Laufzeitabhängigkeiten.],
 ) <tab:sync-integration-packages>
 
-Im Gegensatz zur Kernanwendung, die libSQL verwendet, nutzt das PowerSync-Node-SDK den Treiber `better-sqlite3` @PowerSyncNode2026. Zur Vermeidung von Blockaden des Haupt-Threads wird die Datenbankinstanz über einen dedizierten Node-Worker (`powersync.worker?nodeWorker`) ausgeführt @StudyPlanSyncIntegration2026.
+Im Gegensatz zur Kernanwendung, die libSQL verwendet, nutzt das PowerSync-Node-SDK den Treiber `better-sqlite3` @PowerSyncNode2026. Zur Vermeidung von Blockaden des Haupt-Threads wird die Datenbankinstanz über einen dedizierten Node-Worker (`powersync.worker?nodeWorker`) ausgeführt.
 
-Da Electron native Binärmodule standardmäßig in einem virtuellen ASAR-Archiv bündelt, native C-Erweiterungen für den Dateizugriff unter Betriebssystemen wie Windows jedoch reale Pfade im Dateisystem voraussetzen, wurde die Paketierungskonfiguration (`electron-builder.yml`) angepasst @ElectronAsar2026:
+Zum Laden nativer Node.js-Module benötigt `process.dlopen` einen realen Dateipfad. Electron unterstützt dafür Dateien, die außerhalb des ASAR-Archivs ausgeliefert werden @ElectronAsar2026. Im Demonstrator wurden dafür folgende Einstellungen in `electron-builder.yml` vorgenommen.
 - Die Pakete `@powersync/node` und `better-sqlite3` werden über die Direktive `asarUnpack` explizit unkomprimiert im Verzeichnis `app.asar.unpacked` abgelegt.
-- Das Skript `electron-builder install-app-deps` kompiliert die nativen Bindungen im `postinstall`-Schritt gegen die ABI der Ziel-Electron-Version @StudyPlanSyncIntegration2026 @StudyPlanSyncSpikes2026.
+- Das Skript `electron-builder install-app-deps` kompiliert die nativen Bindungen im `postinstall`-Schritt gegen die ABI der Ziel-Electron-Version.
 
 === Schemaänderungen und Erweiterung weiterer Funktionen <sec:sync-schema-updates>
 
@@ -742,12 +746,12 @@ Bei Umbenennungen, Typänderungen oder dem Entfernen von Feldern sind zusätzlic
 ==== Schemaübertragung am Terminbeispiel
 
 Das Terminbeispiel aus den Spike-Tests zeigt die Schemaanpassungen für einen weiteren Datenbereich.
-Als Ausgangspunkt diente das lokale SQLite-Terminschema aus Phase 1; für PowerSync wurde die separate Prototyptabelle `spike_events` mit Testdaten angelegt @StudyPlanSyncSpikes2026.
+Als Ausgangspunkt diente das lokale SQLite-Terminschema aus Phase 1; für PowerSync wurde die separate Prototyptabelle `spike_events` mit Testdaten angelegt.
 
 @lst:events-local-sqlite und @lst:events-powersync zeigen ausgewählte Felder vor und nach dieser Anpassung.
 Im Prototyp ersetzt eine Textkennung den automatisch erzeugten Integer; `ownerId` verweist auf das Supabase-Benutzerkonto.
 Datumswerte werden als Text gespeichert: Das Repository erzeugt beim Schreiben ISO-8601-Zeichenketten und wandelt sie beim Lesen wieder in `Date`-Werte um.
-Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet @StudyPlanSchemaReview2026.
+Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet, wie @lst:events-powersync am Terminbeispiel zeigt.
 
 #figure(
   block(width: 100%, inset: 8pt, fill: luma(246), radius: 2pt, {
@@ -772,28 +776,28 @@ Aus den Drizzle-Tabellen wird zusätzlich das Schema für PowerSync abgeleitet @
 === Einseitige Datenübernahme im Funktionsbereich Studiengänge <sec:study-catalog-download>
 
 Der Funktionsbereich Studiengänge verwendet eine einseitige Datenübernahme: Katalogdaten werden online bereitgestellt, in die lokale Kerndatenbank übernommen und anschließend offline gelesen.
-Die Electron-Anwendung ergänzt hierzu den in Phase 1 mitgelieferten Katalog-Grundbestand um online abrufbare Beispieldaten; der vorhandene Katalog-Grundbestand bleibt erhalten @StudyPlanCatalog2026.
+Die Electron-Anwendung ergänzt hierzu den in Phase 1 mitgelieferten Katalog-Grundbestand um online abrufbare Beispieldaten; der vorhandene Katalog-Grundbestand bleibt erhalten.
 
 Dafür wurde eine Supabase Edge Function ergänzt, die Studiengänge und zugehörige Module aus einer JSON-Datei über einen öffentlichen HTTP-Endpunkt bereitstellt.
 Dieser Endpunkt benötigt weder ein Benutzerkonto noch einen Zugriff auf die entfernte Datenbank.
 Änderungen am angebotenen Katalog erfordern eine erneute Bereitstellung dieser Datei mit der Funktion, jedoch keine neue Version der Electron-Anwendung.
-Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Module erweitert @StudyPlanCatalog2026.
+Der bestehende OpenAPI-Vertrag wurde um `refreshStudyCatalog` und dessen Ergebnis mit den Anzahlen übernommener Studiengänge und Module erweitert.
 
 Beim Öffnen des Funktionsbereichs Studiengänge liest die Benutzeroberfläche zunächst den lokalen Katalogbestand und löst zusätzlich die Aktualisierung aus.
 Der Main-Prozess lädt die JSON-Daten, validiert sie anhand der vorhandenen Feldschemata und übernimmt beide Datenbereiche gemeinsam in einer Transaktion.
 Anhand stabiler Kennungen werden neue Einträge eingefügt und vorhandene aktualisiert, sodass wiederholte Abrufe keine Duplikate erzeugen.
 In der Antwort fehlende Einträge werden nicht gelöscht.
-Nach erfolgreicher Übernahme werden die betroffenen Abfragen der Benutzeroberfläche erneut ausgeführt @StudyPlanCatalog2026.
+Nach erfolgreicher Übernahme werden die betroffenen Abfragen der Benutzeroberfläche erneut ausgeführt.
 
 Scheitern Abruf, Validierung oder Datenbankübernahme, bleibt der bisherige lokale Bestand nutzbar.
 Die Benutzeroberfläche zeigt den Fehler an und bietet einen erneuten Versuch an.
 Bereits übernommene Katalogdaten bleiben auch nach einem Neustart lokal verfügbar.
-Der untersuchte Stand ruft den Katalog bei jedem Seitenaufruf erneut ab; eine Versionsprüfung zur Erkennung neuer Katalogstände wurde nicht implementiert @StudyPlanCatalog2026.
+Der untersuchte Stand ruft den Katalog bei jedem Seitenaufruf erneut ab; eine Versionsprüfung zur Erkennung neuer Katalogstände wurde nicht implementiert.
 
 === Funktionsumfang, Grenzen und Abschluss der Phase
 
 Die zweite Phase ergänzt die Offline-Kernanwendung um gemeinsame Gruppenaufgaben und aktualisierbare Katalogdaten.
-Gemeinsame Gruppenaufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden; nach einem Anwendungsneustart ist jedoch eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich @StudyPlanSyncArchitecture2026.
+Gemeinsame Gruppenaufgaben können während einer bestehenden Supabase-Kollaborationssitzung ohne Verbindung bearbeitet werden; nach einem Anwendungsneustart ist jedoch eine erneute Anmeldung mit dem Supabase-Benutzerkonto erforderlich.
 Eine eigene fachliche Zusammenführung konkurrierender Bearbeitungen oder Löschkonflikte wurde nicht ergänzt.
 
 Als Kontrollpunkt sind die lokale Speicherung einer Aufgabenänderung, ihre anschließende Übermittlung und die Übernahme entfernter Änderungen getrennt zu prüfen (A6).
@@ -809,7 +813,7 @@ Ergänzend wurden die in @sec:requirements festgelegte Eingabevalidierung, die a
 
 Für jede Empfehlung wurde in einer Sicherheitsmatrix festgehalten, ob sie anwendbar ist, welche Anwendungsstellen sie betrifft, wie sie umgesetzt ist und worauf ihre Bewertung beruht.
 Bei nicht genutzten Mechanismen wurde die fehlende Anwendbarkeit begründet; offene Umsetzungen und ausstehende Prüfungen wurden gesondert erfasst.
-Die Sicherheitsmatrix wurde während der Prüfung und Nachbesserung fortgeschrieben und mit den zugehörigen Prüfprotokollen verknüpft @StudyPlanSecurityChecks2026 @StudyPlanSecurity2026.
+Die Sicherheitsmatrix wurde während der Prüfung und Nachbesserung fortgeschrieben und mit den zugehörigen Prüfprotokollen verknüpft.
 
 === Zuordnung der Anforderungen zu den Prüforten
 
@@ -817,11 +821,11 @@ Die Prüforte wurden entlang der Zugriffswege ausgewählt: zwischen Renderer und
 Hinzu kamen Fenster- und Electron-Session-Einstellungen, die Electron-Version und die Konfiguration des ausgelieferten Anwendungspakets.
 
 Bei IPC wurden drei Fragen unterschieden: Darf das aufrufende Fenster die Schnittstelle verwenden, entspricht die Anfrage dem Vertrag und ist die angemeldete Person zum Datenzugriff berechtigt?
-Damit werden IPC-Absenderprüfung, Eingabevalidierung und fachliche Zugriffskontrolle jeweils einer eigenen Verantwortung zugeordnet @StudyPlanHardeningImplementation2026.
+Damit werden IPC-Absenderprüfung, Eingabevalidierung und fachliche Zugriffskontrolle jeweils einer eigenen Verantwortung zugeordnet.
 
 @tab:hardening-checkpoints fasst die Prüforte und Leitfragen zusammen.
 Die Nummern ordnen alle 20 Electron-Empfehlungen zu; verwandte Punkte sind gebündelt.
-A7 gilt für die gesamte Checkliste, weitere Anforderungsbezüge sind ergänzend angegeben @StudyPlanSecurity2026.
+A7 gilt für die gesamte Checkliste, weitere Anforderungsbezüge sind ergänzend angegeben.
 
 #pagebreak(weak: true)
 
@@ -876,14 +880,14 @@ A7 gilt für die gesamte Checkliste, weitere Anforderungsbezüge sind ergänzend
         [Sind Dateizugriffe, Typ und Größe begrenzt, werden externe Daten vor der Übernahme validiert und fremde Textinhalte als Text dargestellt?],
       )
     },
-    caption: [Prüforte und Leitfragen des Sicherheitsabgleichs; Zuordnung nach @StudyPlanSecurity2026, ergänzt um die lokalen Importpfade nach @StudyPlanHardeningImplementation2026.],
+    caption: [Zuordnung der Electron-Empfehlungen zu Prüforten im Demonstrator, einschließlich der lokalen Importpfade.],
   ) <tab:hardening-checkpoints>
 ]
 
 === Umgesetzte Nachbesserungen
 
 Bei der Prüfung wurden neben den bereits vorhandenen Schutzmaßnahmen mehrere Stellen mit Nachbesserungsbedarf festgestellt.
-Die folgenden Änderungen betrafen das Laden lokaler Inhalte, die IPC-Absenderprüfung, externe Verbindungen und die Konfiguration des Anwendungspakets @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
+Die folgenden Änderungen betrafen das Laden lokaler Inhalte, die IPC-Absenderprüfung, externe Verbindungen und die Konfiguration des Anwendungspakets.
 
 Die bisherige Auslieferung über `file://` wurde durch das anwendungseigene URL-Schema `app:` ersetzt, dessen Grundlagen in @sec:theory-electron-protocols erläutert sind.
 Sein Protokollhandler liefert ausschließlich Dateien innerhalb des gebauten Renderer-Ressourcenverzeichnisses aus.
@@ -891,45 +895,45 @@ Neben der syntaktischen Pfadprüfung wird der tatsächlich aufgelöste Dateipfad
 Die Dokumentpolicy erlaubt im Paket ausschließlich das vorgesehene Dokument unter `app://bundle/index.html`; dessen Hash-Routen bleiben nutzbar.
 Navigation, Berechtigungsprüfung und IPC-Absenderprüfung beziehen sich auf diese Dokumentpolicy.
 Assetadressen erhalten dadurch keine Freigabe als IPC-Dokument.
-Die bisherige Möglichkeit zum externen Öffnen wurde entfernt @StudyPlanHardeningImplementation2026.
+Die bisherige Möglichkeit zum externen Öffnen wurde entfernt.
 
 Beide IPC-Eingänge behielten ihre gemeinsame IPC-Absenderprüfung.
 Diese wurde in `sender-policy.ts` ausgelagert und um die ausdrückliche Ablehnung eines fehlenden `senderFrame` ergänzt.
-Dadurch lässt sich die tatsächlich verwendete Policy unabhängig vom API-Dispatcher prüfen @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.
+Dadurch lässt sich die tatsächlich verwendete Policy unabhängig vom API-Dispatcher prüfen.
 
 Für externe Anbindungen wurde ein gemeinsamer HTTPS-Prüfer eingeführt.
 Er weist ungeeignete Protokolle und eingebettete Zugangsdaten zurück, ohne den Konfigurationswert in Fehlermeldungen auszugeben.
 Der Datenabruf im Funktionsbereich Studiengänge und die Supabase-Anbindung verwenden zusätzlich `redirect: 'error'`.
 Der Prüfer erhält die Schreibweise einer gültigen Adresse: Eine zwischenzeitliche Normalisierung ergänzte am PowerSync-Endpunkt einen Slash und verhinderte die Verbindung.
-Die Korrektur und ein Regressionstest sichern dieses Detail ab @StudyPlanSecurityRemediation2026.
+Die Korrektur und ein Regressionstest sichern dieses Detail ab.
 
 Electron wurde von 39.8.10 auf 44.5.1 aktualisiert.
 Damit mussten auch die nativen Datenbankabhängigkeiten und ihr Paketbetrieb geprüft werden; die erforderlichen Anpassungen betrafen `better-sqlite3`, das PowerSync-Node-SDK und den nativen Prüfschritt.
 Die Paketauswahl wurde auf gebaute Anwendungsteile und Produktionsabhängigkeiten begrenzt, während SQL-Migrationsdateien von Drizzle Kit weiterhin über `extraResources` ausgeliefert werden.
-Prüfdokumente und Umgebungsdateien gehören nicht zum Anwendungspaket @StudyPlanSecurityRemediation2026.
+Prüfdokumente und Umgebungsdateien gehören nicht zum Anwendungspaket.
 
 Aufbauend auf den in @sec:theory-electron-fuses beschriebenen Paketmechanismen wurden unbenötigte Laufzeitfunktionen eingeschränkt.
 Die Fuse-Konfiguration deaktiviert `RunAsNode`, die Auswertung von `NODE_OPTIONS`, Node-Inspektionsargumente und zusätzliche Dateiprotokollprivilegien.
 Damit entfallen Startmöglichkeiten und Eingriffe in die Laufzeit, die für den vorgesehenen Anwendungsbetrieb nicht benötigt werden.
 Aktiviert wurden `OnlyLoadAppFromAsar` und `EnableEmbeddedAsarIntegrityValidation`, um das Laden auf das ASAR-Archiv zu beschränken und dessen Integritätsprüfung einzuschalten.
-Cookie- und Snapshot-Fuses blieben nach Bedarfsprüfung unverändert @StudyPlanSecurityRemediation2026.
+Cookie- und Snapshot-Fuses blieben nach Bedarfsprüfung unverändert.
 
 === Nachweisverfahren
 
 Die Nachweise wurden auf vier Ebenen erhoben.
 Die Quellcodeinspektion erfasste Einstellungen und Kontrollen an den jeweiligen Einstiegspunkten; automatisierte Tests prüften Entscheidungen und Fehlerpfade.
-Paketprüfungen untersuchten das erzeugte Anwendungspaket, während manuelle Laufzeitversuche ausgewählte Kontrollen in der installierten Electron-Anwendung auslösten @StudyPlanSecurityRemediation2026.
+Paketprüfungen untersuchten das erzeugte Anwendungspaket, während manuelle Laufzeitversuche ausgewählte Kontrollen in der installierten Electron-Anwendung auslösten.
 
 Im Code wurde nachvollzogen, wo Fenster-, Ressourcen- und Netzwerkregeln eingebunden sind und ob die IPC-Eingabevalidierung vor der fachlichen Verarbeitung erfolgt.
-Für die automatisierten Prüfungen wurden vorhandene API-Dispatcher-, Service-, Upload- und Katalogtests sowie eine Security-Suite verwendet @StudyPlanSecurityChecks2026 @StudyPlanSecurityRemediation2026.
+Für die automatisierten Prüfungen wurden vorhandene API-Dispatcher-, Service-, Upload- und Katalogtests sowie eine Security-Suite verwendet.
 
 Die Security-Suite umfasste sechs Senderfälle: einen erlaubten Hauptframe, ein fremdes Fenster, einen Unterframe, einen fehlenden Frame, eine falsche Dokumentadresse und ein zerstörtes Fenster.
 Dafür wurden Electron-Objekte nachgebildet.
 Hinzu kamen Prüfungen von Ressourcenpfaden und Protokollhandlern sowie ungültigen HTTPS-Konfigurationen.
-Ein Test von HTTP-Weiterleitungen verwendete Node-Fetch mit einem lokalen Testserver @StudyPlanSecurityRemediation2026 @StudyPlanHardeningImplementation2026.
+Ein Test von HTTP-Weiterleitungen verwendete Node-Fetch mit einem lokalen Testserver.
 
 Am gebauten Windows-Paket wurden die Fuse-Werte ausgelesen und die eingebetteten Integritätsmetadaten mit dem tatsächlichen ASAR-Header verglichen.
-Ergänzend wurde die Funktion der nativen Datenbankmodule und des PowerSync-Workers im Paket geprüft @StudyPlanSecurityRemediation2026.
+Ergänzend wurde die Funktion der nativen Datenbankmodule und des PowerSync-Workers im Paket geprüft.
 
 Die manuellen Laufzeitversuche wurden in der installierten Electron-Anwendung auf Windows mithilfe der DevTools ausgelöst und im bestehenden Renderer beobachtet. 
 Dabei wurde der korrigierte Paketstand verwendet.
@@ -960,12 +964,13 @@ Dabei wurde der korrigierte Paketstand verwendet.
         [Die Anwendungsadresse bleibt erhalten; ein zusätzliches Fenster oder externes Browserfenster wird nicht geöffnet.],
       )
     },
-    caption: [Durchführung und Prüfkriterien der manuellen Laufzeitversuche nach @StudyPlanSecurityChecks2026 und @StudyPlanSecurityRemediation2026.],
+    caption: [Durchführung und Kriterien der eigenen manuellen Laufzeitprüfungen.],
   ) <tab:security-runtime-procedure>
 ]
 
 Dateihashes binden die finalen Paket- und Laufzeitprotokolle an dieselbe EXE und dasselbe ASAR-Archiv.
-Die technischen Paket- und Laufzeitbelege stammen vom 4. Oktober 2026 und wurden in der Sicherheitsmatrix vom 6. Oktober zusammengeführt @StudyPlanSecurityRemediation2026 @StudyPlanSecurity2026.
+Die Sicherheitsmatrix vom 6. Oktober 2026 fasst die eigenen Paket- und Laufzeitprüfungen vom 4. Oktober zusammen. 
+@tab:security-runtime-results weist die im Rahmen der Evaluation betrachteten Ergebnisse aus.
 
 == Handlungsempfehlungen des Migrationspfads <sec:migration-recommendations>
 
@@ -984,13 +989,13 @@ Zunächst sollte je ein repräsentativer Ablauf der benötigten Verarbeitungsmus
 Auf dieser Grundlage ist eine kompatible Desktop-Laufzeit einzurichten.
 Vorhandene Sprachen, Bibliotheken und Buildverfahren sollen weiterverwendet werden, soweit sie mit der Zielarchitektur vereinbar sind.
 Ein kleiner lauffähiger Paketstand sollte früh prüfen, ob die vorgesehenen Datenbanktreiber und nativen Abhängigkeiten auch außerhalb des Entwicklungsmodus funktionieren.
-Die Spike-Tests der Fallstudie zeigen den Nutzen einer solchen technischen Erprobung: Die verwendete TypeScript-Laufzeit ermöglichte die Weiterverwendung von Backend-Komponenten, während die PowerSync-Anbindung zusätzliche Anpassungen nativer Abhängigkeiten und ihrer Paketierung erforderte @StudyPlanSyncSpikes2026 @StudyPlanSyncIntegration2026.
+Die Spike-Tests der Fallstudie zeigen den Nutzen einer solchen technischen Erprobung: Die verwendete TypeScript-Laufzeit ermöglichte die Weiterverwendung von Backend-Komponenten, während die PowerSync-Anbindung zusätzliche Anpassungen nativer Abhängigkeiten und ihrer Paketierung erforderte.
 
 *M2: Lokale Datenhaltung und Identitätszuordnung herstellen.*
 Ein entferntes Datenbankschema ist anhand seiner Bedeutung zu überführen.
 Datentypen, Schlüssel, Beziehungen, Standardwerte und Prüfbedingungen müssen einzeln abgeglichen werden.
 Die Übertragung von PostgreSQL auf SQLite zeigte, dass erhaltene TypeScript-Typen nicht alle bisherigen Datenbankprüfungen erhalten.
-Bei einem Dialektwechsel sind entfallende Prüfbedingungen deshalb ausdrücklich im Zielsystem abzubilden @StudyPlanDatabase2026.
+Bei einem Dialektwechsel sind entfallende Prüfbedingungen deshalb ausdrücklich im Zielsystem abzubilden.
 
 Programmdateien und veränderliche Benutzerdaten sind getrennt zu verwalten.
 Die Anwendung soll ihre Datenbank an einem geeigneten Benutzerdatenpfad öffnen und das Schema vor der Nutzung vorbereiten.
@@ -1010,7 +1015,7 @@ Die Vertragsdefinitionen sollen gemeinsam gepflegt werden.
 Wo bereits generierte Clients und Laufzeitschemata vorliegen, ist ihre Ableitung an den neuen Transport anzupassen.
 Änderungen am Vertrag müssen in den erzeugten Modulen nachvollziehbar ankommen; Darstellung und Geschäftslogik sind nur bei tatsächlich veränderter Semantik anzupassen.
 Absender und Eingaben sind an den Prozesseingängen zu prüfen.
-Die gemeinsame Ableitung von Typen, Laufzeitschemata und Client im Demonstrator veranschaulicht, wie sich manuelle Abstimmungen zwischen diesen Modulen vermeiden lassen @StudyPlanApiMigration2026.
+Die gemeinsame Ableitung von Typen, Laufzeitschemata und Client im Demonstrator veranschaulicht, wie sich manuelle Abstimmungen zwischen diesen Modulen vermeiden lassen.
 
 *M4: Einen vollständigen Kernablauf herstellen und dessen Muster fortführen.*
 Nach der Einrichtung von Datenhaltung und Transport ist zunächst ein zusammenhängender Verarbeitungspfad zu integrieren.
@@ -1020,7 +1025,7 @@ In Webrouten verbundene Schnittstellenverarbeitung, Geschäftslogik und Datenzug
 Persönliche Datenzuordnung und Berechtigungen bleiben dabei Bestandteil der Verarbeitung.
 Der erste vollständige Ablauf dient als Vorlage für weitere Funktionen.
 Datenzugriffe und externe Dienste sollen in Servicetests durch Testimplementierungen ersetzbar sein.
-Im Demonstrator erschloss die lokale Anmeldung den Zugang zu den fachlichen Seiten; die Notenverwaltung konkretisierte anschließend die wiederverwendbare Aufteilung der lokalen CRUD-Verarbeitung @StudyPlanLocalAuth2026 @StudyPlanGradesMigration2026.
+Im Demonstrator erschloss die lokale Anmeldung den Zugang zu den fachlichen Seiten. @sec:crud-migration erläutert die wiederverwendbare Aufteilung der lokalen CRUD-Verarbeitung am Beispiel der Notenverwaltung.
 
 *M5: Dateiimporte als begrenzte native Operationen gestalten.*
 Ein Webupload ist in Dateiauswahl, Lesen, Parsen, Validieren und Übernehmen aufzuteilen.
@@ -1028,7 +1033,7 @@ Die Benutzeroberfläche soll den Import auslösen; der Main-Prozess übernimmt d
 Dateityp und Größe sind zu begrenzen, der Abbruch ist als eigener Zustand zu behandeln und Parserergebnisse sind vor der fachlichen Speicherung zu prüfen.
 
 Das Ergebnis muss angeben, welche Daten übernommen, übersprungen oder abgewiesen wurden.
-Die iCal- und CSV-Importe zeigen, dass Dateiauswahl und fachliche Übernahme demselben Muster folgen können, während Parser und Formatprüfungen je Dateityp angepasst werden @StudyPlanIcalMigration2026 @StudyPlanCsvMigration2026.
+Die iCal- und CSV-Importe zeigen, dass Dateiauswahl und fachliche Übernahme demselben Muster folgen können, während Parser und Formatprüfungen je Dateityp angepasst werden.
 
 === Externe Daten und Kollaboration schrittweise ergänzen
 
@@ -1043,18 +1048,18 @@ Stabile Kennungen und ein festgelegtes Aktualisierungsverhalten müssen verhinde
 
 Die Benutzeroberfläche soll den vorhandenen lokalen Bestand weiterhin lesen können, auch wenn die zusätzliche Aktualisierung scheitert.
 Für den ersten Offline-Start ist ein mitgelieferter Grundbestand vorzusehen, wenn die Funktion Referenzdaten benötigt.
-Der Studiengangskatalog der Fallstudie verbindet einen solchen Grundbestand mit nachladbaren Ergänzungen und erhält die lokale Nutzung auch bei fehlgeschlagener Aktualisierung @StudyPlanCatalog2026.
+Der Studiengangskatalog der Fallstudie verbindet einen solchen Grundbestand mit nachladbaren Ergänzungen und erhält die lokale Nutzung auch bei fehlgeschlagener Aktualisierung.
 
 *M7: Synchronisation an einem ausgewählten Funktionsbereich integrieren.*
 Vor der breiten Migration ist die vorgesehene Kombination aus lokaler Datenbank, Synchronisation und entferntem Backend in einem begrenzten Ablauf zu prüfen.
 Die Spike-Tests sollen Schemaabbildung, ORM-Zugriff, lokale Benutzerkonten und Supabase-Benutzerkonten, lokale Speicherung, ausstehende Änderungen und den Betrieb der installierten Anwendung umfassen.
 In der Fallstudie ließen sich Drizzle-Abfragemuster weiterverwenden, während Kennungen und Referenzen an den synchronisierten Bestand angepasst werden mussten.
-Daraufhin wurde die schrittweise Erweiterung des Studiengruppen-Features um Synchronisation gewählt @StudyPlanSyncSpikes2026.
+Daraufhin wurde die schrittweise Erweiterung des Studiengruppen-Features um Synchronisation gewählt.
 
 Anschließend sind die Verantwortung für lokale Änderungen, Upload und Download sowie unmittelbar netzwerkabhängige Operationen festzulegen.
 Clientseitig erzeugbare Kennungen und eine nachvollziehbare Zuordnung lokaler und entfernter Identitäten müssen Datensätze und Beziehungen konsistent halten.
 Der lokale Schreibabschluss ist von der Annahme durch das Backend zu unterscheiden; ausstehende, fehlgeschlagene und abgewiesene Änderungen benötigen ein festgelegtes Verhalten.
-Vorausgesetzte Supabase-Benutzerkonten und fachliche Änderungen der Benutzerführung sind ausdrücklich festzuhalten @StudyPlanSyncIntegration2026 @StudyPlanSyncArchitecture2026.
+Vorausgesetzte Supabase-Benutzerkonten und fachliche Änderungen der Benutzerführung sind ausdrücklich festzuhalten.
 
 Eine zeitweise parallele Datenhaltung kann die Migration nach Funktionsbereichen begrenzen.
 Für jeden Bereich sind der verwendete lokale Bestand, die zugehörigen Zugriffe und die Abgrenzung persönlicher von synchronisierten Daten festzulegen.
@@ -1073,12 +1078,12 @@ Der Bereitstellungsablauf muss ältere Clients und noch ausstehende Änderungen 
 Abschließend sind die tatsächlich entstandenen Fenster, Preload-Schnittstellen, IPC-Eingänge, Ressourcen- und Netzwerkpfade gemeinsam zu prüfen.
 Jede Electron-Empfehlung erhält eine begründete Anwendbarkeitsentscheidung, Umsetzung und Beleg.
 Fehlende Mechanismen, fehlende Implementierungen und fehlende Prüfungen sind getrennt zu bewerten.
-Als Dokumentationsmuster dient die Sicherheitsmatrix aus @sec:app-hardening @StudyPlanSecurity2026.
+Als Dokumentationsmuster dient die Sicherheitsmatrix aus @sec:app-hardening.
 
 Das Prüfverfahren ist passend zum jeweiligen Gegenstand auszuwählen.
 Buildabhängige Aussagen wie Fuse-Werte, ASAR-Integrität und native Modulkompatibilität sind am erzeugten Paket zu prüfen.
 Die Nachbesserung der Netzwerkadressprüfung zeigte, dass eine sicherheitsbezogene Änderung zugleich eine bestehende Verbindung beeinträchtigen kann.
-Nach Änderungen an Version, Treibern, Protokoll oder Paketkonfiguration sind deshalb die betroffenen Sicherheits- und Funktionsprüfungen zu erneuern und an den geprüften Stand zu binden @StudyPlanSecurityRemediation2026.
+Nach Änderungen an Version, Treibern, Protokoll oder Paketkonfiguration sind deshalb die betroffenen Sicherheits- und Funktionsprüfungen zu erneuern und an den geprüften Stand zu binden.
 
 @tab:migration-recommendation-checkpoints bündelt die Kontrollpunkte zu M1–M8 und ordnet sie den Anforderungen A1–A8 zu.
 Die Verbindung der begründeten Empfehlungen mit diesen Kontrollpunkten konkretisiert A9.
