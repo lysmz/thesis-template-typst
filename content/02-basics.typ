@@ -36,7 +36,7 @@ Das Framework erzwingt architektonisch keine strikten Vorgaben bezüglich des Pr
 Grundsätzlich unterscheidet Electron zwischen dem zentralen Main-Prozess mit vollem Zugriff auf Betriebssystemressourcen und einem oder mehreren Renderer-Prozessen, die typischerweise der Benutzeroberfläche dienen.
 Getrennte Prozesse begrenzen für sich genommen noch nicht die verfügbaren Systemzugriffe: Durch Optionen wie `nodeIntegration: true` können Node.js-APIs unmittelbar innerhalb des Renderers ausgeführt werden.
 
-Die daraus resultierenden architektonischen Ansätze lassen sich idealtypisch gegenüberstellen:
+@fig:electron-architecture-comparison stellt eine isolierte und eine offene Electron-Konfiguration idealtypisch gegenüber.
 #figure(
   image("../figures/electron-architecture-comparison.svg", width: 100%),
   caption: [Idealtypischer Vergleich einer isolierten und einer offenen Electron-Konfiguration. Eigene Darstellung auf Grundlage der Electron-Sicherheitsrichtlinien @ElectronSecurity2026.],

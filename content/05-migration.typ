@@ -8,6 +8,7 @@ Der Migrationspfad gliedert die Umsetzung in drei Zielzustände: eine Offline-Ke
 Innerhalb der Phasen werden die Anpassungen an Datenhaltung, Schnittstellen und Anwendungsfunktionen anhand ausgewählter Beispiele erläutert.
 Die Analyse aus @ch:analysis liefert den architektonischen Ausgangspunkt und die Bewertungskriterien.
 Jede Phase endet mit einem Kontrollpunkt; Sicherheitsanforderungen fließen bereits in die Architekturentscheidungen der ersten Phase ein.
+@tab:migration-phases fasst die drei Phasen und ihre Kontrollpunkte zusammen.
 
 #figure(
   table(
@@ -274,6 +275,7 @@ export type EventInput =
 )
 },
 kind: raw,
+supplement: [Quellcode],
 caption: [Codeauszug zur Übersetzung ausgewählter Terminfelder in ein Zod-Laufzeitschema und einen abgeleiteten Typ.],
 ) <lst:generator-event-example>
 Für komplexere Schemastrukturen löst orderSchemas Abhängigkeiten zwischen lokalen `$ref`-Verweisen auf und bringt die Deklarationen in eine gültige Reihenfolge.
@@ -676,6 +678,7 @@ Nach erfolgreicher Anmeldung mit dem Supabase-Benutzerkonto öffnet die Laufzeit
   )
   await database.powerSync.connect(connection.connector)
   ```,
+  supplement: [Quellcode],
   caption: [Initialisierung und Verbindung der lokalen Kollaborationsdatenbank je Supabase-Benutzerkonto; Auszug aus `CollaborationRuntime.signIn`.],
 ) <lst:collaboration-connect>
 
