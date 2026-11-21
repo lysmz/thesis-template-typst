@@ -23,10 +23,10 @@ Ob darüber hinaus Sicherheitsvorgaben (wie das Prinzip der geringsten Rechte be
 Ein API-Vertrag definiert formal die angebotenen Operationen einer Schnittstelle sowie die erwarteten Datenstrukturen für Anfragen und Antworten.
 Einen etablierten Standard stellt hierbei die OpenAPI-Spezifikation dar, welche HTTP-basierte Programmierschnittstellen sprachunabhängig – typischerweise im YAML- oder JSON-Format – abbildet.
 Ein entsprechendes Dokument beschreibt unter anderem Endpunkte, HTTP-Methoden, Parameter, Statuscodes sowie wiederverwendbare Datenschemata.
-Über die reine Dokumentation hinaus dient die formale Schnittstellenbeschreibung als Grundlage für die automatisierte Generierung nachgelagerter Softwareartefakte @OpenApi310 und fungiert somit als einheitliche Integrationsbasis zwischen verteilten Komponenten.
+Über die reine Dokumentation hinaus dient die formale Schnittstellenbeschreibung als Grundlage für die automatisierte Generierung nachgelagerter Softwareartefakte und fungiert somit als einheitliche Integrationsbasis zwischen verteilten Komponenten @OpenApi310.
 
-Werkzeuge zur automatisierten Codegenerierung wie Orval übersetzen OpenAPI-Spezifikationen in typsicheren Programmcode für Frontend- und Backend-Architekturen.
-Neben der Reduktion von repetitivem Integrationscode (_Boilerplate Code_) minimiert dieses Vorgehen bei konsistenter Anwendung typische Schnittstellendivergenzen (_Schema Mismatches_), indem Änderungen an der Schnittstellendefinition direkt über das Typsystem in den konsumierenden Anwendungen abgebildet und validiert werden.
+Werkzeuge zur automatisierten Codegenerierung wie Orval übersetzen OpenAPI-Spezifikationen in typsicheren Programmcode für Frontend- und Backend-Architekturen @OrvalOverview2026 @OrvalHono2026.
+Neben der Reduktion von repetitivem Integrationscode (_Boilerplate Code_) minimiert dieses Vorgehen bei konsistenter Anwendung typische Schnittstellendivergenzen (_Schema Mismatches_), indem Änderungen an der Schnittstellendefinition direkt über das Typsystem in den konsumierenden Anwendungen abgebildet und validiert werden @OrvalOverview2026 @TypeScriptBasics2026.
 
 == Electron-Laufzeit <sec:theory-electron>
 
@@ -42,11 +42,13 @@ Getrennte Prozesse begrenzen für sich genommen noch nicht die verfügbaren Syst
   caption: [Idealtypischer Vergleich einer isolierten und einer offenen Electron-Konfiguration. Eigene Darstellung auf Grundlage der Electron-Sicherheitsrichtlinien @ElectronSecurity2026.],
 ) <fig:electron-architecture-comparison>
 
-Ist die Node.js-Integration im Renderer aktiviert, wird dessen Sandboxing deaktiviert. Gelingt es Angreifenden beispielsweise über Cross-Site Scripting (XSS) oder manipulierte externe Inhalte, Schadcode im Renderer auszuführen, können verfügbare Node.js-APIs eine _Remote Code Execution_ (RCE) auf Ebene des Host-Betriebssystems ermöglichen @ElectronSecurity2026.
+Ist die Node.js-Integration im Renderer aktiviert, wird dessen Sandboxing deaktiviert. 
+Gelingt es Angreifenden beispielsweise über Cross-Site Scripting (XSS) oder manipulierte externe Inhalte, Schadcode im Renderer auszuführen, können verfügbare Node.js-APIs eine _Remote Code Execution_ (RCE) auf Ebene des Host-Betriebssystems ermöglichen @ElectronSecurity2026.
 
 Um diesen Angriffsvektoren zu begegnen, beschreiben die _Electron-Sicherheitsrichtlinien (Electron Security Guidelines)_ @ElectronSecurity2026 empfohlene Schutzmaßnahmen für die Electron-Laufzeit.
-Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Aktivieren von Sandboxing und _Kontextisolation (Context Isolation)_, restriktive Navigationsregeln und eine _Content Security Policy_ (CSP) sowie die Validierung sämtlicher IPC-Nachrichten und die IPC-Absenderprüfung. Sandboxing beschränkt die Systemzugriffe des Renderer-Prozesses; Kontextisolation trennt den JavaScript-Kontext der Webseite vom Kontext des Preload-Skripts.
-Die Richtlinien heben insbesondere hervor, dass die Exposition nativer Systemfähigkeiten gegenüber potenziell unsicherem Web-Code das kritischste Sicherheitsrisiko der Plattform darstellt.
+Zu den zentralen Maßnahmen zählen das Deaktivieren der Node.js-Integration im Renderer, das Aktivieren von Sandboxing und _Kontextisolation (Context Isolation)_, restriktive Navigationsregeln und eine _Content Security Policy_ (CSP) sowie die Validierung sämtlicher IPC-Nachrichten und die IPC-Absenderprüfung. 
+Sandboxing beschränkt die Systemzugriffe des Renderer-Prozesses; Kontextisolation trennt den JavaScript-Kontext der Webseite vom Kontext des Preload-Skripts.
+Die Richtlinien heben insbesondere hervor, dass die Exposition nativer Systemfähigkeiten gegenüber potenziell unsicherem Web-Code ein erhebliches Sicherheitsrisiko der Plattform darstellt.
 
 === Lokale Ressourcen über eigene Protokolle <sec:theory-electron-protocols>
 
@@ -64,9 +66,9 @@ Eigenschaften wie die Behandlung als sicheres oder standardkonformes Schema werd
 Single-Page-Anwendungen bilden unterschiedliche Ansichten über clientseitige Routen ab.
 Im regulären Browserbetrieb kann ein Webserver beim direkten Aufruf oder Neuladen einer solchen Route die zentrale `index.html` ausliefern.
 Eine entsprechende Rewriting-Regel ordnet beispielsweise den Pfad `/settings` dieser Einstiegsdatei zu (_Fallback-Routing_).
-Das clientseitige Skript wertet anschließend den angeforderten Pfad aus und stellt die zugehörige Ansicht im DOM dar.
+Das clientseitige Skript wertet anschließend den angeforderten Pfad aus und stellt die zugehörige Ansicht im DOM dar @ReactRouterSpa2026.
 
-In Electron lassen sich die Frontend-Ressourcen dagegen direkt über `file://` von der Festplatte laden, etwa mit `win.loadFile('dist/index.html')`.
+In Electron lassen sich die Frontend-Ressourcen dagegen direkt über `file://` von der Festplatte laden, etwa mit `win.loadFile('dist/index.html')` @ElectronFirstApp2026.
 Dabei steht keine serverseitige Fallback-Regel zur Verfügung.
 Eine pfadbasierte Route kann beim Neuladen deshalb auf eine nicht vorhandene lokale Datei verweisen und einen Ladefehler verursachen, obwohl der vorherige Seitenwechsel innerhalb der bereits geladenen Anwendung funktioniert hat.
 
@@ -93,45 +95,45 @@ In Verbindung mit `EnableEmbeddedAsarIntegrityValidation` kann das Archiv beim L
 
 == Drizzle ORM als Datenzugriffsschicht <sec:theory-persistence>
 
-Drizzle ORM ist ein leichtgewichtiges, typsicheres Object-Relational-Mapping-Werkzeug (ORM) für das TypeScript-Ökosystem.
+Drizzle ORM ist ein leichtgewichtiges, typsicheres Object-Relational-Mapping-Werkzeug (ORM) für das TypeScript-Ökosystem @DrizzleOverview2026.
 Die Drizzle-Werkzeugsuite verzichtet im Gegensatz zu traditionellen, monolithischen ORM-Systemen auf umfangreiche Laufzeit-Engines oder externe Binärabhängigkeiten und ist modular aufgebaut.
 Diese besteht im Wesentlichen aus der Kernbibliothek für den Datenzugriff sowie einem CLI-Werkzeug für das Schema- und Migrationsmanagement:
 
 - *Drizzle ORM (Kernbibliothek):* Die Datenbankschemata werden deklarativ in TypeScript beschrieben. 
 Diese zentrale Schemadefinition bildet die Grundlage für den typisierten Datenzugriff.
-  Typdefinitionen für Lese- und Schreiboperationen (`inferSelect`, `inferInsert`) leitet das System automatisch über statische Typinferenz ab, ohne dass ein vorgeschalteter Codegenerierungsschritt erforderlich ist.
-  Für Abfragen bietet Drizzle eine SQL-nahe Syntax (z. B. `db.select().from(...).where(...)`), die standardkonforme SQL-Ausdrücke abbildet und eine feingranulare Kontrolle über Joins und Aggregationen ermöglicht.
+  Typdefinitionen für Lese- und Schreiboperationen (`$inferSelect`, `$inferInsert`) leitet das System automatisch über statische Typinferenz ab, ohne dass ein vorgeschalteter Codegenerierungsschritt erforderlich ist @DrizzleTypeApi2026.
+  Für Abfragen bietet Drizzle eine SQL-nahe Syntax (z. B. `db.select().from(...).where(...)`), die standardkonforme SQL-Ausdrücke abbildet und eine feingranulare Kontrolle über Joins und Aggregationen ermöglicht @DrizzleSelect2026.
 - *Drizzle Kit (CLI & Migrationsmanagement):* Ergänzend zur Kernbibliothek dient Drizzle Kit der Synchronisation zwischen Code und Datenbanksystem.
-  Das Werkzeug erlaubt das automatisierte Generieren von SQL-Migrationsdateien auf Basis von Schema-Differenzen (`generate`) sowie das direkte Synchronisieren des Schemas mit Entwicklungsdatenbanken (`push`), was insbesondere iterative Entwicklungszyklen beschleunigt.
+  Das Werkzeug erlaubt das automatisierte Generieren von SQL-Migrationsdateien auf Basis von Schema-Differenzen (`generate`) @DrizzleGenerate2026 sowie das direkte Synchronisieren des Schemas mit Entwicklungsdatenbanken (`push`) @DrizzlePush2026.
 
 Architektonisch fungiert Drizzle ORM nicht als eigenständiger Datenbanktreiber, sondern setzt als Abstraktionsschicht auf bestehenden Treiber-Ökosystemen auf.
 Für den Kontext dieser Arbeit sind insbesondere zwei Datenbankparadigmen relevant:
 
-+ *Dateibasierte und eingebettete Systeme (SQLite):* Über Treiber wie `better-sqlite3` oder libSQL-basierte Lösungen (wie Turso) ermöglicht Drizzle ORM einen performanten, lokalen Datenzugriff innerhalb der Node.js-Laufzeitumgebung des Main-Prozesses.
-+ *Client-Server-Datenbanksysteme (PostgreSQL):* Über native Treiber (wie `pg` oder `postgres.js`) bindet Drizzle ORM relationale PostgreSQL-Instanzen an, wobei die identische TypeScript-Schemadefinition beibehalten wird.
++ *Dateibasierte und eingebettete Systeme (SQLite):* Über Treiber wie `better-sqlite3` oder libSQL-basierte Lösungen (wie Turso) ermöglicht Drizzle ORM einen lokalen Datenzugriff innerhalb der Node.js-Laufzeitumgebung des Main-Prozesses @DrizzleSQLiteDrivers2026.
++ *Client-Server-Datenbanksysteme (PostgreSQL):* Über native Treiber (wie `pg` oder `postgres.js`) bindet Drizzle ORM relationale PostgreSQL-Instanzen an @DrizzlePostgreSQLDrivers2026.
 
-Durch diesen modularen Aufbau und den Verzicht auf schwergewichtige Abstraktionen eignet sich Drizzle ORM besonders für hybride Anwendungsszenarien, bei denen datenbanknahe Performanz und statische Typsicherheit bei minimalem Laufzeit-Overhead gefordert sind.
+Durch diesen modularen Aufbau eignet sich Drizzle ORM für hybride Anwendungsszenarien, in denen statische Typsicherheit beim Zugriff auf unterschiedliche Datenbanksysteme gefordert ist.
 
 == Local-First-Architekturen und Datensynchronisation <sec:theory-local-first>
 
 Das Architekturparadigma _Local-First_ beschreibt datenintensive Anwendungen, bei denen ein primärer lokaler Datenbestand auf dem Endgerät des Nutzers die lokale Verarbeitung ermöglicht.
 Im Gegensatz zu traditionellen _Cloud-First_-Architekturen, bei denen der Client als darstellende Schicht fungiert und Zustandsänderungen synchron über das Netzwerk autorisiert werden müssen, operieren Lese- und Schreibzugriffe bei Local-First primär auf einer lokalen Datenbankinstanz.
-Externe Cloud-Dienste dienen hierbei als sekundäre Infrastrukturschicht für Hintergrundsynchronisation, Persistenzsicherung und kollaborative Datenabgleiche.
+Externe Cloud-Dienste dienen hierbei als sekundäre Infrastrukturschicht für Hintergrundsynchronisation, Persistenzsicherung und kollaborative Datenabgleiche @Kleppmann2019.
 
 Grundlegend formalisiert wurde das Konzept von Kleppmann et al. @Kleppmann2019.
 Die Autoren beschreiben Local-First als architektonisches Zielbild, das kollaboratives Arbeiten mit lokaler Nutzbarkeit, geringen Latenzen und vollständiger Datenkontrolle vereint.
 Zu den zentralen Eigenschaften zählen:
-- *Autonome Offline-Verfügbarkeit (_Offline-by-Default_):* Die Kernfunktionalität der Software ist unabhängig vom Vorhandensein einer aktiven Netzwerkverbindung stets uneingeschränkt gegeben.
-- *Gleichzeitige Zusammenarbeit (_Multi-User Collaboration_):* Mehrere Clients können parallel Modifikationen an denselben Datenbeständen vornehmen, wobei auftretende Konflikte deterministisch aufgelöst werden.
+- *Autonome Offline-Verfügbarkeit (_Offline-by-Default_):* Die Kernfunktionalität der Software ist unabhängig vom Vorhandensein einer aktiven Netzwerkverbindung stets gegeben @Kleppmann2019.
+- *Gleichzeitige Zusammenarbeit (_Multi-User Collaboration_):* Mehrere Clients können parallel Modifikationen an denselben Datenbeständen vornehmen, wobei auftretende Konflikte deterministisch aufgelöst werden @Kleppmann2019.
 
 Bei externen Datenflüssen ist zwischen einer einseitigen Datenübernahme und einer kollaborativen Synchronisation zu unterscheiden: Bei einer einseitigen Datenübernahme werden Referenzdaten bezogen, validiert und lokal gespeichert.
 Eine kollaborative Synchronisation erfordert hingegen das kontinuierliche Erfassen lokaler Mutationen, deren asynchrone Übertragung an den Server sowie die Integration entfernter Transaktionen.
-Lokaler Schreibabschluss (_Local Commit_) und die Bestätigung der Übernahme durch das Backend finden dabei zeitlich entkoppelt statt @Kleppmann2019.
+Lokaler Schreibabschluss (_Local Commit_) und die Bestätigung der Übernahme durch das Backend finden dabei zeitlich entkoppelt statt @Kleppmann2019 @PowerSyncWritingChanges2026.
 
 === Replikation über PowerSync
 
 Um den komplexen Anforderungen an Konsistenz, Offline-Warteschlangen und Cache-Invalidierung zu begegnen, kommen spezialisierte Synchronisations-Engines zum Einsatz.
-PowerSync stellt eine solche Middleware dar, welche eine lokale SQLite-Datenbank auf dem Endgerät (etwa innerhalb einer Electron-Laufzeit) mit einer relationalen Backend-Datenbank abgleicht.
+PowerSync stellt eine solche Middleware dar, welche eine lokale SQLite-Datenbank auf dem Endgerät (etwa innerhalb einer Electron-Laufzeit) mit einer relationalen Backend-Datenbank abgleicht @PowerSyncWritingChanges2026.
 @fig:powersync-replication-flow veranschaulicht das Zusammenspiel der beteiligten Komponenten und die Wege lokaler Änderungen zum Backend und zurück zum Client.
 
 #figure(
@@ -141,8 +143,8 @@ PowerSync stellt eine solche Middleware dar, welche eine lokale SQLite-Datenbank
 
 === Backend-Infrastruktur mit Supabase
 
-Supabase ist eine quelloffene _Backend-as-a-Service_-Plattform (BaaS).
+Supabase ist eine quelloffene _Backend-as-a-Service_-Plattform (BaaS) @SupabaseArchitecture2026.
 Ihre PostgreSQL-Datenbank dient als zentrale Backend-Datenbank und Replikationsquelle.
-Den Kern bildet eine vollwertige PostgreSQL-Instanz.
-Durch die native Unterstützung des PostgreSQL-WAL und des `pgoutput`-Plugins ermöglicht Supabase die direkte Anbindung von Synchronisationsdiensten wie PowerSync.
-Gleichzeitig stellt die Plattform automatisierte Schnittstellen und Authentifizierungsmechanismen bereit, womit sie als standardisiertes Backend für die persistente Datenhaltung und Mandantentrennung dient.
+Den Kern bildet eine vollwertige PostgreSQL-Instanz @SupabaseDatabase2026.
+Durch die native Unterstützung des PostgreSQL-WAL und des `pgoutput`-Plugins ermöglicht Supabase die direkte Anbindung von Synchronisationsdiensten wie PowerSync @PostgreSQLLogicalReplication2026 @PowerSyncSupabase2026.
+Gleichzeitig stellt die Plattform automatisierte Schnittstellen und Authentifizierungsmechanismen bereit, womit sie als standardisiertes Backend für die persistente Datenhaltung und Mandantentrennung dient @SupabaseRestApi2026 @SupabaseAuth2026 @SupabaseRowLevelSecurity2026.
