@@ -40,7 +40,7 @@ Der resultierende Migrationspfad kann potenziell übertragbare Prinzipien aufzei
 
 === Funktionsumfang des Webprototyps <sec:functional-scope>
 
-Der Funktionsumfang der Webanwendung ergibt sich aus den ursprünglichen Erstellungs-Prompts zur persönlichen Studienorganisation und zur Zusammenarbeit in Studiengruppen.
+Der Funktionsumfang der Webanwendung ergibt sich aus den ursprünglichen Erstellungs-Prompts zur persönlichen Studienorganisation und zur Zusammenarbeit in Studiengruppen (siehe @app:creation-prompts).
 @tab:feature-scope gibt einen Überblick über die Funktionsbereiche des Webprototyps und ihre Funktionen.
 
 #figure(

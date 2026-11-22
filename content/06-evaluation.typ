@@ -250,7 +250,7 @@ Diese Unterscheidung wird durch die beobachteten Abläufe und Rückmeldungen nac
 == Wirkung der Sicherheitsmaßnahmen <sec:security-evaluation>
 
 Die Sicherheitsprüfung folgt der im @sec:requirements festgelegten Anforderung A7 und der in @sec:app-hardening beschriebenen Checkliste.
-Alle 20 Empfehlungen wurden auf ihre Anwendbarkeit geprüft.
+Alle 20 Empfehlungen wurden auf ihre Anwendbarkeit geprüft @ElectronSecurity2026.
 Die Betrachtung der Einstellungen und Schnittstellen wurde durch automatisierte Tests, Kontrollen der gebauten Anwendung und ausgewählte manuelle Laufzeitversuche ergänzt.
 Die für die Eingabevalidierung, die Textdarstellung und die CSP verwendeten DevTools-Befehle sowie die zugehörigen Konsolenausgaben sind in @app:devtools-pruefungen dokumentiert.
 @tab:security-runtime-results fasst ausgewählte Prüfungen vom Umgang mit Eingaben bis zur Kontrolle des installierten Anwendungspakets zusammen.

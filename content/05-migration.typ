@@ -914,7 +914,7 @@ Die Korrektur und ein Regressionstest sichern dieses Detail ab.
 Electron wurde von 39.8.10 auf 44.5.1 aktualisiert.
 Damit mussten auch die nativen Datenbankabhängigkeiten und ihr Paketbetrieb geprüft werden; die erforderlichen Anpassungen betrafen `better-sqlite3`, das PowerSync-Node-SDK und den nativen Prüfschritt.
 Die Paketauswahl wurde auf gebaute Anwendungsteile und Produktionsabhängigkeiten begrenzt, während SQL-Migrationsdateien von Drizzle Kit weiterhin über `extraResources` ausgeliefert werden.
-Prüfdokumente und Umgebungsdateien gehören nicht zum Anwendungspaket.
+Umgebungsdateien gehören nicht zum Anwendungspaket.
 
 Aufbauend auf den in @sec:theory-electron-fuses beschriebenen Paketmechanismen wurden unbenötigte Laufzeitfunktionen eingeschränkt.
 Die Fuse-Konfiguration deaktiviert `RunAsNode`, die Auswertung von `NODE_OPTIONS`, Node-Inspektionsargumente und zusätzliche Dateiprotokollprivilegien.
@@ -973,7 +973,6 @@ Dabei wurde der korrigierte Paketstand verwendet.
   ) <tab:security-runtime-procedure>
 ]
 
-Dateihashes binden die finalen Paket- und Laufzeitprotokolle an dieselbe EXE und dasselbe ASAR-Archiv.
 @tab:security-runtime-results weist die im Rahmen der Evaluation betrachteten Ergebnisse aus.
 
 == Handlungsempfehlungen des Migrationspfads <sec:migration-recommendations>

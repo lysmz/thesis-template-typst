@@ -68,7 +68,7 @@ Hierzu wurden die Komponenten auf eine Desktop-Architektur mit getrennten Verant
 Die Datenhaltung wurde lokal bereitgestellt.
 Aufrufe der bisherigen Webschnittstellen wurden in einen begrenzten Kommunikationsweg zwischen Renderer, Preload und Main-Prozess überführt.
 
-Ziel dieser Phase war eine Electron-Anwendung, deren lokale Kernfunktionen die autonome Offline-Verfügbarkeit des Local-First-Paradigmas unterstützen und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet.
+Ziel dieser Phase war eine Electron-Anwendung, deren lokale Kernfunktionen die autonome Offline-Verfügbarkeit des Local-First-Paradigmas (siehe @sec:theory-local-first) unterstützen und deren Architektur zugleich die Grundlage für die nachfolgenden Erweiterungen bildet.
 Die Verantwortlichkeiten und Schnittstellen wurden so gestaltet, dass Synchronisation und weitere externe Dienste später integriert werden können, ohne die lokale Kernarchitektur erneut grundlegend umzustrukturieren.
 Damit verbindet diese Phase die Herstellung lokaler Nutzbarkeit mit der Vorbereitung einer schrittweise erweiterbaren Anwendung.
 
@@ -89,7 +89,8 @@ Dieser zweite Fall greift gezielt Eigenschaften des Local-First-Paradigmas auf.
 
 Nach der funktionalen Umsetzung wurden die entstandenen lokalen und netzwerkbezogenen Schnittstellen systematisch hinsichtlich der Electron-Sicherheitsrichtlinien geprüft und erforderliche Anpassungen vorgenommen. 
 Die Darstellung einer abschließenden Härtung bedeutet daher nicht, dass Sicherheit erst nach Abschluss der Entwicklung berücksichtigt wird.
-Der Sicherheitsbegriff wird für diese Arbeit über die Umsetzung der anwendbaren Electron-Sicherheitsrichtlinien einschließlich Eingabevalidierung und Maßnahmen gegen die Ausführung fremden Codes operationalisiert @ElectronSecurity2026.
+Der Sicherheitsbegriff wird für diese Arbeit über die Umsetzung der anwendbaren Electron-Sicherheitsrichtlinien einschließlich der Maßnahmen gegen die Ausführung fremden Codes operationalisiert @ElectronSecurity2026.
+Ergänzend wird die Eingabevalidierung geprüft (siehe @sec:app-hardening).
 
 Diese abschließende Phase bündelt die Prüfung der fertigen Anwendung.
 Sicherheitsrelevante Architekturentscheidungen, insbesondere die Trennung privilegierter Funktionen vom Renderer und die Begrenzung der Preload-Schnittstellen, betreffen bereits die vorausgehenden Phasen.
